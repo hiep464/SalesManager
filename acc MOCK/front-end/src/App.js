@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from './routes/Routes';
-import DefaultLayout from './layout/defaultLayout/DefaultLayout';
 import { Fragment } from 'react';
-import GlobalStyles from './components/GlobalStyles';
+import GlobalStyles from './components/globalstyles/GlobalStyles';
 import { AuthContextProvider } from './context/AuthContext';
 
 function App() {
@@ -12,12 +11,10 @@ function App() {
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         const Page = route.element;
-                        let Layout = DefaultLayout;
+                        let Layout = Fragment;
 
                         if (route.layout) {
                             Layout = route.layout;
-                        } else if (!route.layout) {
-                            Layout = Fragment;
                         }
 
                         return (
