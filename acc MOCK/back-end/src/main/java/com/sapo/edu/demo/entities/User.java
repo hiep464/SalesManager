@@ -5,8 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table
+
 @Data
+@Table(name="user")
 public class User{
 
     @Id
@@ -34,4 +35,6 @@ public class User{
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }
