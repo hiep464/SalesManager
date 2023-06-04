@@ -54,9 +54,10 @@ function AccountMenu() {
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
-                            padding: '8px 8px',
+                            padding: '8px',
                             borderRadius: '4px',
                             height: '100%',
+                            marginRight: '14px'
                         }}
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
