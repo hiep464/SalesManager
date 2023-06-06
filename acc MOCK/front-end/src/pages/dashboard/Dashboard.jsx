@@ -27,6 +27,9 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import FolderIcon from '@mui/icons-material/Folder';
+import Numeral from 'react-numeral';
+import axios from 'axios';
+import { subDays, format } from 'date-fns';
 
 Chart.register(CategoryScale);
 
@@ -70,32 +73,16 @@ const history = [
     'abc vừa đăng nhập',
 ];
 
-const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'My First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-        },
-    ],
-};
-
 const options = {
     scales: {
-        yAxes: [
-            {
-                ticks: {
-                    beginAtZero: true,
-                    display: false,
-                },
-            },
-        ],
         x: {
             grid: {
                 display: false,
+            },
+        },
+        y: {
+            ticks: {
+                callback: (value) => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
             },
         },
     },
@@ -103,34 +90,118 @@ const options = {
         legend: {
             display: false,
         },
+        tooltip: {
+            callbacks: {
+                label: (context) => {
+                    const value = context.parsed.y.toLocaleString('en-US');
+                    return `Doanh thu: ${value}`;
+                },
+            },
+        },
     },
 };
 
-const topCustomer = [
-    { name: 'Nguyễn Công Duẩn', buy: '90,000' },
-    { name: 'Nguyễn Bá Duy', buy: '90,000' },
-    { name: 'Lê Văn Bảo', buy: '90,000' },
-];
+const generateLabels = () => {
+    const now = new Date(); // Lấy thời điểm hiện tại
+    const days = []; // Mảng lưu trữ các ngày trong khoảng 7 ngày
 
-const topProduct = [
-    { name: 'Áo polo', sold: '100' },
-    { name: 'Áo khoác', sold: '100' },
-    { name: 'Quần jean', sold: '100' },
-];
+    for (let i = 6; i >= 0; i--) {
+        const date = subDays(now, i); // Tính toán ngày trong khoảng 7 ngày
+        const formattedDate = format(date, 'dd/MM'); // Chuyển đổi ngày thành chuỗi định dạng dd/MM/yyyy
+        days.push(formattedDate); // Thêm ngày vào mảng
+    }
+
+    return days;
+};
+
+const labelsInit = generateLabels();
 
 function DashBoard() {
-    const [age, setAge] = React.useState('');
+    const [filter, setFilter] = React.useState(7);
+    const [revenue, setRevenue] = React.useState(0);
+    const [sold, setSold] = React.useState(0);
+    const [quantity, setQuantity] = React.useState(0);
+    const [topProduct, setTopProduct] = React.useState([]);
+    const [topCustomer, setTopCustomer] = React.useState([]);
+    const [start, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
+    const [end, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
+    const [labels, setLabels] = React.useState(labelsInit);
+    const [data, setData] = React.useState([]);
 
     const handleChange = (event) => {
-        setAge(event.target.value);
+        setFilter(event.target.value);
+        if (event.target.value === 7) {
+            const labelsInit = generateLabels();
+            setLabels(labelsInit);
+            setStart(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
+            setEnd(format(new Date(), 'dd/MM/yyyy'));
+        } else if (event.target.value === 1) {
+            setLabels([format(subDays(new Date(), 1), 'dd/MM')]);
+            setStart(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
+            setEnd(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
+        } else {
+            setLabels([format(new Date(), 'dd/MM')]);
+            setStart(format(new Date(), 'dd/MM/yyyy'));
+            setEnd(format(new Date(), 'dd/MM/yyyy'));
+        }
     };
+
+    const fetchRevenue = () => {
+        return axios.get('http://localhost:8080/admin/statistical/revenue');
+    };
+
+    const fetchSold = () => {
+        return axios.get('http://localhost:8080/admin/statistical/sold');
+    };
+
+    const fetchQuantity = () => {
+        return axios.get('http://localhost:8080/admin/statistical/quantity');
+    };
+
+    const fetchTop3Product = () => {
+        return axios.get('http://localhost:8080/admin/statistical/top3_product');
+    };
+
+    const fetchTop3Customer = () => {
+        return axios.get('http://localhost:8080/admin/statistical/top3_customer');
+    };
+
+    React.useEffect(() => {
+        Promise.all([fetchRevenue(), fetchSold(), fetchQuantity(), fetchTop3Product(), fetchTop3Customer()])
+            .then((responses) => {
+                const revenue = responses[0].data;
+                setRevenue(revenue);
+                const sold = responses[1].data;
+                setSold(sold);
+                const quantity = responses[2].data;
+                setQuantity(quantity);
+                const top3Product = responses[3].data;
+                setTopProduct(top3Product);
+                const top3Customer = responses[4].data;
+                setTopCustomer(top3Customer);
+                // console.log(revenue, sold, quantity, top3Product, top3Customer);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    React.useEffect(() => {
+        axios
+            .get(`http://localhost:8080/admin/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
+            .then((response) => {
+                console.log(response.data);
+                setData(response.data);
+            })
+            .catch((error) => console.log(error));
+    }, [filter]);
     return (
         <div style={{ paddingTop: '25px', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', flexDirection: 'column', width: '900px' }}>
                 <div style={{ display: 'flex' }}>
                     <BoxItem
                         title={'Doanh thu'}
-                        content={'100,000'}
+                        content={<Numeral value={revenue} format={'0,0'} />}
                         backgroundColor={'#0089FF'}
                         icon={
                             <AttachMoneyIcon
@@ -146,7 +217,7 @@ function DashBoard() {
                     />
                     <BoxItem
                         title={'Đã bán'}
-                        content={'100'}
+                        content={sold}
                         backgroundColor={'#0FD186'}
                         icon={
                             <ShoppingBasketIcon
@@ -162,7 +233,7 @@ function DashBoard() {
                     />
                     <BoxItem
                         title={'Tồn kho'}
-                        content={'100'}
+                        content={quantity}
                         backgroundColor={'#FFB92A'}
                         icon={
                             <WarehouseIcon
@@ -191,25 +262,37 @@ function DashBoard() {
                     >
                         <span style={{ fontSize: '24px', color: '#0088FF' }}>Doanh thu bán hàng</span>
                         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                            <Select
-                                value={age}
-                                onChange={handleChange}
-                                displayEmpty
-                                // sx={{ padding: '12px 10px'}}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                            <Select value={filter} onChange={handleChange} displayEmpty>
+                                <MenuItem value={7}>7 ngày</MenuItem>
+                                <MenuItem value={1}>Hôm qua</MenuItem>
+                                <MenuItem value={0}>Hôm nay</MenuItem>
                             </Select>
                         </FormControl>
                     </div>
                     <div style={{ width: '80%', marginBottom: '20px' }}>
-                        <Bar data={data} options={options} />
+                        <Bar
+                            data={{
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Doanh thu',
+                                        data: data,
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1,
+                                    },
+                                ],
+                            }}
+                            options={options}
+                        />
                     </div>
-                    <h5 style={{ textAlign: 'center' }}>Tổng doanh thu: 50,000</h5>
+                    <h5 style={{ textAlign: 'center' }}>
+                        Tổng doanh thu:
+                        <Numeral
+                            value={data.reduce((accumulator, currentValue) => accumulator + currentValue) || '0'}
+                            format={'0,0'}
+                        />
+                    </h5>
                 </Paper>
                 <div
                     style={{
@@ -223,15 +306,18 @@ function DashBoard() {
                     <Paper sx={{ width: '45%' }}>
                         <h4>Top Khách hàng</h4>
                         <List dense={true} sx={{ paddingBottom: '10px' }}>
-                            {topCustomer.map((item, key) => {
+                            {topCustomer?.map((item, key) => {
                                 return (
-                                    <ListItem key={key} secondaryAction={<span>{item?.buy}</span>}>
+                                    <ListItem
+                                        key={key}
+                                        secondaryAction={<span>{<Numeral value={item[1]} format={'0,0'} />}</span>}
+                                    >
                                         <ListItemAvatar>
                                             <Avatar>
                                                 <FolderIcon />
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={item?.name} />
+                                        <ListItemText primary={item[0]} />
                                     </ListItem>
                                 );
                             })}
@@ -240,15 +326,15 @@ function DashBoard() {
                     <Paper sx={{ width: '45%' }}>
                         <h4>Top sản phẩm</h4>
                         <List dense={true} sx={{ paddingBottom: '10px' }}>
-                            {topProduct.map((item, key) => {
+                            {topProduct?.map((item, key) => {
                                 return (
-                                    <ListItem key={key} secondaryAction={<span>{item?.sold}</span>}>
+                                    <ListItem key={key} secondaryAction={<span>{item[1]}</span>}>
                                         <ListItemAvatar>
                                             <Avatar>
                                                 <FolderIcon />
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={item?.name} />
+                                        <ListItemText primary={item[0]} />
                                     </ListItem>
                                 );
                             })}
@@ -266,7 +352,7 @@ function DashBoard() {
                         marginBottom: '0px',
                     }}
                 >
-                    {history.map((key, item) => {
+                    {history?.map((key, item) => {
                         return (
                             <TimelineItem key={key}>
                                 <TimelineOppositeContent />
