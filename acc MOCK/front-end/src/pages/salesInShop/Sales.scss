@@ -1,0 +1,41 @@
+.logo {
+    height: 30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.Nav {
+    background-color: aqua;
+    display: flex;
+    justify-content: space-between;
+    
+    .addProduct{
+        color: #000;
+        display: flex;
+        align-items: flex-end;
+
+        .tabs:focus {
+            background-color: #fff;
+        }
+
+        .addOrder:hover {
+            cursor: pointer;
+        }
+    }
+
+    .user{
+        margin-right: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content:center;
+
+        div{
+            display: flex;
+            justify-content:flex-start;
+            align-items: center;
+        }
+    }
+
+
+}
