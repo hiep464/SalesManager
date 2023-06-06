@@ -1,9 +1,10 @@
 package com.sapo.edu.demo.entities;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 @Entity
 @Data
 

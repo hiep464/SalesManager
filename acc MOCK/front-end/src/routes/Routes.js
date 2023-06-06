@@ -4,5 +4,5 @@ import Login from "../pages/login/Login"
 
 export const publicRoutes = [
     {path: '/', element : Login},
-    {path: '/dashboard', element : DashBoard, layout: DefaultLayout},
+    {path: '/dashboard', element : DashBoard, layout: DefaultLayout}
 ]
