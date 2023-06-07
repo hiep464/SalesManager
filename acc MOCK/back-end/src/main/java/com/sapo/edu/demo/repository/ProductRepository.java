@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -24,5 +28,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             + "GROUP BY c.code "
             + "ORDER BY total DESC")
     List<Object> findTopCustomers();
+    @Modifying
+    @Query("SELECT p FROM ProductEntity p WHERE p.code LIKE %?1%")
+    List<ProductEntity> findByCodeContaining(String code);
+
 }
 

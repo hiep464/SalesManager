@@ -2,12 +2,10 @@ package com.sapo.edu.demo.entities;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Date;
 
 @Entity
-@Table(name = "order_table")
-public class Order {
+public class OrderTable {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "code", nullable = false)
@@ -28,10 +26,10 @@ public class Order {
     @Column(name="status")
     private String status;
 
-    public Order() {
+    public OrderTable() {
     }
 
-    public Order(String code, String customerCode, String staffCode, BigDecimal total, Date orderDate, String status) {
+    public OrderTable(String code, String customerCode, String staffCode, BigDecimal total, Date orderDate, String status) {
         this.code = code;
         this.customerCode = customerCode;
         this.staffCode = staffCode;
