@@ -10,7 +10,8 @@ import Product from '../../components/Product/Product';
 import PropTypes from 'prop-types';
 
 function OrderBody(props) {
-    const { rows, value, index, ...other } = props;
+    const { rows, value, index, onDeleteProduct ,...other } = props;
+
     return (
         <div
             role="tabpanel"
@@ -38,9 +39,9 @@ function OrderBody(props) {
                 </Table>
             </TableContainer>
           )}
-            {value === index && rows.map((row,i) => {
-                return <Product row={row} index={i} />;
-            })}
+            {value === index && rows ? rows.map((row,i) => {
+                return <Product row={row} index={i} onDeleteProduct={onDeleteProduct}/>;
+            }):<></>}
         </div>
     );
 }
