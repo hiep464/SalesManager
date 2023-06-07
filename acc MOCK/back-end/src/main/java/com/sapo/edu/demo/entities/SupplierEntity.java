@@ -1,13 +1,16 @@
 package com.sapo.edu.demo.entities;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+
 @Entity
 @Data
 
-@Table(name = "inventory")
+@Table(name = "supplier")
 public class SupplierEntity {
     @Id
     private String code;
@@ -25,5 +28,5 @@ public class SupplierEntity {
     private String address;
     @Column
     @NotNull
-    private Long debtMoney;
+    private BigDecimal debtMoney;
 }

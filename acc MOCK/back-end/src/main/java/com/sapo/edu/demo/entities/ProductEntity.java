@@ -17,6 +17,10 @@ public class ProductEntity {
     private String code;
     @Column
     @NotNull
+    private String categoryCode;
+
+    @Column
+    @NotNull
     private String name;
     @Column
     @NotNull
@@ -35,7 +39,13 @@ public class ProductEntity {
     private String color;
     @Column
     @NotNull
-    private String inventory_name;
+    private String inventoryName;
+    @Column
+    private String brand;
+    @Column
+    private BigDecimal originalCost;
+    @Column
+    private String image;
 
 
 }

@@ -1,12 +1,18 @@
 package com.sapo.edu.demo.entities;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.persistence.Table;
+
 
 @Entity
+@Table(name = "staff")
+@Data
 public class Staff {
     @Id
     @Column(name = "code", nullable = false)

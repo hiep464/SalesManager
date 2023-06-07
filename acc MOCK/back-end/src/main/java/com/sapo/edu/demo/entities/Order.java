@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.Date;
 
 @Entity
+@Table(name = "order_table")
+
 public class Order {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE)

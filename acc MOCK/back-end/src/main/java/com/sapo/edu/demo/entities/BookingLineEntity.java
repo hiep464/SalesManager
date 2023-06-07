@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Table(name = "booking_line")
 public class BookingLineEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     @NotNull
@@ -23,5 +24,5 @@ public class BookingLineEntity {
     private Long quantity;
     @Column
     @NotNull
-    private BigDecimal price;
+    private String bookingCode;
 }

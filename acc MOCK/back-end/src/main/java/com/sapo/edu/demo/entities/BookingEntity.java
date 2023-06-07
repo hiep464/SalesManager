@@ -5,6 +5,9 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -23,9 +26,9 @@ public class BookingEntity {
     @Size(max = 8)
     private String supplerCode;
     @Column
-    private Long total;
+    private BigDecimal total;
     @Column
-    private Date bookingDate;
+    private LocalDateTime bookingDate;
     @Column
     @NotNull
     @Size(max =50)
