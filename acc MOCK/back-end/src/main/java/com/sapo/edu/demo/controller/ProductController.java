@@ -1,5 +1,6 @@
 package com.sapo.edu.demo.controller;
 
+
 import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
@@ -7,10 +8,6 @@ import com.sapo.edu.demo.dto.ResponseObject;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -63,7 +60,7 @@ public class ProductController {
 //        Specification<ProductEntity> spec = Specifications.where(ProductSpecifications.hasColor(color))
 //                .and(ProductSpecifications.hasBrand(brand));
 //        Pageable pageable = PageRequest.of(page, size);
-        Map<String, Object> response = productService.getProductByFilter(page,size,name,categoryName,brand,minCost,maxCost,color,minPrice,maxPrice);
+        Map<String, Object> response = productService.getProductByFilter(page, size, name, categoryName, brand, minCost, maxCost, color, minPrice, maxPrice);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
 }

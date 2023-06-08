@@ -1,6 +1,5 @@
 package com.sapo.edu.demo.entities;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 
@@ -8,6 +7,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import javax.persistence.Entity;
+
+
 import java.util.Date;
 
 @Entity

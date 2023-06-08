@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("admin")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
     @Autowired
     private BookingService bookingService;

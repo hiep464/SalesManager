@@ -1,5 +1,6 @@
 package com.sapo.edu.demo.service;
 
+
 import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.entities.InventoryEntity;
@@ -26,6 +27,7 @@ import java.util.*;
 @RequiredArgsConstructor
 
 public class ProductService {
+
     private final CategoryRepository categoryRepository;
     private final InventoryRepository storageRepository;
 
@@ -96,24 +98,53 @@ public class ProductService {
 
         Page<ProductEntity> pageProduct;
         List<ProductEntity> products = new ArrayList<ProductEntity>();
-        if(categoryName != null) {
-            pageProduct = productRepository.findByFilters(name,categoryRepository.findByName(categoryName).getCode(),brand,minCost,maxCost,color,minPrice,maxPrice, paging);
+        if (categoryName != null) {
+            pageProduct = productRepository.findByFilters(name, categoryRepository.findByName(categoryName).getCode(), brand, minCost, maxCost, color, minPrice, maxPrice, paging);
 
         } else {
-            pageProduct = productRepository.findByFilters(name,null,brand,minCost,maxCost,color,minPrice,maxPrice, paging);
+            pageProduct = productRepository.findByFilters(name, null, brand, minCost, maxCost, color, minPrice, maxPrice, paging);
         }
 
         products = pageProduct.getContent();
-
+        System.out.println(products);
         // Mapping qua Dto
         Map<String, Object> response = new HashMap<>();
         List<ProductDto> productsDtos = Arrays.asList(modelMapper.map(products, ProductDto[].class));
-
+        for(ProductDto productDto : productsDtos) {
+            productDto.setCategoryName(getCategoryNameByCode(productDto.getCategoryCode()));
+        }
         response.put("products", productsDtos);
         response.put("currentPage", pageProduct.getNumber());
         response.put("totalItems", pageProduct.getTotalElements());
         response.put("totalPages", pageProduct.getTotalPages());
         return response;
     }
+    private String getCategoryNameByCode(String categoryCode) {
+        // Thực hiện truy vấn đến category repository để lấy category name theo category code
+        CategoryEntity category = categoryRepository.findByCode(categoryCode).get();
+        System.out.println(category.getName());
+        if (category != null) {
+            return category.getName();
+        }
+        return null;
+    }
+
+    public Integer getTotalSold(){
+        return productRepository.totalSold();
+    }
+
+    public Integer getTotalQuantity(){
+        return productRepository.totalQuantity();
+    }
+
+    public List<Object> getTop3Product(){
+        return productRepository.findTopProducts().subList(0, 3);
+    }
+
+    public List<Object> getTop3Customer(){
+        return productRepository.findTopCustomers().subList(0, 3);
+    }
+
+
 }
 

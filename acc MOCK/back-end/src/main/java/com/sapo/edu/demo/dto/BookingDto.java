@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,7 +15,8 @@ import java.util.List;
 
 @Data
 public class BookingDto {
-    @Id
+
+    @NotEmpty
     private String code;
     @NotEmpty
     private String staffName;
@@ -26,9 +29,11 @@ public class BookingDto {
     @NotEmpty
     private Date bookingDate;
     @NotEmpty
+    private String bookingStatus;
+    @NotEmpty
     private List<BookingLineDto> bookinglines;
 
-
+    }
 
 
 

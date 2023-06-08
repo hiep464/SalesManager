@@ -42,6 +42,13 @@ public class BookingService {
         booking = pageBooking.getContent();
         Map<String, Object> response = new HashMap<>();
         List<BookingDto> bookingDtos = Arrays.asList(modelMapperbooking.map(booking, BookingDto[].class));
+        for(int i = 0; i < booking.size(); i++) {
+            BookingDto bookDto = bookingDtos.get(i);
+            BookingEntity entity = booking.get(i);
+            bookDto.setStaffName(staffRepository.findById(entity.getStaffCode()).get().getName());
+            bookDto.setSupplerName(supplierRepository.findById(entity.getSupplerCode()).get().getName());
+
+        }
         response.put("products", bookingDtos);
 
         return response;

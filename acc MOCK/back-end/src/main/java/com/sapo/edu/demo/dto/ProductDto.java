@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 @Data
 public class ProductDto {
-    @Id
+    @NotEmpty
     private String code;
     @NotEmpty
     private String categoryName;
@@ -31,4 +31,6 @@ public class ProductDto {
     private BigDecimal originalCost;
     @NotEmpty
     private String image;
+    @NotEmpty
+    private String categoryCode;
 }

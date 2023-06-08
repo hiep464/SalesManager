@@ -1,11 +1,16 @@
 package com.sapo.edu.demo.entities;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
 import lombok.Data;
 
 
 import javax.persistence.*;
+
 import java.math.BigDecimal;
+
+
 
 @Entity
 @Data

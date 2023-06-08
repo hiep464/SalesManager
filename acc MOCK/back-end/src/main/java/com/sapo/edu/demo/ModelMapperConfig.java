@@ -23,8 +23,7 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setAmbiguityIgnored(true);
-        modelMapper.createTypeMap(BookingDto.class, BookingEntity.class)
-                .addMappings(mapper -> mapper.skip(BookingEntity::setBookingDate));
+
         Converter<ProductEntity, ProductDto> entityToDtoConverter = context -> {
             ProductEntity entity = context.getSource();
             ProductDto dto = new ProductDto();
@@ -39,6 +38,7 @@ public class ModelMapperConfig {
     private String getCategoryNameByCode(String categoryCode) {
         // Thực hiện truy vấn đến category repository để lấy category name theo category code
         CategoryEntity category = categoryRepository.findByCode(categoryCode).get();
+        System.out.println(category.getName());
         if (category != null) {
             return category.getName();
         }
