@@ -2,6 +2,7 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,6 @@ public class ProductService {
     public List<Object> getTop3Customer(){
         return productRepository.findTopCustomers().subList(0, 3);
     }
-
-    ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
