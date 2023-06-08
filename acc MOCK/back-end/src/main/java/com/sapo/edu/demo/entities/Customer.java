@@ -1,11 +1,10 @@
 package com.sapo.edu.demo.entities;
 
 import com.sun.istack.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity

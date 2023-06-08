@@ -1,10 +1,11 @@
 package com.sapo.edu.demo.entities;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 @Table(name = "booking_line")
 public class BookingLineEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     @NotNull
@@ -23,5 +25,5 @@ public class BookingLineEntity {
     private Long quantity;
     @Column
     @NotNull
-    private BigDecimal price;
+    private String bookingCode;
 }

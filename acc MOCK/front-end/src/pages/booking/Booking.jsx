@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ImageIcon from '@mui/icons-material/Image';
 import { Box } from '@mui/system';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -156,7 +157,14 @@ const rows = [
 
 function Booking() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [booking, setBooking] = React.useState([])
     const open = Boolean(anchorEl);
+    React.useEffect(() => {
+        axios.get('http://localhost:8086/admin/booking').then((Response) => {
+            // setBooking(Response.products);
+            console.log(Response.data.data.products)
+            });
+    },[])
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
