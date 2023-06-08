@@ -5,6 +5,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
+
+@Table(name = "order_table")
+
+
+
 public class OrderTable {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE)

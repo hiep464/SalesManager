@@ -1,10 +1,11 @@
 package com.sapo.edu.demo.entities;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -15,6 +16,10 @@ import java.math.BigDecimal;
 public class ProductEntity {
     @Id
     private String code;
+    @Column
+    @NotNull
+    private String categoryCode;
+
     @Column
     @NotNull
     private String name;
@@ -35,7 +40,13 @@ public class ProductEntity {
     private String color;
     @Column
     @NotNull
-    private String inventory_name;
+    private String inventoryName;
+    @Column
+    private String brand;
+    @Column
+    private BigDecimal originalCost;
+    @Column
+    private String image;
 
 
 }
