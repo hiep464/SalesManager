@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @Data
 public class OrderLine {
     @Id
-    @Column(name = "ID")
     private Integer id;
     @Column(name = "order_code")
     @NotNull

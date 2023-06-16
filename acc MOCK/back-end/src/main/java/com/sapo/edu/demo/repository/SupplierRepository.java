@@ -11,4 +11,5 @@ public interface SupplierRepository extends JpaRepository<SupplierEntity, String
     List<SupplierEntity> findByCodeContaining(String code);
     Optional<SupplierEntity> findByCode(String code);
     Optional<SupplierEntity> findByName(String name);
+    List<SupplierEntity> findByNameContainingIgnoreCase(String name);
 }

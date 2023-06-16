@@ -64,6 +64,7 @@ const columns = [
 function Booking() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [booking, setBooking] = React.useState([])
+    const getRowId = (row) => row.code
     const open = Boolean(anchorEl);
 
     const navigate = useNavigate();
@@ -75,12 +76,17 @@ function Booking() {
             setBooking(response.data)
             });
     },[])
+    console.log(booking)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleOpenDetail = () => {
+        
+    }
+    
     return ( 
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Paper
@@ -150,6 +156,7 @@ function Booking() {
             <DataGrid
                 rows={booking}
                 columns={columns}
+                getRowId={getRowId}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 10 },

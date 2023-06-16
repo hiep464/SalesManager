@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface CheckLineRepository extends JpaRepository<CheckLineEntity, Long> {
 
-    Page<CheckLineEntity> findByCheckCode(String code, Pageable paging);
+    List<CheckLineEntity> findByCheckCode(String code);
+
 }

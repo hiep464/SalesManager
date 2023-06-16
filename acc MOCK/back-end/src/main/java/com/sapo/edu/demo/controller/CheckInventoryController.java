@@ -16,6 +16,8 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("admin")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class CheckInventoryController {
     @Autowired
     private CheckTableService checkTableService;
@@ -27,9 +29,22 @@ public class CheckInventoryController {
         Map<String, Object> response = checkTableService.getAllCheck(page,size);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
-    @PostMapping("/check_inventory")
-    public ResponseEntity<CheckTableDto> save(@RequestBody CheckTableDto checkTableDto) {
-        CheckTableDto savedCheckTable = checkTableService.save(checkTableDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCheckTable);
+    @GetMapping("/check_inventory/code")
+    public ResponseEntity<ResponseObject> findCheckByCode(
+            @RequestParam(name = "code") String code
+    ) {
+        CheckTableDto response = checkTableService.getCheckByCode(code);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
+    @PostMapping("/check_inventory")
+    public ResponseEntity<ResponseObject> save(@RequestBody CheckTableDto checkTableDto) {
+        CheckTableDto savedCheckTable = checkTableService.save(checkTableDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "Post done", savedCheckTable));
+    }
+    @DeleteMapping("/check_inventory/{code}")
+    public String deleteCheckInventoryRequest(@PathVariable String code) {
+        checkTableService.deleteCheckInventoryRequestByCode(code);
+        return "Đã xóa";
+    }
+
 }
