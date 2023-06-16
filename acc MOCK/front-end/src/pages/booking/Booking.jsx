@@ -10,10 +10,10 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
-import ImageIcon from '@mui/icons-material/Image';
 import { Box } from '@mui/system';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -53,13 +53,12 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'code', headerName: 'Mã đơn hàng', width: 100, },
-    { field: 'bookingDate', headerName: 'Ngày tạo', width: 200 },
-    { field: 'bookingStatus', headerName: 'Trạng thái', width: 200 },
-    { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
-    { field: 'supplerName', headerName: 'Nhà cung cấp', width: 150 },
-    { field: 'total', headerName: 'Tổng tiền', width: 150 },
-    
+    { field: 'code', headerName: 'Mã đơn', width: 100 },
+    { field: 'total', headerName: 'Giá trị đơn', width: 200 },
+    { field: 'bookingDate', headerName: 'Ngày đặt', width: 200 },
+    { field: 'payStatus', headerName: 'Thanh toán', width: 150 },
+    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
+    { field: 'status', headerName: 'Trạng thái', width: 150 },
 ];
 
 function Booking() {
@@ -67,10 +66,14 @@ function Booking() {
     const [booking, setBooking] = React.useState([])
     const getRowId = (row) => row.code
     const open = Boolean(anchorEl);
+
+    const navigate = useNavigate();
+
     React.useEffect(() => {
-        axios.get('http://localhost:8086/admin/booking').then((Response) => {
-            setBooking(Response.data.data.products);
-            // console.log(Response.data.data.products)
+        axios.get('http://localhost:8086/admin/booking').then((response) => {
+            // setBooking(Response.products);
+            console.log(response.data)
+            setBooking(response.data)
             });
     },[])
     console.log(booking)
@@ -95,7 +98,7 @@ function Booking() {
                 </IconButton>
                 <InputBase
                     sx={{ ml: 1, flex: 1, border: '1px' }}
-                    placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
+                    placeholder="Tìm kiếm theo mã đơn"
                     inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
                 />
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
@@ -112,8 +115,8 @@ function Booking() {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} variant="contained" sx={{ marginRight: '10px' }}>
-                    Tạo sản phẩm
+                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                    Tạo đơn đặt
                 </Button>
                 <StyledMenu
                     id="demo-customized-menu"
@@ -160,8 +163,9 @@ function Booking() {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                onRowClick={handleOpenDetail}
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' ,cursor:"pointer"}}
+                checkboxSelection
+                getRowId={(row) => row.code}
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
         </div>
      );

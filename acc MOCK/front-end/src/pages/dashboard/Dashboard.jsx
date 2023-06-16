@@ -126,7 +126,7 @@ function DashBoard() {
     const [start, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [end, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [labels, setLabels] = React.useState(labelsInit);
-    const [data, setData] = React.useState([]);
+    const [data, setData] = React.useState([0]);
 
     const handleChange = (event) => {
         setFilter(event.target.value);
@@ -147,23 +147,23 @@ function DashBoard() {
     };
 
     const fetchRevenue = () => {
-        return axios.get('http://localhost:8080/admin/statistical/revenue');
+        return axios.get('http://localhost:8086/admin/statistical/revenue');
     };
 
     const fetchSold = () => {
-        return axios.get('http://localhost:8080/admin/statistical/sold');
+        return axios.get('http://localhost:8086/admin/statistical/sold');
     };
 
     const fetchQuantity = () => {
-        return axios.get('http://localhost:8080/admin/statistical/quantity');
+        return axios.get('http://localhost:8086/admin/statistical/products/quantity');
     };
 
     const fetchTop3Product = () => {
-        return axios.get('http://localhost:8080/admin/statistical/top3_product');
+        return axios.get('http://localhost:8086/admin/statistical/top3_product');
     };
 
     const fetchTop3Customer = () => {
-        return axios.get('http://localhost:8080/admin/statistical/top3_customer');
+        return axios.get('http://localhost:8086/admin/statistical/top3_customer');
     };
 
     React.useEffect(() => {
@@ -179,7 +179,7 @@ function DashBoard() {
                 setTopProduct(top3Product);
                 const top3Customer = responses[4].data;
                 setTopCustomer(top3Customer);
-                // console.log(revenue, sold, quantity, top3Product, top3Customer);
+                console.log(revenue, sold, quantity, top3Product, top3Customer);
             })
             .catch((error) => {
                 console.error(error);
@@ -188,7 +188,7 @@ function DashBoard() {
 
     React.useEffect(() => {
         axios
-            .get(`http://localhost:8080/admin/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
+            .get(`http://localhost:8086/admin/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
             .then((response) => {
                 console.log(response.data);
                 setData(response.data);
@@ -289,7 +289,8 @@ function DashBoard() {
                     <h5 style={{ textAlign: 'center' }}>
                         Tổng doanh thu:
                         <Numeral
-                            value={data.reduce((accumulator, currentValue) => accumulator + currentValue) || '0'}
+                            value={data?.reduce((accumulator, currentValue) => accumulator + currentValue) || '0'}
+                            // value={0}
                             format={'0,0'}
                         />
                     </h5>
