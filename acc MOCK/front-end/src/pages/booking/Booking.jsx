@@ -10,10 +10,10 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
-import ImageIcon from '@mui/icons-material/Image';
 import { Box } from '@mui/system';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -53,116 +53,26 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'img', headerName: 'Ảnh', width: 100, renderCell: () => <ImageIcon /> },
-    { field: 'product', headerName: 'Sản phẩm', width: 200 },
-    { field: 'category', headerName: 'Loại', width: 200 },
-    { field: 'size', headerName: 'Kích thước', width: 150 },
-    { field: 'color', headerName: 'Màu', width: 150 },
-    { field: 'quantity', headerName: 'Số lượng', width: 150 },
-    { field: 'created_at', headerName: 'Ngày tạo', width: 160 },
-];
-
-const rows = [
-    {
-        id: 1,
-        img: 1,
-        product: 'Snow',
-        category: 'Jon',
-        size: 35,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 2,
-        img: 2,
-        product: 'Lannister',
-        category: 'Cersei',
-        size: 42,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 3,
-        img: 3,
-        product: 'Lannister',
-        category: 'Jaime',
-        size: 45,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 4,
-        img: 4,
-        product: 'Stark',
-        category: 'Arya',
-        size: 16,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 5,
-        img: 5,
-        product: 'Targaryen',
-        category: 'Daenerys',
-        size: null,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 6,
-        img: 6,
-        product: 'Melisandre',
-        category: null,
-        size: 150,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 7,
-        img: 7,
-        product: 'Clifford',
-        category: 'Ferrara',
-        size: 44,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 8,
-        img: 8,
-        product: 'Frances',
-        category: 'Rossini',
-        size: 36,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 9,
-        img: 9,
-        product: 'Roxie',
-        category: 'Harvey',
-        size: 65,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
+    { field: 'code', headerName: 'Mã đơn', width: 100 },
+    { field: 'total', headerName: 'Giá trị đơn', width: 200 },
+    { field: 'bookingDate', headerName: 'Ngày đặt', width: 200 },
+    { field: 'payStatus', headerName: 'Thanh toán', width: 150 },
+    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
+    { field: 'status', headerName: 'Trạng thái', width: 150 },
 ];
 
 function Booking() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [booking, setBooking] = React.useState([])
     const open = Boolean(anchorEl);
+
+    const navigate = useNavigate();
+
     React.useEffect(() => {
-        axios.get('http://localhost:8086/admin/booking').then((Response) => {
+        axios.get('http://localhost:8086/admin/booking').then((response) => {
             // setBooking(Response.products);
-            console.log(Response.data.data.products)
+            console.log(response.data)
+            setBooking(response.data)
             });
     },[])
     const handleClick = (event) => {
@@ -182,7 +92,7 @@ function Booking() {
                 </IconButton>
                 <InputBase
                     sx={{ ml: 1, flex: 1, border: '1px' }}
-                    placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
+                    placeholder="Tìm kiếm theo mã đơn"
                     inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
                 />
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
@@ -199,8 +109,8 @@ function Booking() {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} variant="contained" sx={{ marginRight: '10px' }}>
-                    Tạo sản phẩm
+                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                    Tạo đơn đặt
                 </Button>
                 <StyledMenu
                     id="demo-customized-menu"
@@ -238,7 +148,7 @@ function Booking() {
                 </StyledMenu>
             </Paper>
             <DataGrid
-                rows={rows}
+                rows={booking}
                 columns={columns}
                 initialState={{
                     pagination: {
@@ -247,6 +157,7 @@ function Booking() {
                 }}
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
+                getRowId={(row) => row.code}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
         </div>
