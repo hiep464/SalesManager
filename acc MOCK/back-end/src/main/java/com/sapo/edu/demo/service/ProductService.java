@@ -145,6 +145,16 @@ public class ProductService {
         return productRepository.findTopCustomers().subList(0, 3);
     }
 
+<<<<<<< HEAD
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
+    public List<ProductEntity> getProductByCode(String code){
+        return productRepository.findByCodeContaining(code);
+    }
+=======
+
+>>>>>>> 35d18dc1e6db131ccbb860251de69fbdd0b879c8
 }
 
