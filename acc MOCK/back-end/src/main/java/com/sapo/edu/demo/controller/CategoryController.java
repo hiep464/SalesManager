@@ -14,6 +14,8 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("admin")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

@@ -18,6 +18,8 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("admin")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -49,6 +51,7 @@ public class ProductController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "10", name = "size") int size,
             @RequestParam(required = false, name = "name") String name,
+            @RequestParam(required = false, name = "code") String code,
             @RequestParam(required = false, name = "categoryName") String categoryName,
             @RequestParam(required = false, name = "minCost") BigDecimal minCost,
             @RequestParam(required = false, name = "maxCost") BigDecimal maxCost,
@@ -60,7 +63,7 @@ public class ProductController {
 //        Specification<ProductEntity> spec = Specifications.where(ProductSpecifications.hasColor(color))
 //                .and(ProductSpecifications.hasBrand(brand));
 //        Pageable pageable = PageRequest.of(page, size);
-        Map<String, Object> response = productService.getProductByFilter(page, size, name, categoryName, brand, minCost, maxCost, color, minPrice, maxPrice);
+        Map<String, Object> response = productService.getProductByFilter(page, size, name,code, categoryName, brand, minCost, maxCost, color, minPrice, maxPrice);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
 }

@@ -5,6 +5,7 @@ import com.sapo.edu.demo.dto.CheckLineDto;
 import com.sapo.edu.demo.entities.BookingLineEntity;
 import com.sapo.edu.demo.entities.CheckLineEntity;
 import com.sapo.edu.demo.entities.ProductEntity;
+import com.sapo.edu.demo.exception.NotFoundException;
 import com.sapo.edu.demo.repository.BookingLineRepository;
 import com.sapo.edu.demo.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,12 @@ public class BookingLineService {
      * @return
      */
 
-    public Map<String, Object> getCheckLineByCode(int page, int size, String code) {
+    public Map<String, Object> getCheckLineByCode(String code) {
 
         List<BookingLineEntity> bookingLines = new ArrayList<BookingLineEntity>();
         bookingLines = bookingLineRepository.findByBookingCode(code);
         if (bookingLines.isEmpty()) {
-            throw new DuplicateException("booking line not found booking code: " + code);
+            throw new NotFoundException("booking line not found booking code: " + code);
 
         }
 

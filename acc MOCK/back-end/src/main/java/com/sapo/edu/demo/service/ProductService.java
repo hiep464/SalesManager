@@ -88,7 +88,7 @@ public class ProductService {
      * @Param name, brand, categoryCode, minPrice, maxPrice,color, minOriginalCost, maxOriginalCost
      * @return
      */
-    public Map<String, Object> getProductByFilter(int page, int size,String name, String categoryName, String brand, BigDecimal minCost, BigDecimal maxCost,
+    public Map<String, Object> getProductByFilter(int page, int size,String name,String code, String categoryName, String brand, BigDecimal minCost, BigDecimal maxCost,
              String color, BigDecimal minPrice, BigDecimal maxPrice) {
         Pageable paging = PageRequest.of(page, size, Sort.by(
                         Sort.Order.asc("code")
@@ -99,10 +99,10 @@ public class ProductService {
         Page<ProductEntity> pageProduct;
         List<ProductEntity> products = new ArrayList<ProductEntity>();
         if (categoryName != null) {
-            pageProduct = productRepository.findByFilters(name, categoryRepository.findByName(categoryName).getCode(), brand, minCost, maxCost, color, minPrice, maxPrice, paging);
+            pageProduct = productRepository.findByFilters(name,code, categoryRepository.findByName(categoryName).getCode(), brand, minCost, maxCost, color, minPrice, maxPrice, paging);
 
         } else {
-            pageProduct = productRepository.findByFilters(name, null, brand, minCost, maxCost, color, minPrice, maxPrice, paging);
+            pageProduct = productRepository.findByFilters(name,code, null, brand, minCost, maxCost, color, minPrice, maxPrice, paging);
         }
 
         products = pageProduct.getContent();

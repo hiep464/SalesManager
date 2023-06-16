@@ -82,9 +82,9 @@ function SalesInShop() {
                                     onMouseEnter={useEffect(() => {
                                         if (searchProduct !== '') {
                                             axios
-                                                .get('http://localhost:8086/admin/product/search?code=' + searchProduct)
+                                                .get('http://localhost:8086/admin/products?code=' + searchProduct)
                                                 .then((Response) => {
-                                                    setProducts(Response.data);
+                                                    setProducts(Response.data.data.products);
                                                 });
                                         } else {
                                             setProducts([]);

@@ -13,7 +13,6 @@ import java.util.Date;
 public class OrderTable {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "code", nullable = false)
     private String code;
 
     @Column(name="customer_code")

@@ -64,7 +64,7 @@ public class CategoryService {
         }
         Map<String, Object> response = new HashMap<>();
         List<CategoryDto> categoryDto = Arrays.asList(modelMapperCategory.map(categories, CategoryDto[].class));
-        response.put("products", categoryDto);
+        response.put("categories", categoryDto);
 
         return response;
 
@@ -80,7 +80,7 @@ public class CategoryService {
         // Mapping qua Dto
         Map<String, Object> response = new HashMap<>();
         List<CategoryDto> categoryDto = Arrays.asList(modelMapperCategory.map(categories, CategoryDto[].class));
-        response.put("products", categoryDto);
+        response.put("categories", categoryDto);
 
         return response;
     }

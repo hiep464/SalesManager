@@ -15,6 +15,7 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("admin")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SupplierController {
     @Autowired
     private SupplierService supplierService;
@@ -29,9 +30,16 @@ public class SupplierController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
     @GetMapping("/Suppliers/code")
-    public ResponseEntity<ResponseObject> getSupplierByCode(String code) {
+    public ResponseEntity<ResponseObject> getSupplierByCode(@RequestParam("code") String code) {
         Map<String, Object> response = supplierService.getSuppliersByCode(code);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
 
     }
+    @GetMapping("/Suppliers/name")
+    public ResponseEntity<ResponseObject> getSupplierByNameContaining(@RequestParam("name") String name) {
+        Map<String, Object> response = supplierService.findByNameIgnoreConstants(name);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+
+    }
+
 }

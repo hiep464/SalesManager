@@ -53,124 +53,37 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'img', headerName: 'Ảnh', width: 100, renderCell: () => <ImageIcon /> },
-    { field: 'product', headerName: 'Sản phẩm', width: 200 },
-    { field: 'category', headerName: 'Loại', width: 200 },
-    { field: 'size', headerName: 'Kích thước', width: 150 },
-    { field: 'color', headerName: 'Màu', width: 150 },
-    { field: 'quantity', headerName: 'Số lượng', width: 150 },
-    { field: 'created_at', headerName: 'Ngày tạo', width: 160 },
-];
-
-const rows = [
-    {
-        id: 1,
-        img: 1,
-        product: 'Snow',
-        category: 'Jon',
-        size: 35,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 2,
-        img: 2,
-        product: 'Lannister',
-        category: 'Cersei',
-        size: 42,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 3,
-        img: 3,
-        product: 'Lannister',
-        category: 'Jaime',
-        size: 45,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 4,
-        img: 4,
-        product: 'Stark',
-        category: 'Arya',
-        size: 16,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 5,
-        img: 5,
-        product: 'Targaryen',
-        category: 'Daenerys',
-        size: null,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 6,
-        img: 6,
-        product: 'Melisandre',
-        category: null,
-        size: 150,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 7,
-        img: 7,
-        product: 'Clifford',
-        category: 'Ferrara',
-        size: 44,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 8,
-        img: 8,
-        product: 'Frances',
-        category: 'Rossini',
-        size: 36,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
-    {
-        id: 9,
-        img: 9,
-        product: 'Roxie',
-        category: 'Harvey',
-        size: 65,
-        color: 'red',
-        quantity: '10',
-        created_at: '07/06/2023',
-    },
+    { field: 'code', headerName: 'Mã đơn hàng', width: 100, },
+    { field: 'bookingDate', headerName: 'Ngày tạo', width: 200 },
+    { field: 'bookingStatus', headerName: 'Trạng thái', width: 200 },
+    { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
+    { field: 'supplerName', headerName: 'Nhà cung cấp', width: 150 },
+    { field: 'total', headerName: 'Tổng tiền', width: 150 },
+    
 ];
 
 function Booking() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [booking, setBooking] = React.useState([])
+    const getRowId = (row) => row.code
     const open = Boolean(anchorEl);
     React.useEffect(() => {
         axios.get('http://localhost:8086/admin/booking').then((Response) => {
-            // setBooking(Response.products);
-            console.log(Response.data.data.products)
+            setBooking(Response.data.data.products);
+            // console.log(Response.data.data.products)
             });
     },[])
+    console.log(booking)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleOpenDetail = () => {
+        
+    }
+    
     return ( 
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Paper
@@ -238,16 +151,17 @@ function Booking() {
                 </StyledMenu>
             </Paper>
             <DataGrid
-                rows={rows}
+                rows={booking}
                 columns={columns}
+                getRowId={getRowId}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 10 },
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
+                onRowClick={handleOpenDetail}
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' ,cursor:"pointer"}}
             />
         </div>
      );

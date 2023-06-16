@@ -31,6 +31,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
 
     @Query("SELECT e FROM ProductEntity e WHERE (:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%') )) " +
+            "AND (:code IS NULL OR LOWER(e.code) LIKE LOWER(CONCAT('%', :code, '%') ))" +
             "AND (:categoryCode IS NULL  OR e.categoryCode LIKE :categoryCode) " +
             "AND (:brand IS NULL  OR e.brand LIKE :brand )" +
             "AND (:minOriginalCost IS NULL OR :maxOriginalCost IS NULL OR e.originalCost BETWEEN :minOriginalCost AND :maxOriginalCost) " +
@@ -39,6 +40,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     )
 
     Page<ProductEntity> findByFilters(@Param("name") String name,
+                                      @Param("code") String code,
                                       @Param("categoryCode") String categoryCode,
                                       @Param("brand") String brand,
                                       @Param("minOriginalCost") BigDecimal minOriginalCost,
