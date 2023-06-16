@@ -44,7 +44,7 @@ public class InventoryService {
      * @return
      */
     public InventoryDto findByCode(String code) {
-        InventoryEntity inventoryEntity = inventoryRepository.findByCode(code)
+        InventoryEntity inventoryEntity = inventoryRepository.findByName(code)
                 .orElseThrow(() -> new NotFoundException("Storage not found with id: " + code));
         return modelMapperCategory.map(inventoryEntity, InventoryDto.class);
     }
@@ -62,5 +62,9 @@ public class InventoryService {
         response.put("products", categoryDto);
 
         return response;
+    }
+
+    public List<InventoryEntity> getAll() {
+        return inventoryRepository.findAll();
     }
 }

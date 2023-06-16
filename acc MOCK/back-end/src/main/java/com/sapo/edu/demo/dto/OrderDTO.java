@@ -1,12 +1,10 @@
-package com.sapo.edu.demo.DTO;
+package com.sapo.edu.demo.dto;
 
 import com.sapo.edu.demo.entities.OrderLine;
 import com.sapo.edu.demo.entities.OrderTable;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @Getter

@@ -1,6 +1,6 @@
 package com.sapo.edu.demo.controller;
 
-import com.sapo.edu.demo.DTO.OrderDTO;
+import com.sapo.edu.demo.dto.OrderDTO;
 import com.sapo.edu.demo.entities.OrderLine;
 import com.sapo.edu.demo.service.OrderLineService;
 import com.sapo.edu.demo.service.OrderTableService;

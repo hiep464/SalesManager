@@ -4,6 +4,7 @@ import com.sapo.edu.demo.dto.BookingDto;
 import com.sapo.edu.demo.dto.CategoryDto;
 import com.sapo.edu.demo.dto.InventoryInputDto;
 import com.sapo.edu.demo.dto.ResponseObject;
+import com.sapo.edu.demo.entities.BookingEntity;
 import com.sapo.edu.demo.service.BookingService;
 import com.sapo.edu.demo.service.CheckLineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,14 +25,19 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+//    @GetMapping("/booking")
+//    public ResponseEntity<ResponseObject> getAllCheck(
+//            @RequestParam(defaultValue = "0", name = "page") int page,
+//            @RequestParam(defaultValue = "10", name = "size") int size
+//    ) {
+//        Map<String, Object> response = bookingService.getAllBooking(page,size);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+//    }
     @GetMapping("/booking")
-    public ResponseEntity<ResponseObject> getAllCheck(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "10", name = "size") int size
-    ) {
-        Map<String, Object> response = bookingService.getAllBooking(page,size);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+    public List<BookingEntity> getAllBooking(){
+        return bookingService.getAll();
     }
+
     @PostMapping("/bookings")
     public ResponseEntity<ResponseObject> save(
             @RequestBody BookingDto booking

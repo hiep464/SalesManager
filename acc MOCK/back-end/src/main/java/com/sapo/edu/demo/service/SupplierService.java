@@ -81,4 +81,8 @@ public class SupplierService {
 
         return response;
     }
+
+    public List<SupplierEntity> getAll(){
+        return supplierRepository.findAll();
+    }
 }

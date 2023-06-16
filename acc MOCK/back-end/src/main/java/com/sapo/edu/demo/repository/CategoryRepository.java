@@ -5,13 +5,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-@Repository
 
+@Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, String> {
     List<CategoryEntity> findByCodeContaining(String code);
     Optional<CategoryEntity> findByCode(String code);
     CategoryEntity findByName(String name);
     Optional<CategoryEntity> findByNameContainingIgnoreCase(String name);
+
 
 
 }

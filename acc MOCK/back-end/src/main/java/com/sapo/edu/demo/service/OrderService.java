@@ -29,4 +29,8 @@ public class OrderService {
         }
         return arrayList;
     }
+
+    public Integer getTotalSold() {
+        return orderRepository.getTotalSold();
+    }
 }

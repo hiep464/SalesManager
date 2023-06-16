@@ -3,7 +3,6 @@ package com.sapo.edu.demo.service;
 import com.sapo.edu.demo.dto.*;
 import com.sapo.edu.demo.entities.*;
 import com.sapo.edu.demo.repository.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -12,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.sapo.edu.demo.exception.DuplicateException;
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class BookingService {
     private final StaffRepository staffRepository;
     private final SupplierRepository supplierRepository;
@@ -27,6 +26,16 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final ModelMapper modelMapperbooking;
+
+    public BookingService(StaffRepository staffRepository, SupplierRepository supplierRepository, ProductRepository productRepository, BookingLineRepository bookingLineRepository, BookingRepository bookingRepository, ModelMapper modelMapperbooking) {
+        this.staffRepository = staffRepository;
+        this.supplierRepository = supplierRepository;
+        this.productRepository = productRepository;
+        this.bookingLineRepository = bookingLineRepository;
+        this.bookingRepository = bookingRepository;
+        this.modelMapperbooking = modelMapperbooking;
+    }
+
     /**
      * Find all Bookigs
      * @return
@@ -125,5 +134,9 @@ public class BookingService {
 
         bookingEntity = bookingRepository.save(bookingEntity);
         return modelMapperbooking.map(bookingEntity,InventoryInputDto.class);
+    }
+
+    public List<BookingEntity> getAll() {
+        return bookingRepository.findAll();
     }
 }
