@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
-
 @Table(name = "supplier")
 public class SupplierEntity {
     @Id

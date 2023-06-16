@@ -2,6 +2,7 @@ package com.sapo.edu.demo.service;
 
 
 import com.sapo.edu.demo.dto.ProductDto;
+import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.entities.InventoryEntity;
 import com.sapo.edu.demo.entities.ProductEntity;
@@ -19,13 +20,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
-
 public class ProductService {
 
     private final CategoryRepository categoryRepository;
@@ -129,32 +131,64 @@ public class ProductService {
         return null;
     }
 
-    public Integer getTotalSold(){
-        return productRepository.totalSold();
-    }
+//    public Integer getTotalSold(){
+//        return productRepository.totalSold();
+//    }
 
-    public Integer getTotalQuantity(){
-        return productRepository.totalQuantity();
-    }
+//    public Integer getTotalQuantity(){
+//        return productRepository.totalQuantity();
+//    }
 
-    public List<Object> getTop3Product(){
-        return productRepository.findTopProducts().subList(0, 3);
-    }
+//    public List<Object> getTop3Product(){
+//        return productRepository.findTopProducts().subList(0, 3);
+//    }
 
-    public List<Object> getTop3Customer(){
-        return productRepository.findTopCustomers().subList(0, 3);
-    }
-
-<<<<<<< HEAD
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(CategoryRepository categoryRepository, InventoryRepository storageRepository, ProductRepository productRepository) {
+        this.categoryRepository = categoryRepository;
+        this.storageRepository = storageRepository;
         this.productRepository = productRepository;
     }
 
-    public List<ProductEntity> getProductByCode(String code){
+//    public List<ProductEntity> getProductByCode(String code){
+//        return productRepository.findByCodeContaining(code);
+//    }
+
+    public Page<ProductEntity> getAllInPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.findAll(pageable);
+    }
+
+    public ProductEntity getProductByCode(String code) {
+        return productRepository.findByCode(code);
+    }
+
+    public ProductEntity saveProduct(CreateProduct p) {
+        ProductEntity productEntity = new ProductEntity();
+        Long count = productRepository.count();
+        count = count + 1;
+        String code = "P" + count.toString();
+        productEntity.setCode(code);
+        productEntity.setName(p.getName());
+        productEntity.setBrand(p.getBrand());
+        productEntity.setCategoryCode(p.getCategoryCode());
+        productEntity.setCreateAt(LocalDate.now());
+        productEntity.setPrice(p.getPrice());
+        productEntity.setOriginalCost(p.getOriginalCost());
+        productEntity.setInventoryName(p.getInventoryName());
+        return productRepository.save(productEntity);
+    }
+
+    public List<ProductEntity> searchProductByCode(String code){
         return productRepository.findByCodeContaining(code);
     }
-=======
 
->>>>>>> 35d18dc1e6db131ccbb860251de69fbdd0b879c8
+    public List<Object> getTop3ProductByQuantity() {
+        return productRepository.findTopProductsByQuantity().subList(0, 3);
+    }
+
+    public ProductEntity updateProduct(ProductEntity productEntity){
+        productEntity.setUpdateAt(LocalDate.now());
+        return productRepository.save(productEntity);
+    }
 }
 

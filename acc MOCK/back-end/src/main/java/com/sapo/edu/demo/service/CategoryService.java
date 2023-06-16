@@ -84,4 +84,12 @@ public class CategoryService {
 
         return response;
     }
+
+    public List<CategoryEntity> getAll(){
+        return categoryRepository.findAll();
+    }
+
+    public CategoryEntity getByCode(String code) {
+        return categoryRepository.findByCode(code).get();
+    }
 }

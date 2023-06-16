@@ -7,9 +7,6 @@ import java.util.Date;
 @Entity
 
 @Table(name = "order_table")
-
-
-
 public class OrderTable {
     @Id
 //    @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -23,6 +20,9 @@ public class OrderTable {
 
     @Column(name="total")
     private BigDecimal total;
+
+    @Column(name="quantity")
+    private Integer quantity;
 
     @Column(name="order_date")
     private Date orderDate;

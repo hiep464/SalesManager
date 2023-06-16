@@ -17,4 +17,8 @@ public class CustomerService {
     public List<Customer> getCustomerByPhone(String Phone){
         return customerRepository.findByPhoneNumberContaining(Phone);
     }
+
+    public List<Object> getTop3Customer(){
+        return customerRepository.findTopCustomers().subList(0, 3);
+    }
 }

@@ -43,7 +43,6 @@ public class BookingLineService {
         List<BookingLineDto> bookingLineDtos = Arrays.asList(BookingLineMapper.map(bookingLines, BookingLineDto[].class));
         for(BookingLineDto bookingLine : bookingLineDtos) {
             ProductEntity productEntity = productRepository.findByCodeIgnoreCase(bookingLine.getProductCode()).get();
-            bookingLine.setImage(productEntity.getImage());
             bookingLine.setProductName(productEntity.getName());
             bookingLine.setTotalPrice(productEntity.getOriginalCost().multiply(BigDecimal.valueOf(bookingLine.getQuantity())));
 

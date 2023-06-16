@@ -1,25 +1,30 @@
 package com.sapo.edu.demo.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "product_attribute")
+@Data
 public class ProductAttribute {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
     @Column(name = "product_code")
+    @NotNull
     String productCode;
 
     @Column(name = "quantity")
-    String quantity;
+    @NotNull
+    Integer quantity;
 
     @Column(name = "sold")
-    String sold;
+    Integer sold;
 
     @Column(name = "size")
     String size;
@@ -28,8 +33,40 @@ public class ProductAttribute {
     String color;
 
     @Column(name = "create_at")
-    String createAt;
+    LocalDate createAt;
 
     @Column(name = "update_at")
-    String updateAt;
+    LocalDate updateAt;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setSold(Integer sold) {
+        this.sold = sold;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
+    }
+
+    public void setUpdateAt(LocalDate updateAt) {
+        this.updateAt = updateAt;
+    }
 }

@@ -81,13 +81,8 @@ public class SupplierService {
 
         return response;
     }
-    public Map<String,Object> findByNameIgnoreConstants(String name) {
-        List<SupplierEntity> suppliers = new ArrayList<SupplierEntity>();
-        suppliers = supplierRepository.findByNameContainingIgnoreCase(name);
 
-        Map<String, Object> response = new HashMap<>();
-        List<SupplierDto> supplierDto = Arrays.asList(modelMapperSupplier.map(suppliers, SupplierDto[].class));
-        response.put("products", supplierDto);
-        return response;
+    public List<SupplierEntity> getAll(){
+        return supplierRepository.findAll();
     }
 }
