@@ -1,6 +1,23 @@
 import React from 'react';
 import './ResultSearch.scss';
-
+export function ResultSupllierSearch(props) {
+    const supllier = props.supllier;
+    console.log(supllier)
+    return (
+        <div className="result-search" onClick={props.onClick}>
+            <p>{supllier.name}</p>
+        </div>
+    );
+}
+export function ResultCheckLineSearch(props) {
+    const checkLine = props.checkLine;
+    console.log(checkLine)
+    return (
+        <div className="result-search" onClick={props.onClick}>
+            <p>{checkLine.name}</p>
+        </div>
+    );
+}
 export function ResultCustomerSearch(props) {
     const customer = props.customer;
     return (

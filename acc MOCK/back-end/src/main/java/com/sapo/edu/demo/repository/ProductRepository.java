@@ -38,6 +38,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             "AND (:minPrice IS NULL OR :maxPrice IS NULL OR e.price BETWEEN :minPrice AND :maxPrice) "
     )
     Page<ProductEntity> findByFilters(@Param("name") String name,
+                                      @Param("code") String code,
                                       @Param("categoryCode") String categoryCode,
                                       @Param("brand") String brand,
                                       @Param("minOriginalCost") BigDecimal minOriginalCost,

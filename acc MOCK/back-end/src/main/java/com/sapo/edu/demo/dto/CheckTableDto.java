@@ -11,8 +11,8 @@ public class CheckTableDto {
     @Id
     private String code;
     @NotEmpty
-    private String staffCode;
-    @NotEmpty
+    private String staffName;
+
     private String status;
     @NotEmpty
     private List<CheckLineDto> checkLines;

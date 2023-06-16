@@ -56,7 +56,7 @@ public class SupplierService {
         List<SupplierEntity> suppliers = new ArrayList<SupplierEntity>();
         suppliers = supplierRepository.findByCodeContaining(code);
         if(suppliers.isEmpty()) {
-            throw new NotFoundException("Storage not found with code: " + code);
+            throw new NotFoundException("Supplier not found with code: " + code);
 
         }
         Map<String, Object> response = new HashMap<>();

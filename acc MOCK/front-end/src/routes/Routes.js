@@ -7,6 +7,9 @@ import Login from "../pages/login/Login"
 import Product from "../pages/product/Product"
 import ProductDetails from "../pages/productdetails/ProductDetails"
 import SaleInShop from "../pages/salesInShop/SaleInShop"
+import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDetail"
+import CheckInventory from "../pages/checkInventory/CheckInventory"
+import CreateChecking from "../pages/createChecking/CreateChecking"
 
 export const publicRoutes = [
     {path: '/', element : Login},
