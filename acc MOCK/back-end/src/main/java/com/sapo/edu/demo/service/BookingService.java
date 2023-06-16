@@ -5,6 +5,7 @@ import com.sapo.edu.demo.entities.*;
 import com.sapo.edu.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,22 +20,32 @@ import java.util.*;
 @Service
 //@RequiredArgsConstructor
 public class BookingService {
-    private final StaffRepository staffRepository;
-    private final SupplierRepository supplierRepository;
-    private final ProductRepository productRepository;
-    private final BookingLineRepository bookingLineRepository;
+    @Autowired
+    private StaffRepository staffRepository;
 
-    private final BookingRepository bookingRepository;
-    private final ModelMapper modelMapperbooking;
+    @Autowired
+    private SupplierRepository supplierRepository;
 
-    public BookingService(StaffRepository staffRepository, SupplierRepository supplierRepository, ProductRepository productRepository, BookingLineRepository bookingLineRepository, BookingRepository bookingRepository, ModelMapper modelMapperbooking) {
-        this.staffRepository = staffRepository;
-        this.supplierRepository = supplierRepository;
-        this.productRepository = productRepository;
-        this.bookingLineRepository = bookingLineRepository;
-        this.bookingRepository = bookingRepository;
-        this.modelMapperbooking = modelMapperbooking;
-    }
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private BookingLineRepository bookingLineRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private ModelMapper modelMapperbooking;
+
+//    public BookingService(StaffRepository staffRepository, SupplierRepository supplierRepository, ProductRepository productRepository, BookingLineRepository bookingLineRepository, BookingRepository bookingRepository, ModelMapper modelMapperbooking) {
+//        this.staffRepository = staffRepository;
+//        this.supplierRepository = supplierRepository;
+//        this.productRepository = productRepository;
+//        this.bookingLineRepository = bookingLineRepository;
+//        this.bookingRepository = bookingRepository;
+//        this.modelMapperbooking = modelMapperbooking;
+//    }
 
     /**
      * Find all Bookigs

@@ -30,23 +30,23 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
     ProductEntity findByCode(String code);
 
-    @Query("SELECT e FROM ProductEntity e join ProductAttribute p WHERE (:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%') )) " +
-            "AND (:categoryCode IS NULL  OR e.categoryCode LIKE :categoryCode) " +
-            "AND (:brand IS NULL  OR e.brand LIKE :brand )" +
-            "AND (:minOriginalCost IS NULL OR :maxOriginalCost IS NULL OR e.originalCost BETWEEN :minOriginalCost AND :maxOriginalCost) " +
-            "AND (:color IS NULL  OR p.color LIKE :color )" +
-            "AND (:minPrice IS NULL OR :maxPrice IS NULL OR e.price BETWEEN :minPrice AND :maxPrice) "
-    )
-    Page<ProductEntity> findByFilters(@Param("name") String name,
-                                      @Param("code") String code,
-                                      @Param("categoryCode") String categoryCode,
-                                      @Param("brand") String brand,
-                                      @Param("minOriginalCost") BigDecimal minOriginalCost,
-                                      @Param("maxOriginalCost") BigDecimal maxOriginalCost,
-                                      @Param("color") String color,
-                                      @Param("minPrice") BigDecimal minPrice,
-                                      @Param("maxPrice") BigDecimal maxPrice,
-                                      Pageable pageable);
+//    @Query("SELECT e FROM ProductEntity e join ProductAttribute p WHERE (:name IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :name, '%') )) " +
+//            "AND (:categoryCode IS NULL  OR e.categoryCode LIKE :categoryCode) " +
+//            "AND (:brand IS NULL  OR e.brand LIKE :brand )" +
+//            "AND (:minOriginalCost IS NULL OR :maxOriginalCost IS NULL OR e.originalCost BETWEEN :minOriginalCost AND :maxOriginalCost) " +
+//            "AND (:color IS NULL  OR p.color LIKE :color )" +
+//            "AND (:minPrice IS NULL OR :maxPrice IS NULL OR e.price BETWEEN :minPrice AND :maxPrice) "
+//    )
+//    Page<ProductEntity> findByFilters(@Param("name") String name,
+//                                      @Param("code") String code,
+//                                      @Param("categoryCode") String categoryCode,
+//                                      @Param("brand") String brand,
+//                                      @Param("minOriginalCost") BigDecimal minOriginalCost,
+//                                      @Param("maxOriginalCost") BigDecimal maxOriginalCost,
+//                                      @Param("color") String color,
+//                                      @Param("minPrice") BigDecimal minPrice,
+//                                      @Param("maxPrice") BigDecimal maxPrice,
+//                                      Pageable pageable);
 
 //    @Query(value = "SELECT sum(p.sold) FROM ProductAttribute p join p.ProductEntity pa on pa.productCode = p.code")
 //    public Integer totalSold();

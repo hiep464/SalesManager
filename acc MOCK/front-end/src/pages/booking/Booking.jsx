@@ -156,7 +156,7 @@ function Booking() {
             <DataGrid
                 rows={booking}
                 columns={columns}
-                getRowId={getRowId}
+                // getRowId={getRowId}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 10 },

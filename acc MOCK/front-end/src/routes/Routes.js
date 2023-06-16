@@ -20,4 +20,8 @@ export const publicRoutes = [
     {path: 'inventory/booking', element: Booking, layout: DefaultLayout},
     {path: 'inventory/booking/create', element: CreateBooking, layout: DefaultLayout},
     {path: 'inventory/booking/details', element: BookingDetails, layout: DefaultLayout},
+    {path: 'inventory/check_inventory', element : CheckInventory,layout: DefaultLayout},
+    {path: 'inventory/check_inventory/create', element : CreateChecking,layout: DefaultLayout},
+    {path: 'inventory/check_inventory/:code', element : CheckInventoryDetail,layout: DefaultLayout},
+
 ]

@@ -1,5 +1,4 @@
 package com.sapo.edu.demo.controller;
-import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
@@ -45,12 +44,6 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
-    @PutMapping("/products/{code}")
-    public ProductDto update(@PathVariable("code") String code, @Valid @RequestBody ProductDto product) {
-        product.setCode(code);
-        return productService.save(product);
-    }
-
     @DeleteMapping("/products")
     public void delete(@RequestParam("code") String code) {
         productService.delete(code);
@@ -70,27 +63,5 @@ public class ProductController {
     public ProductEntity updateProduct(@RequestBody ProductEntity productEntity){
         return productService.updateProduct(productEntity);
     }
-
-
-
-//    @GetMapping("/products")
-//    public ResponseEntity<ResponseObject> getAllProducts(
-//            @RequestParam(defaultValue = "0", name = "page") int page,
-//            @RequestParam(defaultValue = "10", name = "size") int size,
-//            @RequestParam(required = false, name = "name") String name,
-//            @RequestParam(required = false, name = "categoryName") String categoryName,
-//            @RequestParam(required = false, name = "minCost") BigDecimal minCost,
-//            @RequestParam(required = false, name = "maxCost") BigDecimal maxCost,
-//            @RequestParam(required = false, name = "color") String color,
-//            @RequestParam(required = false, name = "minPrice") BigDecimal minPrice,
-//            @RequestParam(required = false, name = "maxPrice") BigDecimal maxPrice,
-//            @RequestParam(required = false, name = "brand") String brand
-//    ) {
-////        Specification<ProductEntity> spec = Specifications.where(ProductSpecifications.hasColor(color))
-////                .and(ProductSpecifications.hasBrand(brand));
-////        Pageable pageable = PageRequest.of(page, size);
-//        Map<String, Object> response = productService.getProductByFilter(page, size, name, categoryName, brand, minCost, maxCost, color, minPrice, maxPrice);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
-//    }
 
 }

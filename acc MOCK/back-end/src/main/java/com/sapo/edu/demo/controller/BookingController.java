@@ -1,21 +1,16 @@
 package com.sapo.edu.demo.controller;
 
 import com.sapo.edu.demo.dto.BookingDto;
-import com.sapo.edu.demo.dto.CategoryDto;
 import com.sapo.edu.demo.dto.InventoryInputDto;
 import com.sapo.edu.demo.dto.ResponseObject;
 import com.sapo.edu.demo.entities.BookingEntity;
 import com.sapo.edu.demo.service.BookingService;
-import com.sapo.edu.demo.service.CheckLineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Validated

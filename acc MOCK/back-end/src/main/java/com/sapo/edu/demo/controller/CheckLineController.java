@@ -29,11 +29,11 @@ public class CheckLineController {
         Map<String, Object> response = checkLineService.getCheckLineByCode(checkCode);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
     }
-    @PostMapping("/check_line/{checkCode}")
-    public ResponseEntity<ResponseObject> updateQuantityProductsByCheckCode(
-            @PathVariable("checkCode") String checkCode
-    ) {
-        List<CheckLineDto> response = checkLineService.updateQuantityProducts(checkCode);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("success","update: done", response));
-    }
+//    @PostMapping("/check_line/{checkCode}")
+//    public ResponseEntity<ResponseObject> updateQuantityProductsByCheckCode(
+//            @PathVariable("checkCode") String checkCode
+//    ) {
+//        List<CheckLineDto> response = checkLineService.updateQuantityProducts(checkCode);
+//        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("success","update: done", response));
+//    }
 }

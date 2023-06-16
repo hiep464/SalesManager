@@ -1,10 +1,8 @@
 package com.sapo.edu.demo.controller;
 
-import com.sapo.edu.demo.dto.CategoryDto;
 import com.sapo.edu.demo.dto.ResponseObject;
 import com.sapo.edu.demo.dto.SupplierDto;
 import com.sapo.edu.demo.entities.SupplierEntity;
-import com.sapo.edu.demo.service.CategoryService;
 import com.sapo.edu.demo.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,11 +34,4 @@ public class SupplierController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
 
     }
-    @GetMapping("/Suppliers/name")
-    public ResponseEntity<ResponseObject> getSupplierByNameContaining(@RequestParam("name") String name) {
-        Map<String, Object> response = supplierService.findByNameIgnoreConstants(name);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
-
-    }
-
 }
