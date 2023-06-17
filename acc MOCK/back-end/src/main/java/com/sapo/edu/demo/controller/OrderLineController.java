@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/admin")
+@RequestMapping("/admins")
 public class OrderLineController {
 }

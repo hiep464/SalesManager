@@ -17,4 +17,10 @@ public class CustomerService {
     public List<Customer> getCustomerByPhone(String Phone){
         return customerRepository.findByPhoneNumberContaining(Phone);
     }
+
+    public Integer getCustomerCount(){ return customerRepository.getCustomerCount();}
+
+    public Customer createCustomer(Customer customer){
+        return customerRepository.save(customer);
+    }
 }

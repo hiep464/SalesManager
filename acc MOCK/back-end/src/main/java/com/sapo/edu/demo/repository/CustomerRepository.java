@@ -13,4 +13,8 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Modifying
     @Query("SELECT c FROM Customer c WHERE c.phone LIKE %?1%")
     List<Customer> findByPhoneNumberContaining(String phoneNumber);
+
+    @Query("SELECT COUNT(DISTINCT c.code) AS customer_count FROM Customer c")
+    Integer getCustomerCount();
+
 }

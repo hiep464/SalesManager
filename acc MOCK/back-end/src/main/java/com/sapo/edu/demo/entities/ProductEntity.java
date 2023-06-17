@@ -18,21 +18,14 @@ public class ProductEntity {
     @Column
     @NotNull
     private String name;
-    @Column
-    @NotNull
-    private long quantity;
+
     @Column
     @NotNull
     private long sold;
     @Column
     @NotNull
     private BigDecimal price;
-    @Column
-    @NotNull
-    private String size;
-    @Column
-    @NotNull
-    private String color;
+
     @Column
     @NotNull
     private String inventory_name;

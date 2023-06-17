@@ -12,9 +12,12 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import OrderBody from '../../components/OrderBody/OrderBody';
 import Card from '@mui/material/Card';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
 
 import axios from 'axios';
 import { ResultCustomerSearch, RetailCustomers, ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
+import AddCustomer from '../../components/AddCustomer/AddCustomer';
 
 const orders1 = [
     {
@@ -33,6 +36,7 @@ function a11yProps(index) {
 
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
+    const [addCustomer, setAddCustomer] = React.useState(false);
     const [search, setSearch] = React.useState('');
     const [searchProduct, setSearchProduct] = React.useState('');
     const [customers, setCustomers] = React.useState([]);
@@ -42,7 +46,7 @@ function SalesInShop() {
 
     useEffect(() => {
         if (search !== '') {
-            axios.get('http://localhost:8086/admin/customer/search?phone=' + search).then((Response) => {
+            axios.get('http://localhost:8080/admins/customers?phone=' + search).then((Response) => {
                 setCustomers(Response.data);
             });
         } else {
@@ -54,35 +58,77 @@ function SalesInShop() {
         setValue(newValue);
     };
 
-    const handleDelete = (productId)=>{
+    const createOrder = () => {
+        let total = orders[value].products.reduce((total, current) => (total += current.quantity * current.price), 0);
+        let orderLines = orders[value].products;
+        orderLines.forEach((line) => {
+            line.productCode = line.code;
+            delete line.code;
+        });
+        axios
+            .post('http://localhost:8080/admins/orders', {
+                orderLines: orderLines,
+                orderTable: {
+                    customerCode: orders[value].customer.code,
+                    staffCode: 'S002',
+                    status: 'success',
+                    total: total,
+                },
+            })
+            .then((response) => {
+                console.log(response);
+            });
+    };
+
+    const handleAddCustomer = (event) => {
+        setAddCustomer(true);
+    };
+
+    const handleAttribute = (id, attributeID) => {
+        orders[value].products[id].attributeID = attributeID;
+    };
+
+    const handleCloseAddCustomer = (event) => {
+        setAddCustomer(false);
+    };
+
+    const handleDelete = (productId) => {
         setOrders((currentState) => {
             const newState = [...currentState];
-            const updatedOrderItems = newState[value].products.filter(item => item.code !== productId);
+            const updatedOrderItems = newState[value].products.filter((item) => item.attributeID !== productId);
             newState[value].products = updatedOrderItems;
 
             return newState;
-        })
-    }
+        });
+    };
     return (
-        <div>
+        <div className="body1">
+            {addCustomer && (
+                <div className="All">
+                    <AddCustomer handleCloseAddCustomer={handleCloseAddCustomer} />
+                </div>
+            )}
             <Box sx={{ width: '100%' }}>
                 <Grid container spacing={2}>
                     <Grid xs={12}>
                         <div className="logo">
-                            <div className="image">Hello các bạn</div>
+                            <div className="image">
+                                <img src="../../assets/images/logo.webp" />
+                            </div>
                         </div>
                         <div className="Nav">
                             <div className="addProduct">
                                 <TextField
                                     label="Add Product"
                                     id="outlined-start-adornment"
+                                    value={searchProduct}
                                     onChange={(event) => {
                                         setSearchProduct(event.target.value);
                                     }}
                                     onMouseEnter={useEffect(() => {
                                         if (searchProduct !== '') {
                                             axios
-                                                .get('http://localhost:8086/admin/product/search?code=' + searchProduct)
+                                                .get('http://localhost:8080/admins/products?code=' + searchProduct)
                                                 .then((Response) => {
                                                     setProducts(Response.data);
                                                 });
@@ -108,15 +154,19 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         const product1 = {
-                                                            code: product.code,
-                                                            name: product.name,
+                                                            code: product[0],
+                                                            name: product[1],
                                                             quantity: 1,
-                                                            price: product.price,
+                                                            price: product[2],
+                                                            attributeID: product[3],
                                                         };
                                                         var duplicate = false;
 
                                                         for (var i = 0; i < orders[value].products.length; i++) {
-                                                            if (orders[value].products[i].code === product.code) {
+                                                            if (
+                                                                orders[value].products[i].attributeID ===
+                                                                product.attributeID
+                                                            ) {
                                                                 orders[value].products[i].quantity += 1;
                                                                 duplicate = true;
                                                             }
@@ -132,31 +182,49 @@ function SalesInShop() {
                                         );
                                     })}
                                 </div>
-                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                        {orders ? (
-                                            orders.map((order, index) => {
-                                                let labell = 'Đơn ' + order.order;
-                                                return <Tab label={labell} {...a11yProps(index)} className="tabs" />;
-                                            })
-                                        ) : (
-                                            <></>
-                                        )}
-                                        <div
-                                            className="addOrder"
-                                            onClick={(event) => {
-                                                let newOrder = {
-                                                    order: orders.length + 1,
-                                                    products: [],
-                                                    customer: null,
-                                                };
-                                                setOrders([...orders, newOrder]);
-                                            }}
+                                <div className="orders">
+                                    <Box
+                                        sx={{ borderBottom: 1, borderColor: 'divider', maxWidth: { xs: 320, sm: 480 } }}
+                                    >
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            aria-label="basic tabs example"
+                                            variant="scrollable"
+                                            scrollButtons="auto"
                                         >
-                                            <AddIcon fontSize="large" />
-                                        </div>
-                                    </Tabs>
-                                </Box>
+                                            {orders ? (
+                                                orders.map((order, index) => {
+                                                    let labell = 'Đơn ' + order.order;
+                                                    return (
+                                                        <Tab
+                                                            label={labell}
+                                                            {...a11yProps(index)}
+                                                            className="tabs"
+                                                            icon={<CloseIcon />}
+                                                            iconPosition="end"
+                                                        ></Tab>
+                                                    );
+                                                })
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Tabs>
+                                    </Box>
+                                    <div
+                                        className="addOrder"
+                                        onClick={(event) => {
+                                            let newOrder = {
+                                                order: orders.length + 1,
+                                                products: [],
+                                                customer: null,
+                                            };
+                                            setOrders([...orders, newOrder]);
+                                        }}
+                                    >
+                                        <AddIcon fontSize="large" />
+                                    </div>
+                                </div>
                             </div>
                             <div className="user">
                                 <div>
@@ -178,7 +246,8 @@ function SalesInShop() {
                                         rows={order.products}
                                         value={value}
                                         index={index}
-                                        onDeleteProduct={handleDelete}                                         
+                                        onDeleteProduct={handleDelete}
+                                        onUpdateAttribute={handleAttribute}
                                     />
                                 );
                             })
@@ -193,6 +262,7 @@ function SalesInShop() {
                                     label="Add Customer"
                                     id="outlined-start-adornment"
                                     sx={{ m: 1, width: '53ch' }}
+                                    value={search}
                                     onChange={(event) => {
                                         setSearch(event.target.value);
                                     }}
@@ -204,32 +274,32 @@ function SalesInShop() {
                                         ),
                                         endAdornment: (
                                             <InputAdornment position="end">
-                                                <AddIcon />
+                                                <AddIcon onClick={handleAddCustomer} />
                                             </InputAdornment>
                                         ),
                                     }}
                                 />
+                                <div className="result_search">
+                                    <Card sx={{ minWidth: 275 }}>
+                                        {customers.map((customer) => {
+                                            return (
+                                                <ResultCustomerSearch
+                                                    customer={customer}
+                                                    onClick={() => {
+                                                        orders[value].customer = customer;
+                                                        console.log(orders[value]);
+                                                        setSearch('');
+                                                    }}
+                                                />
+                                            );
+                                        })}
+                                        {search !== '' ? <RetailCustomers /> : <></>}
+                                    </Card>
+                                </div>
                             </div>
                         ) : (
                             <ResultCustomerSearch customer={orders[value].customer} />
                         )}
-                        <div className="result_search">
-                            {customers.map((customer) => {
-                                return (
-                                    <Card sx={{ minWidth: 275 }}>
-                                        <ResultCustomerSearch
-                                            customer={customer}
-                                            onClick={() => {
-                                                orders[value].customer = customer;
-                                                console.log(orders[value]);
-                                                setSearch('');
-                                            }}
-                                        />
-                                        <RetailCustomers />
-                                    </Card>
-                                );
-                            })}
-                        </div>
                         <div className="order_info">
                             <p>
                                 Số lượng sản phẩm:
@@ -237,28 +307,33 @@ function SalesInShop() {
                             </p>
                             <p>
                                 Thành tiền:
-                                {orders[value].products.reduce(
-                                    (total, current) => (total += current.quantity * current.price),
-                                    0,
-                                )}
+                                {orders[value].products
+                                    .reduce((total, current) => (total += current.quantity * current.price), 0)
+                                    .toLocaleString('en-US')}
                             </p>
                             <TextField
                                 label="Số tiền khách đưa"
                                 id="outlined-start-adornment"
                                 sx={{ m: 1, width: '53ch' }}
+                                value={money.toLocaleString('en-US')}
                                 onChange={(event) => {
                                     setMoney(event.target.value);
                                 }}
                             />
                             <p>
                                 Số tiền phải trả:
-                                {money -
+                                {(
+                                    money -
                                     orders[value].products.reduce(
                                         (total, current) => (total += current.quantity * current.price),
                                         0,
-                                    )}
+                                    )
+                                ).toLocaleString('en-US')}
                             </p>
                         </div>
+                        <Button variant="contained" onClick={createOrder}>
+                            Thanh toán
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>

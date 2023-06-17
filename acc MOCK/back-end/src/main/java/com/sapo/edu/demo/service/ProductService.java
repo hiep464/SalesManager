@@ -9,7 +9,6 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    @Autowired
     ProductRepository productRepository;
 
 //    public ProductService(ProductRepository productRepository){
@@ -20,9 +19,19 @@ public class ProductService {
         return productRepository.totalSold();
     }
 
-    public Integer getTotalQuantity(){
-        return productRepository.totalQuantity();
-    }
+//    public Integer getTotalQuantity(){
+//        return productRepository.totalQuantity();
+//    }
+
+//    public void updateProductQuantity(String code, int newQuantity) {
+//        ProductEntity product = productRepository.findProductsByCode(code);
+//        if (product != null) {
+//            product.s
+//            productRepository.save(product);
+//        } else {
+//            throw new RuntimeException("Product not found with Id: " + code);
+//        }
+//    }
 
     public List<Object> getTop3Product(){
         return productRepository.findTopProducts().subList(0, 3);
@@ -32,13 +41,13 @@ public class ProductService {
         return productRepository.findTopCustomers().subList(0, 3);
     }
 
-    ProductRepository productRepository;
+
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public List<ProductEntity> getProductByCode(String code){
+    public List<Object[]> getProductByCode(String code){
         return productRepository.findByCodeContaining(code);
     }
 }

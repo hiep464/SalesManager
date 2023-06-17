@@ -1,12 +1,11 @@
 package com.sapo.edu.demo.DTO;
 
+
+import com.sapo.edu.demo.entities.Order;
 import com.sapo.edu.demo.entities.OrderLine;
-import com.sapo.edu.demo.entities.OrderTable;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,6 +18,6 @@ public class OrderDTO {
 //    private Date orderDate;
 //    private String status;
 
-    private OrderTable orderTable;
+    private Order orderTable;
     private List<OrderLine> orderLines;
 }
