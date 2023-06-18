@@ -1,7 +1,8 @@
 package com.sapo.edu.demo.dto;
 
+
+import com.sapo.edu.demo.entities.Order;
 import com.sapo.edu.demo.entities.OrderLine;
-import com.sapo.edu.demo.entities.OrderTable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,6 @@ public class OrderDTO {
 //    private Date orderDate;
 //    private String status;
 
-    private OrderTable orderTable;
+    private Order orderTable;
     private List<OrderLine> orderLines;
 }

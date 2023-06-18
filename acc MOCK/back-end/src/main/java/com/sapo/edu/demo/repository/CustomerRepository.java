@@ -23,8 +23,11 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     List<Customer> findByPhoneNumberContaining(String phoneNumber);
 
     @Query("SELECT c.name, SUM(o.total) AS total "
-            + "FROM OrderTable o, Customer c  where o.customerCode = c.code "
+            + "FROM Order o, Customer c  where o.customerCode = c.code "
             + "GROUP BY c.code "
             + "ORDER BY total DESC")
     List<Object> findTopCustomers();
+    @Query("SELECT COUNT(DISTINCT c.code) AS customer_count FROM Customer c")
+    Integer getCustomerCount();
+
 }

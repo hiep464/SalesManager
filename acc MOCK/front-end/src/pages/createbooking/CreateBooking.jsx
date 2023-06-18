@@ -27,6 +27,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Numeral from 'react-numeral';
+import { apiBaseUrl } from '../../constant/constant';
 
 function CreateBooking() {
     const [search, setSearch] = useState([]);
@@ -44,14 +45,14 @@ function CreateBooking() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8086/admin/inventories`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
             setInventories(response.data);
         });
-        axios.get(`http://localhost:8086/admin/suppliers`).then((response) => {
+        axios.get(`${apiBaseUrl}/suppliers`).then((response) => {
             console.log(response?.data);
             setSuppliers(response.data);
         });
-        axios.get(`http://localhost:8086/admin/staff`).then((response) => {
+        axios.get(`${apiBaseUrl}/staff`).then((response) => {
             setStaffs(response.data);
         });
     }, []);
@@ -183,7 +184,7 @@ function CreateBooking() {
                         onMouseEnter={useEffect(() => {
                             if (code !== '') {
                                 axios
-                                    .get('http://localhost:8086/admin/product/search?code=' + code)
+                                    .get(`${apiBaseUrl}/product/search?code=` + code)
                                     .then((response) => {
                                         setSearch(response.data);
                                         console.log(response);

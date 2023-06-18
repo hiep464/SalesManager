@@ -24,6 +24,7 @@ import { NumericFormat } from 'react-number-format';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
+import { apiBaseUrl } from '../../constant/constant';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -114,15 +115,15 @@ export default function Product() {
     };
 
     React.useEffect(() => {
-        axios.get('http://localhost:8086/admin/products/page?page=0&size=24').then((response) => {
+        axios.get(`${apiBaseUrl}/products/page?page=0&size=24`).then((response) => {
             setRows(response.data);
         });
 
-        axios.get('http://localhost:8086/admin/categories').then((response) => {
+        axios.get(`${apiBaseUrl}/categories`).then((response) => {
             setCategories(response.data);
         });
 
-        axios.get('http://localhost:8086/admin/inventories').then((response) => {
+        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
             setInventories(response.data);
         });
     }, []);
@@ -150,7 +151,7 @@ export default function Product() {
             originalCost: parseFloat(originCost.replace(/,/g, '')),
             price: parseFloat(price.replace(/,/g, '')),
         };
-        axios.post('http://localhost:8086/admin/products', formData).then(() => {
+        axios.post(`${apiBaseUrl}/products`, formData).then(() => {
             setAdd(false);
             // handleClickVariant('success');
             handleClickSnackBar();

@@ -14,6 +14,7 @@ import "./CreateChecking.module.scss"
 import CheckInventoryBody from '../../components/createCheckInventoryBody/CheckInventoryBody';
 import { ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
 import axios from 'axios';
+import { apiBaseUrl } from '../../constant/constant';
 
 
     
@@ -45,7 +46,7 @@ const CreateChecking = () => {
                             staffName: "Le Van Bao",
                             checkLines: checkInventoryBody
                         }
-        axios.post('http://localhost:8086/admin/check_inventory',dataCheck)
+        axios.post(`${apiBaseUrl}/check_inventory`,dataCheck)
             .then(res => {
                 alert(res.data.message)
                 // console.log(res)
@@ -123,7 +124,7 @@ const CreateChecking = () => {
                     }}
                     onMouseEnter={React.useEffect(() => {
                         if(searchProduct !== '') {
-                            axios.get('http://localhost:8086/admin/products?code=' + searchProduct)
+                            axios.get(`${apiBaseUrl}/products?code=` + searchProduct)
                                 .then((response) => {
                                     
                                     setProducts(response.data.data.products)

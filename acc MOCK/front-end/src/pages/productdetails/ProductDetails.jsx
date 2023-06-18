@@ -32,6 +32,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import { display } from '@mui/system';
+import { apiBaseUrl } from '../../constant/constant';
 
 function extractArrayProperties(arr, properties) {
     return arr.map((obj) => {
@@ -118,19 +119,19 @@ function ProductDetails() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8086/admin/product/${code}/attribute`).then((response) => {
+        axios.get(`${apiBaseUrl}/product/${code}/attribute`).then((response) => {
             // console.log(response.data);
             setAttributes(response.data);
         });
-        axios.get(`http://localhost:8086/admin/products/${code}`).then((response) => {
+        axios.get(`${apiBaseUrl}/products/${code}`).then((response) => {
             // console.log(response.data);
             setProduct(response.data);
         });
-        // http://localhost:8086/admin/categories
+        // ${apiBaseUrl}/categories
     }, [refesh]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8086/admin/categories`).then((response) => {
+        axios.get(`${apiBaseUrl}/categories`).then((response) => {
             // console.log(response.data);
             setCategories(response.data);
         });
@@ -138,7 +139,7 @@ function ProductDetails() {
 
     useEffect(() => {
         if (product?.categoryCode) {
-            axios.get(`http://localhost:8086/admin/categories/${product?.categoryCode}`).then((response) => {
+            axios.get(`${apiBaseUrl}/categories/${product?.categoryCode}`).then((response) => {
                 // console.log(response.data);
                 setCategoryName(response.data?.name);
             });
@@ -224,14 +225,14 @@ function ProductDetails() {
                 setErrorDetails(resultFilter);
             } else {
                 if (addAttribute.length > 0) {
-                    axios.post('http://localhost:8086/admin/product/attribute/add_list', addAttribute).then(() => {
+                    axios.post(`${apiBaseUrl}/product/attribute/add_list`, addAttribute).then(() => {
                         console.log('sucess');
                     });
                 }
-                axios.put('http://localhost:8086/admin/product/update', product).then(() => {
+                axios.put(`${apiBaseUrl}/product/update`, product).then(() => {
                     console.log('update product sucess');
                 });
-                axios.put('http://localhost:8086/admin/product/attribute/update_list', attributes).then(() => {
+                axios.put(`${apiBaseUrl}/product/attribute/update_list`, attributes).then(() => {
                     console.log('update list sucess');
                 });
                 setAddAttribute([]);
@@ -246,7 +247,7 @@ function ProductDetails() {
     };
 
     const handleDeleteAttribute = () => {
-        axios.delete(`http://localhost:8086/admin/product/attribute/${deleteElement}`).then(() => {
+        axios.delete(`${apiBaseUrl}/product/attribute/${deleteElement}`).then(() => {
             setOpen(false);
             const updatedAttribute = attributes.filter((item) => item.id !== deleteElement);
             setAttributes(updatedAttribute);

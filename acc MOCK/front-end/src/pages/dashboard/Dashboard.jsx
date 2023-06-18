@@ -30,6 +30,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import Numeral from 'react-numeral';
 import axios from 'axios';
 import { subDays, format } from 'date-fns';
+import { apiBaseUrl } from '../../constant/constant';
 
 Chart.register(CategoryScale);
 
@@ -147,23 +148,23 @@ function DashBoard() {
     };
 
     const fetchRevenue = () => {
-        return axios.get('http://localhost:8086/admin/statistical/revenue');
+        return axios.get(`${apiBaseUrl}/statistical/revenue`);
     };
 
     const fetchSold = () => {
-        return axios.get('http://localhost:8086/admin/statistical/sold');
+        return axios.get(`${apiBaseUrl}/statistical/sold`);
     };
 
     const fetchQuantity = () => {
-        return axios.get('http://localhost:8086/admin/statistical/products/quantity');
+        return axios.get(`${apiBaseUrl}/statistical/products/quantity`);
     };
 
     const fetchTop3Product = () => {
-        return axios.get('http://localhost:8086/admin/statistical/top3_product');
+        return axios.get(`${apiBaseUrl}/statistical/top3_product`);
     };
 
     const fetchTop3Customer = () => {
-        return axios.get('http://localhost:8086/admin/statistical/top3_customer');
+        return axios.get(`${apiBaseUrl}/statistical/top3_customer`);
     };
 
     React.useEffect(() => {
@@ -188,7 +189,7 @@ function DashBoard() {
 
     React.useEffect(() => {
         axios
-            .get(`http://localhost:8086/admin/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
+            .get(`${apiBaseUrl}/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
             .then((response) => {
                 console.log(response.data);
                 setData(response.data);

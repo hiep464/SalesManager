@@ -1,28 +1,82 @@
-import React from 'react'
+import React from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import './Product.scss'
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Unstable_Grid2';
+import './Product.scss';
+
+import axios from 'axios';
 
 const Product = (props) => {
-  let row = props.row
-  const handleDelete = () => {
-    props.onDeleteProduct(row.code);
-  };
-  return (
-    <div className="product">
-        {row ? (
-        <>
-          <div>{props.index+1}</div>
-          <div onClick={handleDelete}><DeleteOutlineIcon/></div>
-          <div>Image</div>
-          <div>{row.code}</div>
-          <div>{row.name}</div>
-          <div>{row.quantity}</div>
-          <div>{row.price}</div>
-          <div>{row.price*row.quantity}</div>
-        </>
-        ):<></>}
-    </div>
-  )
-}
+    let row = props.row;
+    let onUpdateAttribute = props.onUpdateAttribute;
+    let id = props.index;
+    const [data, setData] = React.useState();
+    const [size, setSize] = React.useState();
+    const handleDelete = () => {
+        props.onDeleteProduct(row.attributeID);
+    };
+    const getSize = () => {
+        let url = 'http://localhost:8080/admins/products/' + row.code + '/attribute';
+        return axios.get(url);
+    };
 
-export default Product
+    React.useEffect(() => {
+        getSize().then((response) => {
+            setData(response.data);
+        });
+    }, []);
+
+    // const handleChange = (event, id) => {
+    //     setSize(event.target.value);
+    //     onUpdateAttribute(id, event.target.value);
+    // };
+
+    return (
+        <div className="product">
+            {row ? (
+                <Grid container spacing={3} sx={{ width: '100%' ,height: '100px'}} className="product1">
+                    <Grid xs={1}>{props.index + 1}</Grid>
+                    <Grid xs={1}>
+                        <div onClick={handleDelete}>
+                            <DeleteOutlineIcon />
+                        </div>
+                    </Grid>
+                    <Grid xs={2}>
+                        <FormControl sx={{ m: 1, minWidth: 80 }}>
+                            <Select
+                                value={size}
+                                defaultValue={row.attributeID}
+                                onChange={(event) => {
+                                    setSize(event.target.value);
+                                    console.log(props.index);
+                                    onUpdateAttribute(props.index, event.target.value);
+                                }}
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'Without label' }}
+                            >
+                                {data ? (
+                                    data.map((item) => {
+                                        return <MenuItem value={item.id}>{item.size + ',' + item.color}</MenuItem>;
+                                    })
+                                ) : (
+                                    <></>
+                                )}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid xs={2}>{row.code}</Grid>
+                    <Grid xs={3}>{row.name}</Grid>
+                    <Grid xs={1}>{row.quantity}</Grid>
+                    <Grid xs={1}>{row.price.toLocaleString('en-US')}</Grid>
+                    <Grid xs={1}>{(row.price * row.quantity).toLocaleString('en-US')}</Grid>
+                </Grid>
+            ) : (
+                <></>
+            )}
+        </div>
+    );
+};
+
+export default Product;

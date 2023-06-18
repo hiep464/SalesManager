@@ -17,31 +17,32 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import "./CheckInventoryDetail.scss"
 import CheckInventoryRequestDetail from '../../components/requestCheckInventoryDetail/CheckInventoryRequestDetail';
+import { apiBaseUrl } from '../../constant/constant';
 const CheckInventoryDetail = () => {
     const navigate = useNavigate()
     const {code} = useParams()
     const [checkLines, setCheckLines] = React.useState([])
     const [checkInvetoryRequest, setCheckInvetoryRequest] = React.useState({})
     React.useEffect(() => {
-        axios.get(`http://localhost:8086/admin/check_line?checkCode=${code}`)
+        axios.get(`${apiBaseUrl}/check_line?checkCode=${code}`)
                 .then(res => { 
                             setCheckLines(res.data.data.checkLines)
                 })
-        axios.get(`http://localhost:8086/admin/check_inventory/code?code=${code}`)
+        axios.get(`${apiBaseUrl}/check_inventory/code?code=${code}`)
                 .then(res => {
                     setCheckInvetoryRequest(res.data.data)
                     
                 })
     },[])
     const handleDeleteRequest = () => {
-        axios.delete(`http://localhost:8086/admin/check_inventory/${code}`)
+        axios.delete(`${apiBaseUrl}/check_inventory/${code}`)
               .then(res => {
                     navigate("/checkInventory")
                 })
         
     }
     const handleUpdateProductQuantity = () => {
-        axios.post(`http://localhost:8086/admin/check_line/${code}`)
+        axios.post(`${apiBaseUrl}/admin/check_line/${code}`)
             .then(res => {
                 alert("Đã cập nhập số lượng trong kho")
                 window.location.reload()

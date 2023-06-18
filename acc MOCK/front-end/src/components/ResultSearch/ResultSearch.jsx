@@ -35,10 +35,11 @@ export function ResultProductSearch(props) {
         <div className="result-product-search" onClick={props.onClick}>
             <div>image</div>
             <div>
-                <p>{product.name}</p>
-                <p>Số lượng:{product.quantity}</p>
+                <p>{product[1]}</p>
+                <p>Số lượng:{product[6]}</p>
             </div>
-            <p>Giá:{product.price}</p>
+            <div>Size&color: {product[4]+","+product[5]}</div>
+            <p>Giá:{product[2]}</p>
         </div>
     );
 }
