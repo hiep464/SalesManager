@@ -3,6 +3,7 @@ import Booking from "../pages/booking/Booking"
 import BookingDetails from "../pages/bookingdetails/BookingDetails"
 import CreateBooking from "../pages/createbooking/CreateBooking"
 import DashBoard from "../pages/dashboard/Dashboard"
+import ReportPage from "../pages/ReportPage/ReportPage"
 import Login from "../pages/login/Login"
 import Product from "../pages/product/Product"
 import ProductDetails from "../pages/productdetails/ProductDetails"
@@ -10,6 +11,7 @@ import SaleInShop from "../pages/salesInShop/SaleInShop"
 import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDetail"
 import CheckInventory from "../pages/checkInventory/CheckInventory"
 import CreateChecking from "../pages/createChecking/CreateChecking"
+import CreateReportPage from "../pages/CreateReportPage/CreateReportPage"
 
 export const publicRoutes = [
     {path: '/', element : Login},
@@ -24,4 +26,6 @@ export const publicRoutes = [
     {path: 'inventory/check_inventory/create', element : CreateChecking,layout: DefaultLayout},
     {path: 'inventory/check_inventory/:code', element : CheckInventoryDetail,layout: DefaultLayout},
 
+    {path: '/report', element : ReportPage, layout: DefaultLayout},
+    {path: '/create/report', element : CreateReportPage, layout: DefaultLayout},
 ]

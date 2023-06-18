@@ -32,7 +32,6 @@ function AccountMenu() {
                     display: 'flex',
                     // padding: '4px 0',
                     width: '100%',
-                    display: 'flex',
                     alignItems: 'center',
                     textAlign: 'center',
                     backgroundColor: 'white',

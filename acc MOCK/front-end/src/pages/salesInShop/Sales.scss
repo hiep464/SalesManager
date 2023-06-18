@@ -15,21 +15,26 @@
         display: flex;
         align-items: flex-end;
 
-        .tabs:focus {
-            background-color: #fff;
-        }
-
-        .addOrder:hover {
-            cursor: pointer;
-        }
-
+        
+        
         .result_search {
             position:fixed;
             top: 100px;
             left: 10px;
         }
     }
-
+    .orders{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .tabs:focus {
+        background-color: #fff;
+    }
+    
+    .addOrder:hover {
+        cursor: pointer;
+    }
     .user{
         margin-right: 10px;
         display: flex;
@@ -44,4 +49,22 @@
     }
 
 
+}
+
+.body1 {
+    position: relative;
+}
+
+.All {
+    position: absolute;
+    width: 100%;
+    height: 150%;
+    background-color: rgba(255, 255, 255, 0.404);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.orders {
+    display: flex;
 }

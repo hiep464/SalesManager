@@ -24,6 +24,7 @@ import Card from '@mui/material/Card';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ResultCheckLineSearch } from '../../components/ResultSearch/ResultSearch';
+import { apiBaseUrl } from '../../constant/constant';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -80,7 +81,7 @@ const CheckInventory = () => {
     const getRowId = (row) => row.code
     const open = Boolean(anchorEl);
     React.useEffect(() => {
-        axios.get('http://localhost:8086/admin/check_inventory').then((Response) => {
+        axios.get(`${apiBaseUrl}/check_inventory`).then((Response) => {
             setChecking(Response.data.data.products);
             // console.log(Response.data.data.products)
             });

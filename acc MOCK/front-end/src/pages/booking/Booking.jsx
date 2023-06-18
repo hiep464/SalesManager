@@ -14,6 +14,7 @@ import { Box } from '@mui/system';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { apiBaseUrl } from '../../constant/constant';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -70,7 +71,7 @@ function Booking() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        axios.get('http://localhost:8086/admin/booking').then((response) => {
+        axios.get(`${apiBaseUrl}/booking`).then((response) => {
             // setBooking(Response.products);
             console.log(response.data)
             setBooking(response.data)
