@@ -1,0 +1,20 @@
+.pagination{
+    display: flex;
+    justify-content: end;
+    margin-top: 50px;
+    padding-bottom: 10px;
+    span{
+        margin-top: 5px;
+    }
+    select{
+        height: 30px;
+        width: 60px;
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 18px;
+        option{
+            height: 40px;
+            width: 50px;
+        }
+    }
+}

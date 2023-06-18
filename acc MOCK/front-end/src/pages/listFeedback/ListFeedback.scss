@@ -1,0 +1,70 @@
+.pagecontent{
+    margin-top: 110px;
+    width:calc(85vw - 34px);
+    min-height: 100px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    .searchbar{
+        input{
+            width: 85%;
+            height: 50px;
+            margin-left: 10px;
+            margin-top: 10px;
+            border: 2px solid #CAC3C3;
+            font-size: 18px;
+            border-radius: 5px;
+            padding-left: 20px;
+        }
+        button{
+            width: 10%;
+            margin-left: 10px;
+            height: 56px;
+            border: 2px solid #CAC3C3;
+            border-radius: 5px;
+            position: relative;
+            text-align: center;
+            top: 0.5px;
+            text-align: start;  
+            padding-left: 15px;
+            font-size: 18px;
+            background-color: white;
+            cursor: pointer;
+            svg{
+                width: 36px;
+                height: 36px;
+                position: absolute;
+                top: 7px;
+                left: 70px;
+                color: #CAC3C3;
+            }
+        }
+    }
+    table{
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+        tr{
+            height: 50px;
+            th{
+                background-color: #F3F3F3;
+                border: none;
+                border-bottom: 2px solid #CAC3C3;
+                text-align: start;
+                padding-left: 30px;
+            }
+            td{
+                border: none;
+                border-bottom: 2px solid #CAC3C3;
+                text-align: start;
+                padding-left: 30px;
+            }
+            .column1{width: 20%;}
+            .column2{width: 20%;}
+            .column3{width: 20%;}
+            .column4{width: 20%;}
+            .column5{width: 20%;}
+        }
+    }
+}
