@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/customers")
@@ -42,6 +43,11 @@ public class CustomerController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) throws ParseException {
-        return customerService.getListCustumer(searchText, minDate,maxDate,page,size);
+        return customerService.getListCustumer(searchText, minDate, maxDate, page, size);
+    }
+    @GetMapping(value = "/search")
+    public List<Customer> seachUserByPhone(@RequestParam String phone){
+        return customerService.getCustomerByPhone(phone);
+
     }
 }

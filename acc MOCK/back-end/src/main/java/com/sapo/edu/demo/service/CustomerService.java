@@ -2,16 +2,18 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.entities.Customer;
 import com.sapo.edu.demo.exception.NotFoundException;
-import com.sapo.edu.demo.repository.CustomerRepository;
 import com.sapo.edu.demo.response.CustumerResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import com.sapo.edu.demo.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CustomerService {
@@ -20,7 +22,6 @@ public class CustomerService {
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
-
     public Customer getCustumerByCode(String code) throws NotFoundException {
         Customer customer = customerRepository.findByCode(code);
         if (customer==null){
@@ -56,6 +57,14 @@ public class CustomerService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date minDateConvert = dateFormat.parse(minDate);
         Date maxDateConvert = dateFormat.parse(maxDate);
-        return customerRepository.findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactDesc(searchText,searchText,searchText,minDateConvert, maxDateConvert, pageable);
+        return customerRepository.findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactDesc(searchText, searchText, searchText, minDateConvert, maxDateConvert, pageable);
+    }
+    public List<Customer> getCustomerByPhone(String Phone){
+        return customerRepository.findByPhoneNumberContaining(Phone);
+    }
+
+    public List<Object> getTop3Customer() {
+            return customerRepository.findTopCustomers().subList(0, 3);
+
     }
 }

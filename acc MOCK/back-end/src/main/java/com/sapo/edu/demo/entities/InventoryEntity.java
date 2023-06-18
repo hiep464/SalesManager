@@ -4,13 +4,15 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+
+
 @Entity
 @Data
 
 @Table(name = "inventory")
 public class InventoryEntity {
     @Id
-    private String code;
+    private String name;
     @Column
     @NotNull
     private String address;

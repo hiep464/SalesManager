@@ -1,11 +1,12 @@
 package com.sapo.edu.demo.entities;
 
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 @Data
 public class OrderLine {
     @Id
-    @Column(name = "ID")
     private Integer id;
     @Column(name = "order_code")
     @NotNull

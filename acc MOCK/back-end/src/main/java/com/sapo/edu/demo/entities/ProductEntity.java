@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -17,25 +19,62 @@ public class ProductEntity {
     private String code;
     @Column
     @NotNull
+    private String categoryCode;
+
+    @Column
+    @NotNull
     private String name;
-    @Column
-    @NotNull
-    private long quantity;
-    @Column
-    @NotNull
-    private long sold;
-    @Column
-    @NotNull
+
     private BigDecimal price;
-    @Column
-    @NotNull
-    private String size;
-    @Column
-    @NotNull
-    private String color;
-    @Column
-    @NotNull
-    private String inventory_name;
 
+    @NotNull
+    private String inventoryName;
 
+    @Column
+    private String brand;
+
+    @Column
+    private BigDecimal originalCost;
+
+    @Column
+    private LocalDate createAt;
+
+    @Column
+    private LocalDate updateAt;
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setInventoryName(String inventoryName) {
+        this.inventoryName = inventoryName;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setOriginalCost(BigDecimal originalCost) {
+        this.originalCost = originalCost;
+    }
+
+    public void setCreateAt(LocalDate createAt) {
+        this.createAt = createAt;
+    }
+
+    public void setUpdateAt(LocalDate updateAt) {
+        this.updateAt = updateAt;
+    }
 }

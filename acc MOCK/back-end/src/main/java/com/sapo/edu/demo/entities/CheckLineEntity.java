@@ -4,13 +4,16 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+
+
 @Entity
 @Data
 
 @Table(name = "check_line")
 public class CheckLineEntity {
     @Id
-    private String code;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column
     @NotNull
     private String checkCode;
