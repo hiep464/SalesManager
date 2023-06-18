@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/admin/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/admin/**")
+                .antMatchers("/admin/**")
                 .permitAll()// Cho phép tất cả mọi người truy cập vào những địa chỉ này
                 .anyRequest().authenticated(); // Tất cả các request khác đều cần phải xác thực mới được truy cập
 

@@ -2,6 +2,7 @@
     margin-top: 23px;
     width: calc(85vw - 34px);
     position: fixed;
+    z-index: 9999;
 }
 
 // sx={{ display: 'flex';padding: '4px 0';width: '100%', display: 'flex', alignItems: 'center', textAlign: 'center', backgroundColor: 'white', borderRadius: '6px', justifyContent: 'space-between'}}

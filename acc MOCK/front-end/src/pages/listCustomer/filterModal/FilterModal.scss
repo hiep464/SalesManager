@@ -1,0 +1,32 @@
+.filter{
+    position: absolute;
+    height: 200px;
+    width: 400px;
+    background-color: white;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    right: 15px;
+    z-index: 999;
+    border-radius: 4px;
+    padding-left: 10px;
+    .input{
+        display: flex;
+        margin-bottom: 10px;
+        .minvalue, .maxvalue{
+            height: 30px;
+            margin-right: 10px;
+        }
+        span{
+            margin-top: 16px;
+        }
+    }
+    #filterbut{
+        height: 30px;
+        width: 60px;
+        border: none;
+        background-color: #0089FF;
+        color: white;
+        position: absolute;
+        right: 10px;
+        top: 160px;
+    }
+}
