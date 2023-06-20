@@ -54,7 +54,7 @@ public class ProductService {
         return productRepository.save(productEntity);
     }
 
-    public List<ProductEntity> searchProductByCode(String code){
+    public List<Object[]> searchProductByCode(String code){
         return productRepository.findByCodeContaining(code);
     }
 

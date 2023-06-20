@@ -1,5 +1,6 @@
 package com.sapo.edu.demo.controller;
 
+import com.sapo.edu.demo.entities.Order;
 import com.sapo.edu.demo.entities.Report;
 import com.sapo.edu.demo.service.OrderService;
 import com.sapo.edu.demo.service.ReportService;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,5 +31,13 @@ public class ReportController {
         LocalDate dateE = LocalDate.parse(end,formatter);
         Map<String, Object> newReportData = orderService.getReportInfo(staffCode,dateS,dateE);
         return newReportData;
+    }
+
+    @GetMapping("/reports/orders")
+    public List<Order> getReportOrders(@RequestParam(name = "staff code") String staffCode, @RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateS = LocalDate.parse(start,formatter);
+        LocalDate dateE = LocalDate.parse(end,formatter);
+        return orderService.getDetailOrderOnReport(staffCode,dateS,dateE);
     }
 }

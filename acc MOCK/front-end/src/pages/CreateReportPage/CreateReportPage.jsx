@@ -6,27 +6,16 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { subDays, format } from 'date-fns';
 import { apiBaseUrl } from '../../constant/constant';
-
-// const generateLabels = () => {
-//     const now = new Date(); // Lấy thời điểm hiện tại
-//     const days = []; // Mảng lưu trữ các ngày trong khoảng 7 ngày
-
-//     for (let i = 6; i >= 0; i--) {
-//         const date = subDays(now, i); // Tính toán ngày trong khoảng 7 ngày
-//         const formattedDate = format(date, 'dd/MM'); // Chuyển đổi ngày thành chuỗi định dạng dd/MM/yyyy
-//         days.push(formattedDate); // Thêm ngày vào mảng
-//     }
-
-//     return days;
-// };
-
-// const labelsInit = generateLabels();
+import Grid from '@mui/material/Unstable_Grid2';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { viVN } from '@mui/material/locale';
 
 function CreateReportPage() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [filter, setFilter] = React.useState(7);
     const [data, setData] = React.useState({});
+    const [rows, setRows] = React.useState([]);
     const handleChange = (event) => {
         setFilter(event.target.value);
         if (event.target.value === 7) {
@@ -40,6 +29,24 @@ function CreateReportPage() {
             setEnd(format(new Date(), 'dd/MM/yyyy'));
         }
     };
+    const myLocaleText = {
+        ...viVN,
+        pagination: {
+            rowsPerPage: 'Số hàng trên mỗi trang:',
+            ...viVN.pagination,
+        },
+    };
+    const columns: GridColDef[] = [
+        { field: 'code', headerName: 'code', width: 100 },
+        { field: 'customerCode', headerName: 'customer Code', width: 130 },
+        { field: 'total', headerName: 'total', type: 'number', width: 130 },
+        {
+            field: 'orderDate',
+            headerName: 'order Date',
+            type: 'string',
+            width: 190,
+        },
+    ];
     React.useEffect(() => {
         axios
             .get(`${apiBaseUrl}/reports?end%20date=${endD}&staff%20code=S002&start%20date=${startD}`)
@@ -49,11 +56,65 @@ function CreateReportPage() {
             })
             .catch((error) => console.log(error));
     }, [filter]);
+    React.useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/reports/orders?end%20date=${endD}&staff%20code=S002&start%20date=${startD}`)
+            .then((response) => {
+                setRows(response.data);
+            })
+            .catch((error) => console.log(error));
+    }, [filter]);
+
+    console.log(rows);
     return (
-        <div className="createReport" sx={{ width: '1000px' }}>
+        <div className="createReport" style={{ width: '100%' }}>
             <Paper
                 style={{
                     marginTop: '40px',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    flexDirection: 'column',
+                    width: '1170px',
+                    height: 250,
+                }}
+            >
+                <Grid container spacing={2} sx={{ width: '100%', margin: '10px' }}>
+                    <Grid xs={12} display={'flex'} justifyContent={'space-between'}>
+                        <h1>Báo cáo</h1>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
+                            <Select value={filter} sx={{ Width: 100 }} onChange={handleChange} displayEmpty>
+                                <MenuItem value={7}>7 ngày</MenuItem>
+                                <MenuItem value={30}>1 tháng</MenuItem>
+                                <MenuItem value={90}>1 quý</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid xs={6}>
+                        <div sx={{ display: 'flex' }}>
+                            <span>Doanh thu:</span>
+                            <span>{data.revenue ? data.revenue.toLocaleString('en-US') : 0}</span>
+                        </div>
+                        <div sx={{ display: 'flex' }}>
+                            <span>Số đơn hàng bán được:</span>
+                            <span>{data.order_count}</span>
+                        </div>
+                    </Grid>
+                    <Grid xs={6}>
+                        <div sx={{ display: 'flex' }}>
+                            <span>Số sản phẩm bán được:</span>
+                            <span>{data.product_sold ? data.product_sold : 0}</span>
+                        </div>
+                        <div sx={{ display: 'flex' }}>
+                            <span>Số tiền lãi thu được:</span>
+                            <span>{data.revenue ? data.revenue.toLocaleString('en-US') : 0}</span>
+                        </div>
+                    </Grid>
+                    <div sx={{ display: 'flex' }}></div>
+                </Grid>
+            </Paper>
+            <Paper
+                style={{
+                    marginTop: '10px',
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
@@ -61,29 +122,20 @@ function CreateReportPage() {
                     height: 300,
                 }}
             >
-                <h1>Báo cáo</h1>
-                <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
-                    <Select value={filter} sx={{ Width: 100 }} onChange={handleChange} displayEmpty>
-                        <MenuItem value={7}>7 ngày</MenuItem>
-                        <MenuItem value={30}>1 tháng</MenuItem>
-                        <MenuItem value={90}>1 quý</MenuItem>
-                    </Select>
-                </FormControl>
-                <div sx={{ display: 'flex', padding: '10px' }}>
-                    <span>Doanh thu:</span>
-                    <span>{data.revenue ? data.revenue : 0}</span>
-                </div>
-                <div sx={{ display: 'flex' }}>
-                    <span>Số đơn hàng bán được:</span>
-                    <span>{data.order_count}</span>
-                </div>
-                <div sx={{ display: 'flex' }}>
-                    <span>Số sản phẩm bán được:</span>
-                    <span>{data.product_sold ? data.product_sold : 0}</span>
-                </div>
-                <div sx={{ display: 'flex' }}>
-                    <span>Số tiền lãi thu được:</span>
-                    <span>{data.revenue ? data.revenue : 0}</span>
+                <div style={{ height: 300, width: '100%' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        localeText={myLocaleText}
+                        initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                        }}
+                        pageSizeOptions={[5, 10]}
+                        checkboxSelection
+                        getRowId={(row) => row.code}
+                    />
                 </div>
             </Paper>
         </div>

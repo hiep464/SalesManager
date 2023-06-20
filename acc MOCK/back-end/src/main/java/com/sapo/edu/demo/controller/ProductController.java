@@ -53,9 +53,9 @@ public class ProductController {
     public ProductEntity getProductByCode(@PathVariable("code") String code) {
         return productService.getProductByCode(code);
     }
-//
-    @GetMapping("/product/search")
-    public List<ProductEntity> searchProductByCode(@RequestParam String code){
+
+    @GetMapping("/products")
+    public List<Object[]> searchProductByCode(@RequestParam String code){
         return productService.searchProductByCode(code);
     }
 

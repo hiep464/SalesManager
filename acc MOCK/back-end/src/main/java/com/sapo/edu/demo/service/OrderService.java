@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -50,6 +51,10 @@ public class OrderService {
 
     public Map<String, Object> getReportInfo(String staffCode,LocalDate startDate, LocalDate endDate){
         return orderRepository.getRevenueOrderCountAndProductSoldForStaffCode(staffCode,startDate,endDate);
+    }
+
+    public List<Order> getDetailOrderOnReport(String staffCode,LocalDate startDate, LocalDate endDate){
+        return orderRepository.getRevenueOrderForStaffCode(staffCode,startDate,endDate);
     }
 
     public Integer getOrderCount(){

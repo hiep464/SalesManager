@@ -35,6 +35,14 @@ function a11yProps(index) {
     };
 }
 
+const handleDeleteOrder = (orderID) => {
+    console.log('1111111');
+    console.log(orderID);
+    // const newState = orders;
+    // const updatedOrderItems = newState.filter((item, index) => index !== orderID);
+    // setOrders(newState);
+};
+
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
     const [addCustomer, setAddCustomer] = React.useState(false);
@@ -48,7 +56,7 @@ function SalesInShop() {
     useEffect(() => {
         if (search !== '') {
             axios.get(`${apiBaseUrl}/customers?phone=` + search).then((Response) => {
-                setCustomers(Response.data);
+                setCustomers(Response.data.content);
             });
         } else {
             setCustomers([]);
@@ -131,7 +139,8 @@ function SalesInShop() {
                                             axios
                                                 .get(`${apiBaseUrl}/products?code=` + searchProduct)
                                                 .then((Response) => {
-                                                    setProducts(Response.data.data.products);
+                                                    setProducts(Response.data);
+                                                    console.log('res:', Response);
                                                 });
                                         } else {
                                             setProducts([]);
@@ -196,13 +205,28 @@ function SalesInShop() {
                                         >
                                             {orders ? (
                                                 orders.map((order, index) => {
-                                                    let labell = 'Đơn ' + order.order;
+                                                    let labell = 'Đơn ' + (index + 1);
                                                     return (
                                                         <Tab
                                                             label={labell}
                                                             {...a11yProps(index)}
                                                             className="tabs"
-                                                            icon={<CloseIcon />}
+                                                            icon={
+                                                                <CloseIcon
+                                                                    onClick={() => {
+                                                                        const newState = orders;
+                                                                        const updatedOrderItems = newState.filter(
+                                                                            (item, i) => i !== index,
+                                                                        );
+                                                                        console.log(updatedOrderItems);
+                                                                        console.log(newState);
+                                                                        setOrders(updatedOrderItems);
+                                                                    }}
+                                                                    {...a11yProps(
+                                                                        index - 1 > 0 ? index - 1 : index + 1,
+                                                                    )}
+                                                                />
+                                                            }
                                                             iconPosition="end"
                                                         ></Tab>
                                                     );
@@ -257,7 +281,7 @@ function SalesInShop() {
                         )}
                     </Grid>
                     <Grid xs={4}>
-                        {orders[value].customer === null ? (
+                        {orders[value]?.customer === null ? (
                             <div className="addCustomer">
                                 <TextField
                                     label="Add Customer"
@@ -299,16 +323,16 @@ function SalesInShop() {
                                 </div>
                             </div>
                         ) : (
-                            <ResultCustomerSearch customer={orders[value].customer} />
+                            <ResultCustomerSearch customer={orders[value]?.customer} />
                         )}
                         <div className="order_info">
                             <p>
                                 Số lượng sản phẩm:
-                                {orders[value].products.reduce((total, current) => (total += current.quantity), 0)}
+                                {orders[value]?.products.reduce((total, current) => (total += current.quantity), 0)}
                             </p>
                             <p>
                                 Thành tiền:
-                                {orders[value].products
+                                {orders[value]?.products
                                     .reduce((total, current) => (total += current.quantity * current.price), 0)
                                     .toLocaleString('en-US')}
                             </p>
@@ -325,7 +349,7 @@ function SalesInShop() {
                                 Số tiền phải trả:
                                 {(
                                     money -
-                                    orders[value].products.reduce(
+                                    orders[value]?.products.reduce(
                                         (total, current) => (total += current.quantity * current.price),
                                         0,
                                     )

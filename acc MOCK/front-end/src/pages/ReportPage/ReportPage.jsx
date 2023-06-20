@@ -91,21 +91,21 @@ function ReportPage() {
         <>
             <div sx={{ margin: '0', padding: '0', display: 'flex' }}>
                 <Link to="/create/report">
-                    <Button variant="contained">Contained</Button>
+                    <Button variant="contained">Tạo báo cáo mới</Button>
                 </Link>
             </div>
             <Paper sx={{ marginTop: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                 <div
                     style={{
-                        width: '100%',
                         display: 'flex',
                         justifyContent: 'space-between',
                         margin: '20px 0',
+                        width: '1170px',
                         alignItems: 'center',
                     }}
                 >
                     <span style={{ fontSize: '24px', color: '#0088FF' }}>Doanh thu bán hàng</span>
-                    <FormControl sx={{ m: 3, minWidth: 900 }} size="large">
+                    <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
                         <Select value={filter} sx={{ Width: 100 }} onChange={handleChange} displayEmpty>
                             <MenuItem value={7}>7 ngày</MenuItem>
                             <MenuItem value={1}>Hôm qua</MenuItem>
