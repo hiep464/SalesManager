@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -55,7 +57,8 @@ public class CustomerController {
     public  Customer createCustomer(@RequestBody Customer customer){
         Integer count = customerService.getCustomerCount() + 1;
         String code;
-        customer.setLastContact(new Date());
+        Date date = new Date();
+        customer.setLastContact(date);
         if(count<10){
             code = "C00"+count;
         }else if (count < 100 && count >= 10){

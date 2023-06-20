@@ -66,5 +66,9 @@ public class ProductService {
         productEntity.setUpdateAt(LocalDate.now());
         return productRepository.save(productEntity);
     }
+
+    public List<ProductEntity> getProductByInventory(String inventoryName) {
+        return productRepository.getAllByInventoryName(inventoryName);
+    }
 }
 

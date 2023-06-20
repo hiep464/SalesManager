@@ -3,6 +3,7 @@ package com.sapo.edu.demo.service;
 import com.sapo.edu.demo.authentication.CustomUserDetails;
 import com.sapo.edu.demo.entities.User;
 import com.sapo.edu.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

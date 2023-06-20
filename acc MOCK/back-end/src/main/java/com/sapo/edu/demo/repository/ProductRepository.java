@@ -39,4 +39,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             + "group by p.code order by total desc")
     List<Object> findTopProductsByQuantity();
 
+    List<ProductEntity> getAllByInventoryName(String inventoryName);
 }
