@@ -1,8 +1,11 @@
 import { red } from '@mui/material/colors';
 import './CreateFeedback.scss'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import SearchCustomer from './searchCustomer/SearchCustomer';
 
 function CreateFeedback(){
+
+
     return(
         <div className='createfeedback'>
             <div className='header'>

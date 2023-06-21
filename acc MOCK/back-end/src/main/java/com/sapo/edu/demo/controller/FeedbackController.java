@@ -23,7 +23,7 @@ public class FeedbackController {
     }
 
     @PostMapping
-    public FeedbackResponse createFeedback(@RequestBody Feedback feedback){
+    public FeedbackResponse createFeedback(@RequestBody Feedback feedback) throws ParseException {
         return feedbackService.createFeedback(feedback);
     }
 
@@ -47,9 +47,9 @@ public class FeedbackController {
     @GetMapping
     public Page<Feedback> listFeedback(
             @RequestParam(value = "searchText", required = false, defaultValue = "") String searchText,
-            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07T01:58:07.000+0000")String minDate,
-            @RequestParam(value = "maxDate", required = false, defaultValue = "2023-06-07T01:58:07.000+0000")String maxDate,
-            @RequestParam(value = "status", required = false, defaultValue = "Chưa xử lý") String status,
+            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07 01:58:07")String minDate,
+            @RequestParam(value = "maxDate", required = false, defaultValue = "2024-06-07 01:58:07")String maxDate,
+            @RequestParam(value = "status", required = false, defaultValue = "S") String status,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
             ) throws ParseException {
