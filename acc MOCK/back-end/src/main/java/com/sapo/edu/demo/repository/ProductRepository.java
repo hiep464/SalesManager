@@ -22,10 +22,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String> {
     Optional<ProductEntity> findByCodeIgnoreCase(String code);
-    Optional<ProductEntity> findProductCodeByCode(String code);
-    Optional<ProductEntity> findByBrandContainingIgnoreCase(String code);
-
-    Optional<ProductEntity> deleteAllByInventoryName(String inventoryName);
     Optional<ProductEntity> deleteByCode(String code);
 
     ProductEntity findByCode(String code);
@@ -39,5 +35,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             + "group by p.code order by total desc")
     List<Object> findTopProductsByQuantity();
 
-    List<ProductEntity> getAllByInventoryName(String inventoryName);
 }

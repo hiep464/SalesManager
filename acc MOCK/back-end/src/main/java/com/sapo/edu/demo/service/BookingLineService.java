@@ -44,8 +44,7 @@ public class BookingLineService {
         for(BookingLineDto bookingLine : bookingLineDtos) {
             ProductEntity productEntity = productRepository.findByCodeIgnoreCase(bookingLine.getProductCode()).get();
             bookingLine.setProductName(productEntity.getName());
-            bookingLine.setTotalPrice(productEntity.getOriginalCost().multiply(BigDecimal.valueOf(bookingLine.getQuantity())));
-
+//            bookingLine.setTotalPrice(productEntity.getOriginalCost().multiply(BigDecimal.valueOf(bookingLine.getQuantity())));
 
         }
         response.put("products", bookingLineDtos);

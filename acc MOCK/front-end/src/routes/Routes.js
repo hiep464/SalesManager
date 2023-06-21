@@ -18,6 +18,7 @@ import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDe
 import CheckInventory from "../pages/checkInventory/CheckInventory"
 import CreateChecking from "../pages/createChecking/CreateChecking"
 import CreateReportPage from "../pages/CreateReportPage/CreateReportPage"
+import ImageUploader from "../firebase/demofirebase"
 
 export const publicRoutes = [
     {path: '/', element : Login},
@@ -39,4 +40,5 @@ export const publicRoutes = [
 
     {path: '/report', element : ReportPage, layout: DefaultLayout},
     {path: '/create/report', element : CreateReportPage, layout: DefaultLayout},
+    {path: '/firebase', element : ImageUploader},
 ]

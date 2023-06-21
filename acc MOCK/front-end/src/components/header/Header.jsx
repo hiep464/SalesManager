@@ -34,9 +34,10 @@ function AccountMenu() {
                     width: '100%',
                     alignItems: 'center',
                     textAlign: 'center',
-                    backgroundColor: 'white',
+                    backgroundColor: '#fefefe',
                     borderRadius: '6px',
                     justifyContent: 'space-between',
+                    border: '1px solid #1976d2'
                 }}
             >
                 <div style={{ display: 'flex' }}>

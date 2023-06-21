@@ -64,9 +64,4 @@ public class ProductController {
         return productService.updateProduct(productEntity);
     }
 
-    @GetMapping("/products/inventoryName")
-    public List<ProductEntity> getProductByInventoryName(@RequestParam String inventoryName){
-        return productService.getProductByInventory(inventoryName);
-    }
-
 }
