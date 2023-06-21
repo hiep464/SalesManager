@@ -25,6 +25,29 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import { apiBaseUrl } from '../../constant/constant';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import app from '../../firebase/app';
+
+const uploadImage = async (file) => {
+    const storage = getStorage(app);
+    const storageRef = ref(storage, 'images/' + file.name);
+
+    try {
+        // Tải ảnh lên Firebase Storage
+        await uploadBytes(storageRef, file);
+
+        // Lấy URL tải xuống của ảnh
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Trả về URL ảnh để sử dụng
+        return downloadURL;
+    } catch (error) {
+        // Xử lý lỗi tải ảnh
+        console.log('Lỗi tải ảnh:', error);
+        return null;
+    }
+};
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -64,13 +87,19 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'img', headerName: 'Ảnh', width: 100, renderCell: () => <ImageIcon /> },
+    {
+        field: 'imgage',
+        headerName: 'Ảnh',
+        width: 100,
+        renderCell: (data) =>
+            data.row.image ? <img src={data.row.image} style={{ width: '24px', height: '24px' }} /> : <ImageIcon />,
+    },
     { field: 'code', headerName: 'Mã SP', width: 200 },
     { field: 'name', headerName: 'Sản phẩm', width: 200 },
     { field: 'categoryCode', headerName: 'Loại', width: 150 },
-    { field: 'price', headerName: 'Giá bán', width: 150 },
-    { field: 'inventoryName', headerName: 'Kho', width: 150 },
-    { field: 'originalCost', headerName: 'Giá nhập', width: 160 },
+    // { field: 'price', headerName: 'Giá bán', width: 150 },
+    // { field: 'inventoryName', headerName: 'Kho', width: 150 },
+    // { field: 'originalCost', headerName: 'Giá nhập', width: 160 },
     { field: 'createAt', headerName: 'Ngày tạo', width: 160 },
 ];
 
@@ -88,11 +117,14 @@ export default function Product() {
     // const [categoryCode, setCategoryCode] = React.useState('');
     const [brand, setBrand] = React.useState('');
     const [inventory, setInventory] = React.useState('');
-    const [inventories, setInventories] = React.useState([]);
-    const [price, setPrice] = React.useState(0);
-    const [originCost, setOriginCost] = React.useState(0);
-    const navigate = useNavigate();
+    // const [inventories, setInventories] = React.useState([]);
+    // const [price, setPrice] = React.useState(0);
+    // const [originCost, setOriginCost] = React.useState(0);
     const [openSnackBar, setOpenSnackBar] = React.useState(false);
+    const [imageURL, setImageURL] = React.useState(null);
+    const navigate = useNavigate();
+    const [selectedImage, setSelectedImage] = React.useState(null);
+    const inputFileRef = React.useRef(null);
 
     const handleClickSnackBar = () => {
         setOpenSnackBar(true);
@@ -123,9 +155,9 @@ export default function Product() {
             setCategories(response.data);
         });
 
-        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
-            setInventories(response.data);
-        });
+        // axios.get(`${apiBaseUrl}/inventories`).then((response) => {
+        //     setInventories(response.data);
+        // });
     }, []);
 
     const handleClickRow = (e) => {
@@ -137,26 +169,45 @@ export default function Product() {
         console.log(e.target.value);
     };
 
-    const handleChangeInventory = (e) => {
-        setInventory(e.target.value);
-        console.log(e.target.value);
-    };
+    // const handleChangeInventory = (e) => {
+    //     setInventory(e.target.value);
+    //     console.log(e.target.value);
+    // };
 
-    const hangleCreate = () => {
+    const hangleCreate = async () => {
+        const url = await uploadImage(selectedImage);
         const formData = {
             brand: brand,
             categoryCode: category,
-            inventoryName: inventory,
+            // inventoryName: inventory,
             name: name,
-            originalCost: parseFloat(originCost.replace(/,/g, '')),
-            price: parseFloat(price.replace(/,/g, '')),
+            // originalCost: parseFloat(originCost.replace(/,/g, '')),
+            // price: parseFloat(price.replace(/,/g, '')),
+            image: url,
         };
         axios.post(`${apiBaseUrl}/products`, formData).then(() => {
             setAdd(false);
             // handleClickVariant('success');
             handleClickSnackBar();
         });
+        console.log(url);
     };
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        setSelectedImage(file);
+        const imageURLTemp = URL.createObjectURL(file);
+        setImageURL(imageURLTemp);
+    }
+
+    function deleteImage() {
+        if (imageURL) {
+            URL.revokeObjectURL(imageURL);
+            setImageURL(null);
+            inputFileRef.current.value = null;
+            setSelectedImage(null);
+        }
+    }
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -170,6 +221,7 @@ export default function Product() {
                 left={'0'}
                 right={'0'}
                 bottom={'0'}
+                backgroundColor={'rgba(220,220,220, 0.6)'}
             >
                 <List
                     sx={{ backgroundColor: 'white', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', borderRadius: '6px' }}
@@ -185,6 +237,7 @@ export default function Product() {
                                 onChange={(e) => {
                                     setName(e.target.value);
                                 }}
+                                value={name}
                                 size="small"
                                 variant="outlined"
                             />
@@ -195,6 +248,7 @@ export default function Product() {
                                 onChange={(e) => {
                                     setBrand(e.target.value);
                                 }}
+                                value={brand}
                                 size="small"
                                 variant="outlined"
                             />
@@ -218,7 +272,7 @@ export default function Product() {
                                 </Select>
                             </Box>
                         </Box>
-                        <Box width={'50%'}>
+                        {/* <Box width={'50%'}>
                             <ListItemText primary="Kho" />
                             <Select
                                 size="small"
@@ -232,9 +286,9 @@ export default function Product() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                        </Box>
+                        </Box> */}
                     </ListItem>
-                    <ListItem>
+                    {/* <ListItem>
                         <Box marginRight={'12px'}>
                             <ListItemText primary="Giá bán" />
                             <NumericFormat
@@ -262,8 +316,20 @@ export default function Product() {
                                     setOriginCost(e.target.value);
                                 }}
                             />
-                        </Box>
+                        </Box> */
+                    /* </ListItem> */}
+
+                    <ListItem>
+                        <input type="file" accept="image/*" ref={inputFileRef} onChange={handleImageUpload} />
+                        {imageURL && (
+                            <div>
+                                <img style={{ width: '48px', height: '48px' }} src={imageURL} alt="Uploaded" />
+                                <button onClick={deleteImage}>Delete Image</button>
+                            </div>
+                        )}
+                        {/* <AddPhotoAlternateIcon sx={{ width: '60px', height: '60px', margin: '20px' }} /> */}
                     </ListItem>
+
                     <ListItem sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Box width={'50%'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                             <Button onClick={hangleCreate} variant="contained" sx={{ margin: '10px' }}>
@@ -272,6 +338,13 @@ export default function Product() {
                             <Button
                                 onClick={() => {
                                     setAdd(false);
+                                    setSelectedImage(null);
+                                    setImageURL(null);
+                                    inputFileRef.current.value = null;
+                                    setName('');
+                                    setCategory('');
+                                    setBrand('');
+                                    console.log(name, brand);
                                 }}
                                 variant="outlined"
                                 sx={{ margin: '10px' }}
@@ -382,7 +455,7 @@ export default function Product() {
                     // message="Tạo sản phẩm thành công"
                     // action={action}
                 >
-                    <Alert sx={{padding: '8px'}} severity="success" color="info">
+                    <Alert sx={{ padding: '8px' }} severity="success" color="info">
                         Tạo sản phẩm thành công
                     </Alert>
                 </Snackbar>

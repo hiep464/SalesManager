@@ -1,17 +1,17 @@
 import axios from "axios";
 
-const accessToken = JSON.parse(localStorage.getItem('token'))
+// const accessToken = JSON.parse(localStorage.getItem('token'))
 const APIapp=axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "http://localhost:8086/",
     headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}` 
+        // 'Authorization': `Bearer ${accessToken}` 
     }
 })
 
-APIapp.interceptors.request.use((config)=>{
-    config.headers.Authorization = `Bearer ${accessToken}`;
-    return config
-})
+// APIapp.interceptors.request.use((config)=>{
+//     config.headers.Authorization = `Bearer ${accessToken}`;
+//     return config
+// })
 
 export default APIapp

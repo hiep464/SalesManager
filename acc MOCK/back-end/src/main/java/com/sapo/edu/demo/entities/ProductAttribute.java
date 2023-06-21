@@ -27,6 +27,9 @@ public class ProductAttribute {
     @Column(name = "sold")
     Integer sold;
 
+    @Column
+    private String image;
+
     @Column(name = "size")
     String size;
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -31,8 +31,31 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
-import { display } from '@mui/system';
 import { apiBaseUrl } from '../../constant/constant';
+import app from '../../firebase/app';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import CloseIcon from '@mui/icons-material/Close';
+import ImageIcon from '@mui/icons-material/Image';
+
+const uploadImage = async (file) => {
+    const storage = getStorage(app);
+    const storageRef = ref(storage, 'images/' + file.name);
+
+    try {
+        // Tải ảnh lên Firebase Storage
+        await uploadBytes(storageRef, file);
+
+        // Lấy URL tải xuống của ảnh
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Trả về URL ảnh để sử dụng
+        return downloadURL;
+    } catch (error) {
+        // Xử lý lỗi tải ảnh
+        console.log('Lỗi tải ảnh:', error);
+        return null;
+    }
+};
 
 function extractArrayProperties(arr, properties) {
     return arr.map((obj) => {
@@ -100,7 +123,12 @@ function ProductDetails() {
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [refesh, setRefesh] = useState(0);
     const [message, setMessage] = useState('');
+    const [imgLink, setImgLink] = useState(null);
+    // const [selectedFile, setSelectedFile] = useState(null);
     // const [attributeUpdate, setAttributeUpdate] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageURL, setImageURL] = useState(null);
+    const inputFileRef = useRef(null);
 
     function TransitionDown(props) {
         return <Slide {...props} direction="down" />;
@@ -120,7 +148,7 @@ function ProductDetails() {
 
     useEffect(() => {
         axios.get(`${apiBaseUrl}/product/${code}/attribute`).then((response) => {
-            // console.log(response.data);
+            console.log(response.data);
             setAttributes(response.data);
         });
         axios.get(`${apiBaseUrl}/products/${code}`).then((response) => {
@@ -211,7 +239,7 @@ function ProductDetails() {
         setOpen(false);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const arr = extractArrayProperties(addAttribute, ['size', 'color']);
         if (checkEmptyAttributesArray(arr)) {
             setError(true);
@@ -229,6 +257,18 @@ function ProductDetails() {
                         console.log('sucess');
                     });
                 }
+
+                if (selectedImage) {
+                    const url = await uploadImage(selectedImage);
+                    product.image = url;
+                    // setProduct((prev) => ({
+                    //     ...prev,
+                    //     image: url,
+                    // }));
+                    // console.log(url, product)
+                }
+                console.log(attributes)
+
                 axios.put(`${apiBaseUrl}/product/update`, product).then(() => {
                     console.log('update product sucess');
                 });
@@ -240,10 +280,11 @@ function ProductDetails() {
                 setMessage('Cập nhật thành công');
                 handleClickSnackBar();
                 setRefesh(refesh + 1);
+                setImageURL(null);
+                // inputFileRef.current.value = null;
+                setSelectedImage(null);
             }
         }
-
-        console.log(attributes, product);
     };
 
     const handleDeleteAttribute = () => {
@@ -255,6 +296,35 @@ function ProductDetails() {
             handleClickSnackBar();
         });
     };
+
+    // const handleFileChange = (event) => {
+    //     const file = event.target.files[0];
+    //     setSelectedFile(file);
+    // };
+
+    // const handleUpload = async () => {
+    //     if (selectedFile) {
+    //         const url = await uploadImage(selectedFile);
+    //         setImgLink(url);
+    //     }
+    // };
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        console.log(file);
+        setSelectedImage(file);
+        const imageURLTemp = URL.createObjectURL(file);
+        setImageURL(imageURLTemp);
+    }
+
+    function deleteImage() {
+        if (imageURL) {
+            URL.revokeObjectURL(imageURL);
+            setImageURL(null);
+            // inputFileRef.current.value = null;
+            setSelectedImage(null);
+        }
+    }
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -273,7 +343,7 @@ function ProductDetails() {
                     }}
                 />
             ) : (
-                <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>{product?.name}</h2>
                     <Box>
                         <Button variant="contained" disableElevation>
@@ -319,7 +389,7 @@ function ProductDetails() {
                                     categoryName
                                 )}
                             </Box>
-                            <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
+                            {/* <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                 <ListItemText primary="Giá bán :" />
                                 {update ? (
                                     // <TextField sx={{width: '50%'}} type='number' size="small" defaultValue={product?.price} variant="outlined" />
@@ -343,7 +413,7 @@ function ProductDetails() {
                                 ) : (
                                     <Numeral value={product?.price} format={'0,0'} />
                                 )}
-                            </Box>
+                            </Box> */}
                         </ListItem>
                         <ListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
@@ -366,7 +436,7 @@ function ProductDetails() {
                                     product?.brand
                                 )}
                             </Box>
-                            <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
+                            {/* <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                 <ListItemText primary="Giá nhập :" />
                                 {update ? (
                                     // <TextField sx={{width: '50%'}} type='number' size="small" defaultValue={product?.price} variant="outlined" />
@@ -390,7 +460,7 @@ function ProductDetails() {
                                 ) : (
                                     <Numeral value={product?.originalCost} format={'0,0'} />
                                 )}
-                            </Box>
+                            </Box> */}
                         </ListItem>
                         {update ? (
                             ''
@@ -416,8 +486,59 @@ function ProductDetails() {
                             width: '35%',
                         }}
                     >
-                        <AddPhotoAlternateIcon sx={{ width: '60px', height: '60px', margin: '20px' }} />
-                        chưa có hình ảnh
+                        {product?.image ? (
+                            <div style={{ position: 'relative' }}>
+                                <img src={product.image} alt="image" style={{ width: '68px', height: '68px' }} />
+                                {update ? (
+                                    <CloseIcon
+                                        sx={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            right: '1px',
+                                            width: '18px',
+                                            height: '18px',
+                                            color: 'red',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => {
+                                            setProduct((prev) => ({
+                                                ...prev,
+                                                image: null,
+                                            }));
+                                        }}
+                                    />
+                                ) : (
+                                    ''
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                {update ? (
+                                    imageURL ? (
+                                        <div>
+                                            <img
+                                                style={{ width: '48px', height: '48px' }}
+                                                src={imageURL}
+                                                alt="Uploaded"
+                                            />
+                                            <button onClick={deleteImage}>Delete Image</button>
+                                        </div>
+                                    ) : (
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            ref={inputFileRef}
+                                            onChange={handleImageUpload}
+                                        ></input>
+                                    )
+                                ) : (
+                                    <>
+                                        <AddPhotoAlternateIcon sx={{ width: '60px', height: '60px', margin: '20px' }} />
+                                        chưa có hình ảnh
+                                    </>
+                                )}
+                            </>
+                        )}
                     </Box>
                 </Box>
             </Box>
@@ -440,6 +561,7 @@ function ProductDetails() {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
+                                {/* <TableCell align="left">Ảnh</TableCell> */}
                                 <TableCell align="left">
                                     Kích cỡ
                                     {update ? (
@@ -478,15 +600,23 @@ function ProductDetails() {
                                         ''
                                     )}
                                 </TableCell>
+                                <TableCell align="left">Giá bán</TableCell>
+                                <TableCell align="left">Giá nhập</TableCell>
                                 <TableCell align="left">Số lượng</TableCell>
-                                <TableCell align="left">Đã bán</TableCell>
                                 {!update ? <TableCell align="left">Ngày tạo</TableCell> : ''}
                                 {update ? <TableCell /> : ''}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {attributes.map((row, index) => (
-                                <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {/* <TableCell sx={{ width: '18%' }} component="th" scope="row">
+                                        {row?.image ? (
+                                            <img src={row?.image} style={{ width: '24px', height: '24px' }} />
+                                        ) : (
+                                            <ImageIcon />
+                                        )}
+                                    </TableCell> */}
                                     <TableCell sx={{ width: '18%' }} component="th" scope="row">
                                         {row.size}
                                     </TableCell>
@@ -502,7 +632,69 @@ function ProductDetails() {
                                                 type="text"
                                                 // Các thuộc tính khác của TextField
                                                 // defaultValue={row.quantity}
-                                                value={row.quantity}
+                                                value={row?.price}
+                                                sx={{ width: '50%' }}
+                                                size="small"
+                                                variant="standard"
+                                                onChange={(e) => {
+                                                    setAttributes((prevItems) =>
+                                                        prevItems.map((item) =>
+                                                            item.id === row.id
+                                                                ? {
+                                                                      ...item,
+                                                                      price: parseFloat(
+                                                                          e.target.value.replace(/,/g, ''),
+                                                                      ),
+                                                                  }
+                                                                : item,
+                                                        ),
+                                                    );
+                                                }}
+                                            />
+                                        ) : (
+                                            <Numeral value={row?.price} format={'0,0'} />
+                                        )}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {update ? (
+                                            <NumericFormat
+                                                thousandSeparator={true}
+                                                prefix={''}
+                                                customInput={TextField}
+                                                type="text"
+                                                // Các thuộc tính khác của TextField
+                                                value={row?.originalCost}
+                                                sx={{ width: '50%' }}
+                                                size="small"
+                                                variant="standard"
+                                                onChange={(e) => {
+                                                    setAttributes((prevItems) =>
+                                                        prevItems.map((item) =>
+                                                            item.id === row.id
+                                                                ? {
+                                                                      ...item,
+                                                                      originalCost: parseFloat(
+                                                                          e.target.value.replace(/,/g, ''),
+                                                                      ),
+                                                                  }
+                                                                : item,
+                                                        ),
+                                                    );
+                                                }}
+                                            />
+                                        ) : (
+                                            <Numeral value={row?.originalCost} format={'0,0'} />
+                                        )}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {update ? (
+                                            <NumericFormat
+                                                thousandSeparator={true}
+                                                prefix={''}
+                                                customInput={TextField}
+                                                type="text"
+                                                // Các thuộc tính khác của TextField
+                                                value={row?.quantity}
                                                 sx={{ width: '50%' }}
                                                 size="small"
                                                 variant="standard"
@@ -522,38 +714,7 @@ function ProductDetails() {
                                                 }}
                                             />
                                         ) : (
-                                            row.quantity
-                                        )}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {update ? (
-                                            <NumericFormat
-                                                thousandSeparator={true}
-                                                prefix={''}
-                                                customInput={TextField}
-                                                type="text"
-                                                // Các thuộc tính khác của TextField
-                                                defaultValue={row.sold}
-                                                sx={{ width: '50%' }}
-                                                size="small"
-                                                variant="standard"
-                                                onChange={(e) => {
-                                                    setAttributes((prevItems) =>
-                                                        prevItems.map((item) =>
-                                                            item.id === row.id
-                                                                ? {
-                                                                      ...item,
-                                                                      sold: parseFloat(
-                                                                          e.target.value.replace(/,/g, ''),
-                                                                      ),
-                                                                  }
-                                                                : item,
-                                                        ),
-                                                    );
-                                                }}
-                                            />
-                                        ) : (
-                                            row.sold
+                                            row?.quantity
                                         )}
                                     </TableCell>
                                     {!update ? (
