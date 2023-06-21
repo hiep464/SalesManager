@@ -11,5 +11,5 @@ import java.util.Date;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
-    Page<Feedback> findByCustomerCodeContainingAndFeedbackDateGreaterThanEqualAndFeedbackDateLessThanEqualAndStatusEquals(String searchText, Date minDate, Date maxDate, String status, Pageable pageable);
+    Page<Feedback> findByCustomerCodeContainingAndFeedbackDateGreaterThanEqualAndFeedbackDateLessThanEqualAndStatusContainingIgnoreCase(String searchText, Date minDate, Date maxDate, String status, Pageable pageable);
 }

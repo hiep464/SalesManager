@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
@@ -22,23 +24,26 @@ public class FeedbackService {
         this.feedbackRepository = feedbackRepository;
     }
 
-    public FeedbackResponse createFeedback(Feedback feedback){
-            Date date =new Date();
-            feedback.setFeedbackDate(date);
-            Feedback createFeedback = feedbackRepository.save(feedback);
-            FeedbackResponse response = new FeedbackResponse();
-            response.setFeedback(createFeedback);
-            response.setMessage("Create feedback success");
-            return response;
+    public FeedbackResponse createFeedback(Feedback feedback) throws ParseException {
+        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = customFormatter.format(LocalDateTime.now());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = dateFormat.parse(formattedDate);
+        feedback.setFeedbackDate(date);
+        Feedback createFeedback = feedbackRepository.save(feedback);
+        FeedbackResponse response = new FeedbackResponse();
+        response.setFeedback(createFeedback);
+        response.setMessage("Create feedback success");
+        return response;
     }
 
     public FeedbackResponse updateFeedback(Integer id,Feedback feedback){
-            feedback.setId(id);
-            Feedback updateFeedback = feedbackRepository.save(feedback);
-            FeedbackResponse response= new FeedbackResponse();
-            response.setFeedback(updateFeedback);
-            response.setMessage("Update feedback success");
-            return response;
+        feedback.setId(id);
+        Feedback updateFeedback = feedbackRepository.save(feedback);
+        FeedbackResponse response = new FeedbackResponse();
+        response.setFeedback(updateFeedback);
+        response.setMessage("Update feedback success");
+        return response;
     }
 
     public Optional<Feedback> getFeedbackById(Integer id) throws NotFoundException {
@@ -59,9 +64,9 @@ public class FeedbackService {
 
     public Page<Feedback> listFeedback(String searchText, String minDate, String maxDate, String status, int page, int size) throws ParseException {
         Pageable pageable = PageRequest.of(page, size);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date minDateConvert = dateFormat.parse(minDate);
         Date maxDateConvert = dateFormat.parse(maxDate);
-        return feedbackRepository.findByCustomerCodeContainingAndFeedbackDateGreaterThanEqualAndFeedbackDateLessThanEqualAndStatusEquals(searchText, minDateConvert, maxDateConvert, status, pageable);
+        return feedbackRepository.findByCustomerCodeContainingAndFeedbackDateGreaterThanEqualAndFeedbackDateLessThanEqualAndStatusContainingIgnoreCase(searchText, minDateConvert, maxDateConvert, status, pageable);
     }
 }

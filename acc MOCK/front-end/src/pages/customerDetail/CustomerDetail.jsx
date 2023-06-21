@@ -2,12 +2,18 @@ import './CustomerDetail.scss'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import UpdateModal from './updateModal/UpdateModal';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function CustomerDetail (){
     const [update, setUpdate] = useState(false) 
+    const navigate= useNavigate()
 
     const toggleUpdate =()=>{
         setUpdate(!update)
+    }
+
+    const handleCreateFeedback =()=>{
+        navigate('/feedbacks/new')
     }
 
 
@@ -19,7 +25,7 @@ function CustomerDetail (){
                     Quay lại trang danh sách
                 </span>
                 <div className='btn'>
-                    <button className='createfeeback'>Tạo phản hồi</button>
+                    <button className='createfeeback' onClick={handleCreateFeedback}>Tạo phản hồi</button>
                     <button className='updatebtn'>Cập nhật liên hệ</button>
                 </div>
             </div>
@@ -75,18 +81,6 @@ function CustomerDetail (){
                         <p>:</p>
                     </div>
                 </div>
-            </div>
-            <div className='history'>
-                <div className='title'>
-                    <span>Lịch sử mua hàng</span>
-                </div>
-                <table>
-                    <tr>
-                        <th>Mã đơn hàng</th>
-                        <th>Giá trị đơn hàng</th>
-                        <th>Ngày đặt hàng</th>
-                    </tr>
-                </table>
             </div>
             {update &&<UpdateModal clickMethod={toggleUpdate}/>}
         </div>
