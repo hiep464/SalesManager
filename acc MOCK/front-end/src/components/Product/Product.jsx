@@ -5,20 +5,29 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Unstable_Grid2';
 import './Product.scss';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 import axios from 'axios';
 
 const Product = (props) => {
     let row = props.row;
     let onUpdateAttribute = props.onUpdateAttribute;
-    let id = props.index;
     const [data, setData] = React.useState();
     const [size, setSize] = React.useState();
     const handleDelete = () => {
         props.onDeleteProduct(row.attributeID);
     };
+
+    const handleUp = () => {
+        props.onUp(row.attributeID);
+    };
+
+    const handleDown = () => {
+        props.onDown(row.attributeID);
+    };
     const getSize = () => {
-        let url = 'http://localhost:8080/admins/products/' + row.code + '/attribute';
+        let url = 'http://localhost:8080/admin/product/' + row.code + '/attribute';
         return axios.get(url);
     };
 
@@ -26,17 +35,12 @@ const Product = (props) => {
         getSize().then((response) => {
             setData(response.data);
         });
-    }, []);
-
-    // const handleChange = (event, id) => {
-    //     setSize(event.target.value);
-    //     onUpdateAttribute(id, event.target.value);
-    // };
+    });
 
     return (
         <div className="product">
             {row ? (
-                <Grid container spacing={3} sx={{ width: '100%' ,height: '100px'}} className="product1">
+                <Grid container spacing={3} sx={{ width: '100%', height: '100px' }} className="product1">
                     <Grid xs={1}>{props.index + 1}</Grid>
                     <Grid xs={1}>
                         <div onClick={handleDelete}>
@@ -68,7 +72,11 @@ const Product = (props) => {
                     </Grid>
                     <Grid xs={2}>{row.code}</Grid>
                     <Grid xs={3}>{row.name}</Grid>
-                    <Grid xs={1}>{row.quantity}</Grid>
+                    <Grid xs={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <ArrowDropDownIcon onClick={handleDown}/>
+                        {row.quantity}
+                        <ArrowDropUpIcon onClick={handleUp}/>
+                    </Grid>
                     <Grid xs={1}>{row.price.toLocaleString('en-US')}</Grid>
                     <Grid xs={1}>{(row.price * row.quantity).toLocaleString('en-US')}</Grid>
                 </Grid>

@@ -78,4 +78,12 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

@@ -12,7 +12,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import '../Product/Product.scss';
 
 function OrderBody(props) {
-    const { rows, value, index, onDeleteProduct,onUpdateAttribute, ...other } = props;
+    const { rows, value, index, onDeleteProduct,onUpdateAttribute,onDown,onUp, ...other } = props;
 
     return (
         <div
@@ -61,7 +61,7 @@ function OrderBody(props) {
             )}
             {value === index && rows ? (
                 rows.map((row, i) => {
-                    return <Product row={row} index={i} onDeleteProduct={onDeleteProduct} onUpdateAttribute={onUpdateAttribute}/>;
+                    return <Product row={row} index={i} onDeleteProduct={onDeleteProduct} onDown = {onDown} onUp = {onUp} onUpdateAttribute={onUpdateAttribute}/>;
                 })
             ) : (
                 <></>

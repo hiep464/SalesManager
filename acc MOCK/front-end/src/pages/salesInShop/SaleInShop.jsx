@@ -48,7 +48,7 @@ function SalesInShop() {
     useEffect(() => {
         if (search !== '') {
             axios.get(`${apiBaseUrl}/customers?phone=` + search).then((Response) => {
-                setCustomers(Response.data);
+                setCustomers(Response.data.content);
             });
         } else {
             setCustomers([]);
@@ -61,6 +61,10 @@ function SalesInShop() {
 
     const createOrder = () => {
         let total = orders[value].products.reduce((total, current) => (total += current.quantity * current.price), 0);
+        let totalQuantity = orders[value].products.reduce(
+            (totalQuantity, current) => (totalQuantity += current.quantity),
+            0,
+        );
         let orderLines = orders[value].products;
         orderLines.forEach((line) => {
             line.productCode = line.code;
@@ -72,12 +76,14 @@ function SalesInShop() {
                 orderTable: {
                     customerCode: orders[value].customer.code,
                     staffCode: 'S002',
+                    quantity: totalQuantity,
                     status: 'success',
                     total: total,
                 },
             })
             .then((response) => {
                 console.log(response);
+                handleDeleteOrder(value);
             });
     };
 
@@ -102,6 +108,58 @@ function SalesInShop() {
             return newState;
         });
     };
+
+    const handleUp = (productId) => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (product.quantity + 1 <= 0) {
+                        handleDelete(productId);
+                    } else {
+                        return { ...product, quantity: product.quantity + 1 };
+                    }
+                }
+                return product;
+            });
+
+            newState[value].products = updatedProducts;
+
+            return newState;
+        });
+    };
+
+    const handleDown = (productId) => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (product.quantity - 1 <= 0) {
+                        handleDelete(productId);
+                    } else {
+                        return { ...product, quantity: product.quantity - 1 };
+                    }
+                }
+                return product;
+            });
+
+            newState[value].products = updatedProducts;
+
+            return newState;
+        });
+    };
+
+    const handleDeleteOrder = (orderID) => {
+        console.log('1111111');
+        console.log(orderID);
+        const newState = orders;
+        const updatedOrderItems = newState.filter((item, index) => index !== orderID);
+        setOrders(updatedOrderItems);
+    };
     return (
         <div className="body1">
             {addCustomer && (
@@ -114,7 +172,10 @@ function SalesInShop() {
                     <Grid xs={12}>
                         <div className="logo">
                             <div className="image">
-                                <img src="../../assets/images/logo.webp" />
+                                <img
+                                    src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
+                                    alt=""
+                                />
                             </div>
                         </div>
                         <div className="Nav">
@@ -131,7 +192,8 @@ function SalesInShop() {
                                             axios
                                                 .get(`${apiBaseUrl}/products?code=` + searchProduct)
                                                 .then((Response) => {
-                                                    setProducts(Response.data.data.products);
+                                                    setProducts(Response.data);
+                                                    console.log('res:', Response);
                                                 });
                                         } else {
                                             setProducts([]);
@@ -155,11 +217,11 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         const product1 = {
-                                                            code: product[0],
-                                                            name: product[1],
+                                                            code: product.code,
+                                                            name: product.name,
                                                             quantity: 1,
-                                                            price: product[2],
-                                                            attributeID: product[3],
+                                                            price: product.price,
+                                                            attributeID: product.id,
                                                         };
                                                         var duplicate = false;
 
@@ -196,13 +258,20 @@ function SalesInShop() {
                                         >
                                             {orders ? (
                                                 orders.map((order, index) => {
-                                                    let labell = 'Đơn ' + order.order;
+                                                    let labell = 'Đơn ' + (index + 1);
                                                     return (
                                                         <Tab
                                                             label={labell}
                                                             {...a11yProps(index)}
                                                             className="tabs"
-                                                            icon={<CloseIcon />}
+                                                            icon={
+                                                                <CloseIcon
+                                                                    onClick={() => handleDeleteOrder(index)}
+                                                                    {...a11yProps(
+                                                                        index - 1 > 0 ? index - 1 : index + 1,
+                                                                    )}
+                                                                />
+                                                            }
                                                             iconPosition="end"
                                                         ></Tab>
                                                     );
@@ -249,6 +318,8 @@ function SalesInShop() {
                                         index={index}
                                         onDeleteProduct={handleDelete}
                                         onUpdateAttribute={handleAttribute}
+                                        onDown={handleDown}
+                                        onUp ={handleUp}
                                     />
                                 );
                             })
@@ -257,7 +328,7 @@ function SalesInShop() {
                         )}
                     </Grid>
                     <Grid xs={4}>
-                        {orders[value].customer === null ? (
+                        {orders[value]?.customer === null ? (
                             <div className="addCustomer">
                                 <TextField
                                     label="Add Customer"
@@ -299,16 +370,16 @@ function SalesInShop() {
                                 </div>
                             </div>
                         ) : (
-                            <ResultCustomerSearch customer={orders[value].customer} />
+                            <ResultCustomerSearch customer={orders[value]?.customer} />
                         )}
                         <div className="order_info">
                             <p>
                                 Số lượng sản phẩm:
-                                {orders[value].products.reduce((total, current) => (total += current.quantity), 0)}
+                                {orders[value]?.products.reduce((total, current) => (total += current.quantity), 0)}
                             </p>
                             <p>
                                 Thành tiền:
-                                {orders[value].products
+                                {orders[value]?.products
                                     .reduce((total, current) => (total += current.quantity * current.price), 0)
                                     .toLocaleString('en-US')}
                             </p>
@@ -325,7 +396,7 @@ function SalesInShop() {
                                 Số tiền phải trả:
                                 {(
                                     money -
-                                    orders[value].products.reduce(
+                                    orders[value]?.products.reduce(
                                         (total, current) => (total += current.quantity * current.price),
                                         0,
                                     )

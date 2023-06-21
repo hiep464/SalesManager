@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,16 +41,20 @@ public class OrderService {
         return orderRepository.save(newOrder);
     }
 
-//    public ArrayList<BigDecimal> getReportData(String staffCode, LocalDate startDate, LocalDate endDate){
-//        ArrayList<BigDecimal> arrayList = new ArrayList<>();
-//        for (LocalDate date = startDate; date.isBefore(endDate) || date.isEqual(endDate); date = date.plusDays(1)) {
-//            arrayList.add(orderRepository.findTotalRevenueByStaffCode(date,staffCode));
-//        }
-//        return arrayList;
-//    }
+    public ArrayList<BigDecimal> getReportData(String staffCode, LocalDate startDate, LocalDate endDate){
+        ArrayList<BigDecimal> arrayList = new ArrayList<>();
+        for (LocalDate date = startDate; date.isBefore(endDate) || date.isEqual(endDate); date = date.plusDays(1)) {
+            arrayList.add(orderRepository.findTotalRevenueByStaffCode(date,staffCode));
+        }
+        return arrayList;
+    }
 
     public Map<String, Object> getReportInfo(String staffCode,LocalDate startDate, LocalDate endDate){
         return orderRepository.getRevenueOrderCountAndProductSoldForStaffCode(staffCode,startDate,endDate);
+    }
+
+    public List<Order> getDetailOrderOnReport(String staffCode,LocalDate startDate, LocalDate endDate){
+        return orderRepository.getRevenueOrderForStaffCode(staffCode,startDate,endDate);
     }
 
     public Integer getOrderCount(){

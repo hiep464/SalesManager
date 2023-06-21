@@ -1,4 +1,5 @@
 package com.sapo.edu.demo.controller;
+import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
@@ -53,10 +54,12 @@ public class ProductController {
     public ProductEntity getProductByCode(@PathVariable("code") String code) {
         return productService.getProductByCode(code);
     }
-//
-    @GetMapping("/product/search")
-    public List<ProductEntity> searchProductByCode(@RequestParam String code){
-        return productService.searchProductByCode(code);
+
+    @GetMapping("/products")
+    public List<ProductDto> getAllProductsByCode(
+            @RequestParam("code") String code
+    ) {
+        return productService.getAllProductsByCode(code);
     }
 
     @PutMapping("product/update")
