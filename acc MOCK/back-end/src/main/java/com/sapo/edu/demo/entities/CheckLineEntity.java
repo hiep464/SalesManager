@@ -31,6 +31,6 @@ public class CheckLineEntity {
     private String reason;
     @Column
     @NotNull
-    private String note;
+    private Integer attributeId;
 
 }

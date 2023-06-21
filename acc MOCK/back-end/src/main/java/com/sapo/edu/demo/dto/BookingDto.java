@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -28,9 +29,11 @@ public class BookingDto {
 
     private BigDecimal total;
     @NotEmpty
-    private LocalDateTime bookingDate;
+    private LocalDate bookingDate;
     @NotEmpty
     private String bookingStatus;
+    @NotNull
+    private String inventoryName;
     @NotEmpty
     private List<BookingLineDto> bookinglines;
 

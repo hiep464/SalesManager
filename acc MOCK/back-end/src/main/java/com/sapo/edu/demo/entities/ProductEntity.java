@@ -24,17 +24,10 @@ public class ProductEntity {
     @Column
     @NotNull
     private String name;
-
-    private BigDecimal price;
-
-    @NotNull
-    private String inventoryName;
-
     @Column
     private String brand;
-
     @Column
-    private BigDecimal originalCost;
+    private String description;
 
     @Column
     private LocalDate createAt;
@@ -42,39 +35,5 @@ public class ProductEntity {
     @Column
     private LocalDate updateAt;
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setInventoryName(String inventoryName) {
-        this.inventoryName = inventoryName;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public void setOriginalCost(BigDecimal originalCost) {
-        this.originalCost = originalCost;
-    }
-
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
-    }
-
-    public void setUpdateAt(LocalDate updateAt) {
-        this.updateAt = updateAt;
-    }
 }

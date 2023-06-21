@@ -3,10 +3,12 @@ package com.sapo.edu.demo.service;
 import com.sapo.edu.demo.dto.product.attribute.CreateProductAttribute;
 import com.sapo.edu.demo.entities.ProductAttribute;
 import com.sapo.edu.demo.repository.ProductAttributeRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,10 +16,26 @@ public class ProductAttributeService {
 
     @Autowired
     ProductAttributeRepository productAttributeRepository;
-
+    ModelMapper modelMapperProductAttribute = new ModelMapper();
     public List<ProductAttribute> findAllAttribute(String code){
-        return productAttributeRepository.findAllByProductCode(code);
+        return productAttributeRepository.findByProductCode(code);
     }
+    public CreateProductAttribute findAllAttributeByProductCodeAndSizeAndName(String code, String size, String color, String inventoryName) {
+        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(code, size, color, inventoryName );
+        CreateProductAttribute attributeDto = modelMapperProductAttribute.map(attribute,CreateProductAttribute.class);
+        return attributeDto;
+
+    }
+
+    //bao
+    public List<String> getAllSizes() {
+        return productAttributeRepository.findDistinctSize();
+    }
+
+    public List<String> getAllColors() {
+        return productAttributeRepository.findDistinctColor();
+    }
+    //bao
 
     public Integer getTotalQuantity(){
         return productAttributeRepository.getTotalQuantity();

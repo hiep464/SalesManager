@@ -24,15 +24,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     Optional<ProductEntity> findByCodeIgnoreCase(String code);
     Optional<ProductEntity> findProductCodeByCode(String code);
     Optional<ProductEntity> findByBrandContainingIgnoreCase(String code);
+    ProductEntity findByName(String name);
 
-    Optional<ProductEntity> deleteAllByInventoryName(String inventoryName);
     Optional<ProductEntity> deleteByCode(String code);
+    List<ProductEntity> findByCodeContaining(String code);
 
     ProductEntity findByCode(String code);
 
-    @Modifying
-    @Query("SELECT p FROM ProductEntity p WHERE p.code LIKE %:code% ")
-    List<ProductEntity> findByCodeContaining(String code);
 
     @Query("select p.name, sum(pa.quantity) as total "
             + "from ProductEntity p join ProductAttribute pa on p.code = pa.productCode "

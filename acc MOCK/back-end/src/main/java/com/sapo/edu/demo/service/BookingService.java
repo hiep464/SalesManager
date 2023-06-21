@@ -16,6 +16,8 @@ import com.sapo.edu.demo.exception.DuplicateException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.time.LocalDate.now;
+
 
 @Service
 //@RequiredArgsConstructor
@@ -38,14 +40,7 @@ public class BookingService {
     @Autowired
     private ModelMapper modelMapperbooking;
 
-//    public BookingService(StaffRepository staffRepository, SupplierRepository supplierRepository, ProductRepository productRepository, BookingLineRepository bookingLineRepository, BookingRepository bookingRepository, ModelMapper modelMapperbooking) {
-//        this.staffRepository = staffRepository;
-//        this.supplierRepository = supplierRepository;
-//        this.productRepository = productRepository;
-//        this.bookingLineRepository = bookingLineRepository;
-//        this.bookingRepository = bookingRepository;
-//        this.modelMapperbooking = modelMapperbooking;
-//    }
+
 
     /**
      * Find all Bookigs
@@ -66,7 +61,7 @@ public class BookingService {
             BookingDto bookDto = bookingDtos.get(i);
             BookingEntity entity = booking.get(i);
             bookDto.setStaffName(staffRepository.findById(entity.getStaffCode()).get().getName());
-            bookDto.setSupplerName(supplierRepository.findById(entity.getSupplerCode()).get().getName());
+            bookDto.setSupplerName(supplierRepository.findById(entity.getSupplierCode()).get().getName());
 
         }
         response.put("products", bookingDtos);
@@ -91,11 +86,11 @@ public class BookingService {
 
                 bookingEntity = modelMapperbooking.map(bookingDto,BookingEntity.class);
                 bookingEntity.setStaffCode(staffRepository.findByName(bookingDto.getStaffName()).getCode());
-                bookingEntity.setSupplerCode(supplierRepository.findByName(bookingDto.getSupplerName()).get().getCode());
+                bookingEntity.setSupplierCode(supplierRepository.findByName(bookingDto.getSupplerName()).get().getCode());
                 bookingEntity.setPayStatus("Chưa thanh toán");
                 bookingEntity.setBookingStatus("Chưa nhập");
                 bookingEntity.setStatus("Đang giao dịch");
-                bookingEntity.setBookingDate(LocalDateTime.now());
+                bookingEntity.setBookingDate(now());
 
 
 
@@ -122,7 +117,7 @@ public class BookingService {
     public InventoryInputDto toInventory(InventoryInputDto inventoryInput) {
         BookingEntity bookingEntity = new BookingEntity();
         SupplierEntity supplier = new SupplierEntity();
-        supplier = supplierRepository.findByCode(bookingRepository.findByCode(inventoryInput.getCode()).getSupplerCode()).get();
+        supplier = supplierRepository.findByCode(bookingRepository.findByCode(inventoryInput.getCode()).getSupplierCode()).get();
         if(inventoryInput.getCode() != null ){
             bookingEntity = bookingRepository.findByCode(inventoryInput.getCode());
             if(bookingEntity == null) {

@@ -26,10 +26,10 @@ public class InventoryService {
      */
     public InventoryDto save(InventoryDto inventoryDto) {
         InventoryEntity inventoryEntity = new InventoryEntity();
-        if(inventoryDto.getCode() != null ){
+        if(inventoryDto.getName() != null ){
             InventoryDto finalInventoryDto = inventoryDto;
-            inventoryEntity = inventoryRepository.findById(inventoryDto.getCode())
-                    .orElseThrow(() -> new NotFoundException("Storage not found with id: " + finalInventoryDto.getCode()));
+            inventoryEntity = inventoryRepository.findById(inventoryDto.getName())
+                    .orElseThrow(() -> new NotFoundException("Storage not found with id: " + finalInventoryDto.getName()));
             modelMapperCategory.map(inventoryDto, inventoryEntity);
         }else{
             inventoryEntity = modelMapperCategory.map(inventoryDto,InventoryEntity.class);
@@ -53,18 +53,15 @@ public class InventoryService {
      * Find all storage
      * @return
      */
-    public Map<String, Object> getAllInventories() {
+    public List<InventoryDto> getAll() {
         List<InventoryEntity> inventories = new ArrayList<InventoryEntity>();
         inventories = inventoryRepository.findAll();
         // Mapping qua Dto
-        Map<String, Object> response = new HashMap<>();
-        List<InventoryDto> categoryDto = Arrays.asList(modelMapperCategory.map(inventories, InventoryDto[].class));
-        response.put("products", categoryDto);
+        List<InventoryDto> inventoryDtos = Arrays.asList(modelMapperCategory.map(inventories, InventoryDto[].class));
 
-        return response;
+
+        return inventoryDtos;
     }
 
-    public List<InventoryEntity> getAll() {
-        return inventoryRepository.findAll();
-    }
+
 }

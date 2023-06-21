@@ -5,6 +5,19 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
+import { Theme, useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Numeral from 'react-numeral';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import InputAdornment from '@mui/material/InputAdornment';
 import InputBase from '@mui/material/InputBase';
@@ -24,7 +37,28 @@ const CreateChecking = () => {
     const [searchProduct,setSearchProduct] = React.useState('')
     const [products,setProducts] = React.useState([])
     const [checkInventoryBody,setCheckInventoryBody] = React.useState([])
+    const [inventories, setInventories] = React.useState([]);
+   
+    const [inventory, setInventory] = React.useState('');
+    const [staffs, setStaffs] = React.useState([]);
+    const [staff, setStaff] = React.useState('');
+    console.log(inventory)
+    const handleChange = (event) => {
+        setInventory(event.target.value);
+    };
 
+    React.useEffect(() => {
+        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
+            setInventories(response.data);
+        });
+       
+        axios.get(`${apiBaseUrl}/staff`).then((response) => {
+            setStaffs(response.data);
+        });
+    }, []);
+    const theme = useTheme();
+ 
+   
     const handleDelete = (productCode)=>{
         const updatedCheckInventoryItems = checkInventoryBody.filter(item => item.productCode !== productCode);
         setCheckInventoryBody(updatedCheckInventoryItems) 
@@ -43,13 +77,17 @@ const CreateChecking = () => {
     const handleSubmit = () => {
         const dataCheck = { 
                             code: code,
-                            staffName: "Le Van Bao",
+                            staffName: staff,
+                            inventoryName: inventory,
                             checkLines: checkInventoryBody
                         }
         axios.post(`${apiBaseUrl}/check_inventory`,dataCheck)
             .then(res => {
-                alert(res.data.message)
+                alert("saved")
                 // console.log(res)
+            })
+            .catch(err => {
+                alert(err)
             })
        
 
@@ -65,13 +103,13 @@ const CreateChecking = () => {
                 </Box>
             </Box>
             <Box mt = {4} sx={{width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between'}}>
-                <Box width={'60%'} backgroundColor={'white'}>
+                <Box ml ={8} width={'60%'} backgroundColor={'white'}>
                     
                     
                     
-                            <h3>Nhập code</h3>
+                            <h3>Nhập mã kiểm kho</h3>
                             <TextField
-                                label="Add checking code"
+                                label="Mã kiểm kho"
                                 // size="small" 
                                 // variant="outlined" 
                                 id="outlined-start-adornment"
@@ -93,18 +131,47 @@ const CreateChecking = () => {
                    
                 </Box>
 
-                <Box width={'35%'} backgroundColor={'white'}>
-                    <h3>Thông tin đơn kiểm hàng</h3>
-                    <div>
-                        Kho: kho 1
-                    </div>
-                    <div>
-                        Nhân viên: Lê Văn Bảo
-                    </div>
-                    <div>
-                        Ngày kiểm: {currentTime()}
-                    </div>
-                    
+                <Box width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} borderRadius={'4px'}>
+                    <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
+                    <List dense={true}>
+                        <ListItem>
+                            <ListItemText primary="Kho :" />
+                            <Select size="small" sx={{ width: '50%' }} value={inventory} onChange={handleChange}>
+                                {inventories?.map((item) => {
+                                    return (
+                                        <MenuItem key={item.name} value={item?.name}>
+                                            {item?.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Nhân viên :" />
+                            <Select
+                                size="small"
+                                sx={{ width: '50%' }}
+                                value={staff}
+                                onChange={(e) => {
+                                    setStaff(e.target.value);
+                                }}
+                            >
+                                {staffs?.map((item) => {
+                                    return (
+                                        <MenuItem key={item.name} value={item?.name}>
+                                            {item?.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Ngày kiểm kho:" />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker sx={{ width: '50%' }} />
+                            </LocalizationProvider>
+                        </ListItem>
+                    </List>
                 </Box>
             </Box>
             <Box sx={{backgroundColor: 'white', width: 'calc(82vw - 44px)', marginTop: '10px'}}>
@@ -124,10 +191,10 @@ const CreateChecking = () => {
                     }}
                     onMouseEnter={React.useEffect(() => {
                         if(searchProduct !== '') {
-                            axios.get(`${apiBaseUrl}/products?code=` + searchProduct)
+                            axios.get(`${apiBaseUrl}/products?code=${searchProduct}&inventoryName=${inventory}`)
                                 .then((response) => {
                                     
-                                    setProducts(response.data.data.products)
+                                    setProducts(response.data)
                                 })
                             
                         } else {
@@ -157,10 +224,13 @@ const CreateChecking = () => {
                                         
                                         const product1 = {
                                             productCode: product.code,
+                                            productName: product.name,
+                                            brand : product.brand,
+                                            size: product.size,
+                                            color :product.color,
                                             inventoryQuantity: product.quantity,
                                             actualQuantity: 0,
-                                            reason: '',
-                                            note: ''
+                                            reason: ''
                                         }   
                                         var duplicate = false
                                         let count = 0

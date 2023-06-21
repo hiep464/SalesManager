@@ -65,9 +65,11 @@ const StyledMenu = styled((props) => (
 
 const columns = [
     { field: 'code', headerName: 'Mã phiếu kiểm', width: 300, },
-
+    {field: 'inventoryName', headerName: 'Kho', width:300,},
     { field: 'status', headerName: 'Trạng thái', width: 300 },
     { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
+    { field: 'createAt', headerName: 'Ngày tạo', width: 150 },
+
     
 ];
 
@@ -82,12 +84,12 @@ const CheckInventory = () => {
     const open = Boolean(anchorEl);
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/check_inventory`).then((Response) => {
-            setChecking(Response.data.data.products);
-            // console.log(Response.data.data.products)
+            setChecking(Response.data);
+            // console.log(Response.data)
             });
     },[])
     const handleCreateCheckRequest = () => {
-        navigate('/checkInventory/createChecking')
+        navigate('/inventory/check_inventory/create')
     }
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -96,7 +98,7 @@ const CheckInventory = () => {
         setAnchorEl(null);
     };
     const handleOpenDetail = (code) => {
-        navigate(`/checkInventory/${code}`)
+        navigate(`/inventory/check_inventory/${code}`)
     }
     return ( 
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -121,9 +123,9 @@ const CheckInventory = () => {
                         onMouseEnter={React.useEffect(() => {
                             if (searchCheckline !== '') {
                                 axios
-                                    .get('http://localhost:8086/admin/check_inventory/code?code=' + searchCheckline)
+                                    .get('http://localhost:8086/admin/product/search?code=' + searchCheckline)
                                     .then((Response) => {
-                                        setCheckLines(Response.data.data.products);
+                                        setCheckLines(Response.data);
             
                                     });
                             } else { 
@@ -192,15 +194,17 @@ const CheckInventory = () => {
                 
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             /> */}
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650, margin: '0px' }} size="small" aria-label="a dense table">
+            <TableContainer component={Paper} mt = {16}>
+                <Table  sx={{ minWidth: 650, margin: '0px' }} size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
                             <TableCell>STT</TableCell>
                         
-                            <TableCell align="center">Code</TableCell>
+                            <TableCell align="center">Mã kiểm hàng</TableCell>
+                            <TableCell align="center">Kho</TableCell>
                             <TableCell align="center">Trạng thái</TableCell>
                             <TableCell align="center">Nhân viên tạo</TableCell>
+                            <TableCell align="center">Ngày tạo</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -213,8 +217,10 @@ const CheckInventory = () => {
                                 {index + 1}
                             </TableCell>
                             <TableCell align="center" onClick={() =>handleOpenDetail(row.code)}>{row.code}</TableCell>
+                            <TableCell align="center">{row.inventoryName}</TableCell>
                             <TableCell align="center">{row.status}</TableCell>
                             <TableCell align="center">{row.staffName}</TableCell>
+                            <TableCell align="center">{row.createAt}</TableCell>
                             
                         </TableRow>
                     ))}

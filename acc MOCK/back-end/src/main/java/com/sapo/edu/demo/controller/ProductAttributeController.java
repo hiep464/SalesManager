@@ -20,6 +20,25 @@ public class ProductAttributeController {
     public List<ProductAttribute> getAttribute(@PathVariable String code){
         return productAttributeService.findAllAttribute(code);
     }
+    //bao
+    @GetMapping("/product/attribute")
+    public CreateProductAttribute getAllAttribute(
+            @RequestParam(value = "inventoryName", required = true) String inventoryName,
+            @RequestParam(value = "size", required = true) String size,
+            @RequestParam(value = "color", required = true) String color,
+            @RequestParam(value = "productCode", required = true) String productCode
+    ){
+        return productAttributeService.findAllAttributeByProductCodeAndSizeAndName(productCode,size,color,inventoryName);
+    }
+    @GetMapping("/product/size")
+    public List<String> getAllSizes() {
+        return productAttributeService.getAllSizes();
+    }
+    @GetMapping("/product/color")
+    public List<String> getAllColors() {
+        return productAttributeService.getAllColors();
+    }
+    //bao
 
     @DeleteMapping("/product/attribute/{id}")
     public Integer delete(@PathVariable("id") Integer id){

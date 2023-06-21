@@ -1,4 +1,5 @@
 package com.sapo.edu.demo.controller;
+import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
@@ -6,6 +7,7 @@ import com.sapo.edu.demo.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
@@ -38,7 +40,14 @@ public class ProductController {
         }
         return arrayList;
     }
-
+    //nao
+    @GetMapping("/products")
+    public List<ProductDto> getAllProductsByCode(
+            @RequestParam("code") String code,
+            @RequestParam("inventoryName") String inventoryName
+    ) {
+        return productService.getAllProductsByCode(code,inventoryName);
+    }
     @PostMapping("/products")
     public ProductEntity save(@Valid @RequestBody CreateProduct product) {
         return productService.saveProduct(product);
@@ -55,8 +64,11 @@ public class ProductController {
     }
 //
     @GetMapping("/product/search")
-    public List<ProductEntity> searchProductByCode(@RequestParam String code){
-        return productService.searchProductByCode(code);
+    public List<ProductEntity> searchProductByCode(
+            @RequestParam String code,
+            @RequestParam String inventoryName
+    ){
+        return productService.searchProductByCodeAndInventoryName(code, inventoryName);
     }
 
     @PutMapping("product/update")

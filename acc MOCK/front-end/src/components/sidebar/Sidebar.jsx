@@ -89,7 +89,7 @@ function Sidebar() {
                     title={'Quản lý kho'}
                     icon={<WarehouseIcon />}
                     variant={location.pathname.includes('inventory') ? 'contained' : 'text'}
-                    subTitle={[{title: 'Sản phẩm', path: '/inventory/product'}, {title: 'Đặt hàng', path: '/inventory/booking'}, {title: 'Nhập hàng'}, {title: 'Kiểm hàng'}]}
+                    subTitle={[{title: 'Sản phẩm', path: '/inventory/product'}, {title: 'Đặt hàng', path: '/inventory/booking'}, {title: 'Nhập hàng'}, {title: 'Kiểm hàng',path: '/inventory/check_inventory'}]}
                 />
             </Stack>
         </Box>

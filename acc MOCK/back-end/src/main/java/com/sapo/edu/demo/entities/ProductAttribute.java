@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -18,7 +19,9 @@ public class ProductAttribute {
     @Column(name = "product_code")
     @NotNull
     String productCode;
-
+    @Column
+    @NotNull
+    private String image;
     @Column(name = "quantity")
     @NotNull
     Integer quantity;
@@ -26,11 +29,23 @@ public class ProductAttribute {
     @Column(name = "sold")
     Integer sold;
 
-    @Column(name = "size")
+    @Column
     String size;
 
-    @Column(name = "color")
+    @Column
     String color;
+    @Column
+    @NotNull
+    private BigDecimal originalCost;
+    @Column
+    @NotNull
+    private BigDecimal price;
+    @Column
+    @NotNull
+    private String inventoryName;
+    @Column
+    @NotNull
+    private String status;
 
     @Column(name = "create_at")
     LocalDate createAt;
@@ -38,35 +53,5 @@ public class ProductAttribute {
     @Column(name = "update_at")
     LocalDate updateAt;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setSold(Integer sold) {
-        this.sold = sold;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void setCreateAt(LocalDate createAt) {
-        this.createAt = createAt;
-    }
-
-    public void setUpdateAt(LocalDate updateAt) {
-        this.updateAt = updateAt;
-    }
 }

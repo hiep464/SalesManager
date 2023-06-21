@@ -1,6 +1,7 @@
 package com.sapo.edu.demo.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -15,12 +16,17 @@ public class BookingLineDto {
     private String bookingCode;
     @NotEmpty
     private String productName;
-    @NotEmpty
-    private String productCode;
+    @NotNull
+    private String size;
+    @NotNull
+    private String color;
+    @NotNull
+
+    private String inventoryName;
     @NotEmpty
     private Long quantity;
     @NotEmpty
-    private BigDecimal totalPrice;
+    private BigDecimal price;
 
 
 }
