@@ -315,9 +315,7 @@ function DashBoard() {
                                         secondaryAction={<span>{<Numeral value={item[1]} format={'0,0'} />}</span>}
                                     >
                                         <ListItemAvatar>
-                                            <Avatar>
-                                                <FolderIcon />
-                                            </Avatar>
+                                            <Avatar>{key + 1}</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={item[0]} />
                                     </ListItem>
@@ -332,9 +330,7 @@ function DashBoard() {
                                 return (
                                     <ListItem key={key} secondaryAction={<span>{item[1]}</span>}>
                                         <ListItemAvatar>
-                                            <Avatar>
-                                                <FolderIcon />
-                                            </Avatar>
+                                            <Avatar>{key + 1}</Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={item[0]} />
                                     </ListItem>

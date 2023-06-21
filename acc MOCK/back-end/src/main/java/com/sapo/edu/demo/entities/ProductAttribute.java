@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -26,11 +27,20 @@ public class ProductAttribute {
     @Column(name = "sold")
     Integer sold;
 
+    @Column
+    private String image;
+
     @Column(name = "size")
     String size;
 
     @Column(name = "color")
     String color;
+
+    @Column(name = "price")
+    BigDecimal price;
+
+    @Column(name = "original_cost")
+    BigDecimal originalCost;
 
     @Column(name = "create_at")
     LocalDate createAt;

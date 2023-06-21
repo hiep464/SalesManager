@@ -46,11 +46,9 @@ public class ProductService {
         productEntity.setCode(code);
         productEntity.setName(p.getName());
         productEntity.setBrand(p.getBrand());
+        productEntity.setImage(p.getImage());
         productEntity.setCategoryCode(p.getCategoryCode());
         productEntity.setCreateAt(LocalDate.now());
-        productEntity.setPrice(p.getPrice());
-        productEntity.setOriginalCost(p.getOriginalCost());
-        productEntity.setInventoryName(p.getInventoryName());
         return productRepository.save(productEntity);
     }
 
@@ -65,10 +63,6 @@ public class ProductService {
     public ProductEntity updateProduct(ProductEntity productEntity){
         productEntity.setUpdateAt(LocalDate.now());
         return productRepository.save(productEntity);
-    }
-
-    public List<ProductEntity> getProductByInventory(String inventoryName) {
-        return productRepository.getAllByInventoryName(inventoryName);
     }
 }
 
