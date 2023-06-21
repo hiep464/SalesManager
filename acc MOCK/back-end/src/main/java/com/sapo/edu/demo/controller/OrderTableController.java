@@ -29,8 +29,22 @@ public class OrderTableController {
     public List<OrderLine> CreateNewOrder(@RequestBody OrderDTO newOrder){
         LocalDate date = LocalDate.now();
         newOrder.getOrderTable().setOrderDate(date);
+        String code;
+        Integer count = orderTableService.getOrderCount();
+        if(count<10){
+            code = "O00"+count;
+        }else if (count < 100 && count >= 10){
+            code = "O0"+count;
+        }else {
+            code = "O"+count;
+        }
+        newOrder.getOrderTable().setCode(code);
         orderTableService.createOrder(newOrder.getOrderTable());
         List<OrderLine> orderLines = newOrder.getOrderLines();
+        Integer i;
+        for(i = 0; i < orderLines.size();i++){
+            orderLines.get(i).setOrderCode(code);
+        }
         return orderLineService.createOrderLine(orderLines);
     }
 

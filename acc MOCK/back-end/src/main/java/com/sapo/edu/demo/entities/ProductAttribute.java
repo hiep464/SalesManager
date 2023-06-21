@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -31,6 +32,15 @@ public class ProductAttribute {
 
     @Column(name = "color")
     String color;
+
+    @Column(name = "original_cost")
+    BigDecimal originalCost;
+
+    @Column(name = "price")
+    BigDecimal price;
+
+    @Column(name = "inventory_name")
+    String inventoryName;
 
     @Column(name = "create_at")
     LocalDate createAt;
@@ -62,11 +72,32 @@ public class ProductAttribute {
         this.color = color;
     }
 
+    public void setOriginalCost(BigDecimal originalCost) {
+        this.originalCost = originalCost;
+    }
+
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
     }
 
     public void setUpdateAt(LocalDate updateAt) {
         this.updateAt = updateAt;
+    }
+
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getInventoryName() {
+        return inventoryName;
+    }
+
+    public void setInventoryName(String inventoryName) {
+        this.inventoryName = inventoryName;
     }
 }

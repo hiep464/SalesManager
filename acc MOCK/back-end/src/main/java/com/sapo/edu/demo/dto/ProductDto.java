@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 public class ProductDto {
     @NotEmpty
     private String code;
+
+    @NotEmpty
+    private Integer ID;
     @NotEmpty
     private String categoryName;
     @NotEmpty

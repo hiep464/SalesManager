@@ -29,8 +29,9 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Query("SELECT SUM(o.quantity) FROM Order o")
     Integer getTotalSold();
-//    @Query("SELECT SUM(o.total) FROM Order o WHERE DATE(o.orderDate) = DATE(:date) AND (o.staffCode) = :staffCode")
-//    BigDecimal findTotalRevenueByStaffCode(@Param("date") LocalDate date,@Param("staffCode") String staffCode);
+
+    @Query("SELECT SUM(o.total) FROM Order o WHERE DATE(o.orderDate) = DATE(:date) AND (o.staffCode) = :staffCode")
+    BigDecimal findTotalRevenueByStaffCode(@Param("date") LocalDate date,@Param("staffCode") String staffCode);
 
     @Query("SELECT SUM(o.total) AS revenue, COUNT(DISTINCT o.code) AS order_count, SUM(ol.quantity) AS product_sold "
             + "FROM Order o JOIN OrderLine ol ON o.code = ol.orderCode "

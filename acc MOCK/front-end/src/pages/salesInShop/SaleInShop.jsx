@@ -35,14 +35,6 @@ function a11yProps(index) {
     };
 }
 
-const handleDeleteOrder = (orderID) => {
-    console.log('1111111');
-    console.log(orderID);
-    // const newState = orders;
-    // const updatedOrderItems = newState.filter((item, index) => index !== orderID);
-    // setOrders(newState);
-};
-
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
     const [addCustomer, setAddCustomer] = React.useState(false);
@@ -69,6 +61,10 @@ function SalesInShop() {
 
     const createOrder = () => {
         let total = orders[value].products.reduce((total, current) => (total += current.quantity * current.price), 0);
+        let totalQuantity = orders[value].products.reduce(
+            (totalQuantity, current) => (totalQuantity += current.quantity),
+            0,
+        );
         let orderLines = orders[value].products;
         orderLines.forEach((line) => {
             line.productCode = line.code;
@@ -80,12 +76,14 @@ function SalesInShop() {
                 orderTable: {
                     customerCode: orders[value].customer.code,
                     staffCode: 'S002',
+                    quantity: totalQuantity,
                     status: 'success',
                     total: total,
                 },
             })
             .then((response) => {
                 console.log(response);
+                handleDeleteOrder(value);
             });
     };
 
@@ -110,6 +108,58 @@ function SalesInShop() {
             return newState;
         });
     };
+
+    const handleUp = (productId) => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (product.quantity + 1 <= 0) {
+                        handleDelete(productId);
+                    } else {
+                        return { ...product, quantity: product.quantity + 1 };
+                    }
+                }
+                return product;
+            });
+
+            newState[value].products = updatedProducts;
+
+            return newState;
+        });
+    };
+
+    const handleDown = (productId) => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (product.quantity - 1 <= 0) {
+                        handleDelete(productId);
+                    } else {
+                        return { ...product, quantity: product.quantity - 1 };
+                    }
+                }
+                return product;
+            });
+
+            newState[value].products = updatedProducts;
+
+            return newState;
+        });
+    };
+
+    const handleDeleteOrder = (orderID) => {
+        console.log('1111111');
+        console.log(orderID);
+        const newState = orders;
+        const updatedOrderItems = newState.filter((item, index) => index !== orderID);
+        setOrders(updatedOrderItems);
+    };
     return (
         <div className="body1">
             {addCustomer && (
@@ -122,7 +172,10 @@ function SalesInShop() {
                     <Grid xs={12}>
                         <div className="logo">
                             <div className="image">
-                                <img src="../../assets/images/logo.webp" />
+                                <img
+                                    src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
+                                    alt=""
+                                />
                             </div>
                         </div>
                         <div className="Nav">
@@ -164,11 +217,11 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         const product1 = {
-                                                            code: product[0],
-                                                            name: product[1],
+                                                            code: product.code,
+                                                            name: product.name,
                                                             quantity: 1,
-                                                            price: product[2],
-                                                            attributeID: product[3],
+                                                            price: product.price,
+                                                            attributeID: product.id,
                                                         };
                                                         var duplicate = false;
 
@@ -213,15 +266,7 @@ function SalesInShop() {
                                                             className="tabs"
                                                             icon={
                                                                 <CloseIcon
-                                                                    onClick={() => {
-                                                                        const newState = orders;
-                                                                        const updatedOrderItems = newState.filter(
-                                                                            (item, i) => i !== index,
-                                                                        );
-                                                                        console.log(updatedOrderItems);
-                                                                        console.log(newState);
-                                                                        setOrders(updatedOrderItems);
-                                                                    }}
+                                                                    onClick={() => handleDeleteOrder(index)}
                                                                     {...a11yProps(
                                                                         index - 1 > 0 ? index - 1 : index + 1,
                                                                     )}
@@ -273,6 +318,8 @@ function SalesInShop() {
                                         index={index}
                                         onDeleteProduct={handleDelete}
                                         onUpdateAttribute={handleAttribute}
+                                        onDown={handleDown}
+                                        onUp ={handleUp}
                                     />
                                 );
                             })

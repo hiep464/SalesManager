@@ -16,7 +16,7 @@ function AddCustomer(props) {
     };
 
     const createCustomer = (name, email, phone) => {
-        return axios.post('http://localhost:8080/admin/customer/create', {
+        return axios.post('http://localhost:8080/admin/customers/customers', {
             name: name,
             phone: phone,
             email: email,

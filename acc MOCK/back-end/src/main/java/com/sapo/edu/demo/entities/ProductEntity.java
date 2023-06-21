@@ -33,7 +33,7 @@ public class ProductEntity {
     @Column
     private String brand;
 
-    @Column
+    @Column(name = "original_cost")
     private BigDecimal originalCost;
 
     @Column

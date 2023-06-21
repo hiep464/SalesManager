@@ -1,8 +1,15 @@
 .logo {
     height: 30px;
+    width: 100%;
+    background-color: #fff;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+
+    img {
+        height: 30px;
+        width: auto;
+    }
 }
 
 .Nav {

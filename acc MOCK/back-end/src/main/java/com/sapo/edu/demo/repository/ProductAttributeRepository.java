@@ -16,4 +16,6 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
 
     @Query("select sum(quantity) from ProductAttribute ")
     Integer getTotalQuantity();
+
+    List<ProductAttribute> findByProductCode(String code);
 }

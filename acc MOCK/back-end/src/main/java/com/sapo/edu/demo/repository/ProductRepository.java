@@ -34,11 +34,17 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             "FROM ProductAttribute pa " +
             "INNER JOIN ProductEntity p ON p.code = pa.productCode " +
             "WHERE p.code LIKE %:code%")
-    List<Object[]> findByCodeContaining(String code);
+    List<Object[]> searchByCodeContaining(String code);
+
+    @Modifying
+    @Query("SELECT p FROM ProductEntity p WHERE p.code LIKE %:code% ")
+    List<ProductEntity> findByCodeContaining(String code);
+
 
     @Query("select p.name, sum(pa.quantity) as total "
             + "from ProductEntity p join ProductAttribute pa on p.code = pa.productCode "
             + "group by p.code order by total desc")
     List<Object> findTopProductsByQuantity();
 
+    List<ProductEntity> getAllByInventoryName(String inventoryName);
 }

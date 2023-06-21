@@ -1,4 +1,5 @@
 package com.sapo.edu.demo.controller;
+import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
@@ -55,13 +56,20 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Object[]> searchProductByCode(@RequestParam String code){
-        return productService.searchProductByCode(code);
+    public List<ProductDto> getAllProductsByCode(
+            @RequestParam("code") String code
+    ) {
+        return productService.getAllProductsByCode(code);
     }
 
     @PutMapping("product/update")
     public ProductEntity updateProduct(@RequestBody ProductEntity productEntity){
         return productService.updateProduct(productEntity);
+    }
+
+    @GetMapping("/products/inventoryName")
+    public List<ProductEntity> getProductByInventoryName(@RequestParam String inventoryName){
+        return productService.getProductByInventory(inventoryName);
     }
 
 }
