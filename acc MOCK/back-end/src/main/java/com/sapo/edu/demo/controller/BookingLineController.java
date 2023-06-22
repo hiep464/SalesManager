@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("admin")
+@RequestMapping("/admin/inventory")
 @CrossOrigin(origins = "http://localhost:3000")
 
 public class BookingLineController {

@@ -3,6 +3,7 @@ package com.sapo.edu.demo.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 
@@ -20,12 +21,31 @@ public class User{
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String role;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public String getPassword() {
         return password;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setUsername(String username) {
@@ -35,6 +55,5 @@ public class User{
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 }

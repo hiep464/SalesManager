@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/customers")
+@RequestMapping("/admin/care/customers")
 @CrossOrigin(origins = "*")
 public class CustomerController {
     private CustomerService customerService;

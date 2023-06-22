@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("admin")
+@RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:3000")
 public class StaffController {
     @Autowired

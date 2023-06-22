@@ -25,15 +25,15 @@ public class OrderService {
         return orderRepository.total();
     }
 
-//    public ArrayList<BigDecimal> getTotalRevenueByPeriod(LocalDate start, LocalDate end){
-//        System.out.println(start);
-//        System.out.println(end);
-//        ArrayList<BigDecimal> arrayList = new ArrayList<>();
-//        for (LocalDate date = start; date.isBefore(end) || date.isEqual(end); date = date.plusDays(1)) {
-//            arrayList.add(orderRepository.findTotalRevenueByPeriod(date));
-//        }
-//        return arrayList;
-//    }
+    public ArrayList<BigDecimal> getTotalRevenueByPeriod(LocalDate start, LocalDate end){
+        System.out.println(start);
+        System.out.println(end);
+        ArrayList<BigDecimal> arrayList = new ArrayList<>();
+        for (LocalDate date = start; date.isBefore(end) || date.isEqual(end); date = date.plusDays(1)) {
+            arrayList.add(orderRepository.findTotalRevenueByPeriod(date));
+        }
+        return arrayList;
+    }
 
     public Integer getTotalSold() {
         return orderRepository.getTotalSold();}

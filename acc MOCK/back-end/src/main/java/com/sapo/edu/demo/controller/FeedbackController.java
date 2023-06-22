@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/admin/feedbacks")
+@RequestMapping("/admin/care/feedbacks")
 @CrossOrigin(origins = "*")
 public class FeedbackController {
     private FeedbackService feedbackService;
