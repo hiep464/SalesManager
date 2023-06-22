@@ -27,7 +27,7 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", inventory));
     }
     @GetMapping("/inventories")
-    public List<InventoryEntity> getAllInventories() {
+    public List<InventoryDto> getAllInventories() {
         return inventoryService.getAll();
     }
 }

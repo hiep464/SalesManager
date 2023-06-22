@@ -1,6 +1,8 @@
 package com.sapo.edu.demo.service;
 
+import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
+import com.sapo.edu.demo.entities.CheckTableEntity;
 import com.sapo.edu.demo.entities.ProductAttribute;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.repository.CategoryRepository;
@@ -23,16 +25,13 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
     private ProductRepository productRepository;
-
     private ProductAttributeRepository productAttributeRepository;
-
+    ModelMapper modelMapperProduct = new ModelMapper();
     public void delete(String code){
         productRepository.deleteByCode(code);
     }
 
-    ModelMapper modelMapperProduct = new ModelMapper();
-
-    public ProductService(CategoryRepository categoryRepository, ProductRepository productRepository, ProductAttributeRepository productAttributeRepository) {
+    public ProductService(CategoryRepository categoryRepository, ProductRepository productRepository,ProductAttributeRepository productAttributeRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.productAttributeRepository = productAttributeRepository;
@@ -42,10 +41,37 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size);
         return productRepository.findAll(pageable);
     }
+    public List<ProductDto> getAllProductsBySearchString(String searchString, String inventoryName){
+//        List<>
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
+        List<ProductDto> productDtos = new ArrayList<ProductDto>();
+        for(ProductEntity product : products) {
+//            System.out.println(product);
+            List<ProductAttribute> attributes = productAttributeRepository.findByProductCodeAndInventoryName(product.getCode(),inventoryName);
 
-    public ProductEntity getProductByCode(String code) {
-        return productRepository.findByCode(code);
+            List<ProductDto> Dtos = Arrays.asList(modelMapperProduct.map(attributes,ProductDto[].class));
+            for(ProductAttribute attribute : attributes) {
+                ProductDto dto = modelMapperProduct.map(product,ProductDto.class);
+                dto.setInventoryName(attribute.getInventoryName());
+                dto.setPrice(attribute.getPrice());
+                dto.setQuantity(attribute.getQuantity());
+                dto.setSize(attribute.getSize());
+                dto.setColor(attribute.getColor());
+                dto.setImage(attribute.getImage());
+                dto.setPrice(attribute.getPrice());
+                dto.setOriginalCost(attribute.getOriginalCost());
+                productDtos.add(dto);
+            }
+
+        }
+        return productDtos;
     }
+
+    public List<ProductEntity> getProductsBySearchString(String searchString, String inventoryName){
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
+        return products;
+    }
+
 
     public ProductEntity saveProduct(CreateProduct p) {
         ProductEntity productEntity = new ProductEntity();
@@ -85,6 +111,16 @@ public class ProductService {
 
         }
         return productDtos;
+    }
+    public List<ProductEntity> searchProductByCodeAndInventoryName(String code,String inventoryName){
+        List<ProductAttribute> attributes = productAttributeRepository.findByProductCodeAndInventoryName(code,inventoryName);
+        List<ProductEntity> result = new ArrayList<ProductEntity>();
+        for(ProductAttribute attribute : attributes) {
+            ProductEntity productEntity = new ProductEntity();
+            productEntity = productRepository.findByCode(attribute.getProductCode());
+            result.add(productEntity);
+        }
+        return result;
     }
 
     public List<Object> getTop3ProductByQuantity() {

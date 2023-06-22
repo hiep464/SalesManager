@@ -25,5 +25,13 @@ public class BookingLineEntity {
     private Long quantity;
     @Column
     @NotNull
+    @Size(max = 8)
+
     private String bookingCode;
+    @Column
+    @NotNull
+    private Integer attributeId;
+    @Column
+    @NotNull
+    private BigDecimal price;
 }

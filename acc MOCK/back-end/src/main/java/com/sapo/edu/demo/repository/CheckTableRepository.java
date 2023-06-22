@@ -17,4 +17,6 @@ public interface CheckTableRepository extends JpaRepository<CheckTableEntity, St
     @Query("SELECT e FROM CheckTableEntity e WHERE (:code IS NULL OR LOWER(e.code) LIKE LOWER(CONCAT('%', :code, '%') )) " )
     List<CheckTableEntity> checkTableByCodeContaining(Pageable paging, @Param("code") String code);
     CheckTableEntity findByCode(String code);
+    List<CheckTableEntity> findByCodeContaining(String id);
+    List<CheckTableEntity> findByStatus(String status);
 }

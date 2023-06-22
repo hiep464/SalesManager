@@ -11,16 +11,21 @@ import javax.persistence.Id;
 public class CheckLineDto {
     @NotEmpty
 
-    private String productCode;
+    private String productName;
     @NotEmpty
 
-    private Long inventoryQuantity;
+    private Integer inventoryQuantity;
+    @NotEmpty
+    private String brand;
     @NotEmpty
 
-    private Long actualQuantity;
+    private Integer actualQuantity;
     @NotEmpty
     private String reason;
+    @NotEmpty
+    private String size;
+    @NotEmpty
+    private String color;
 
 
-    private String note;
 }

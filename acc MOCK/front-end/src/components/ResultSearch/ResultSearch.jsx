@@ -1,4 +1,5 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import './ResultSearch.scss';
 export function ResultSupllierSearch(props) {
     const supllier = props.supllier;
@@ -15,6 +16,15 @@ export function ResultCheckLineSearch(props) {
     return (
         <div className="result-search" onClick={props.onClick}>
             <p>{checkLine.name}</p>
+        </div>
+    );
+}
+export function ResultCheckRequestSearch(props) {
+    const checkRequest = props.checkRequest;
+    return (
+        <div className="result-search" onClick={props.onClick}>
+            <p>{checkRequest.code}</p>
+            <p>{checkRequest.staffName}</p>
         </div>
     );
 }
@@ -38,7 +48,11 @@ export function ResultProductSearch(props) {
                 <p>{product.name}</p>
                 <p>Số lượng:{product.quantity}</p>
             </div>
+<<<<<<< HEAD
             <div>Size&color: {product.size + ',' + product.color}</div>
+=======
+            <div>Size&color: {product.size+","+product.color}</div>
+>>>>>>> ee3c43aa12d3d230a44e513d269dcabd837e7f37
             <p>Giá:{product.price}</p>
         </div>
     );

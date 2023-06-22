@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Data
 public class InventoryDto {
     @Id
-    private String code;
+    private String name;
     @NotEmpty
     private String address;
 

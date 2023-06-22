@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,19 +23,23 @@ public class CheckInventoryController {
     @Autowired
     private CheckTableService checkTableService;
     @GetMapping("/check_inventory")
-    public ResponseEntity<ResponseObject> getAllCheck(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "10", name = "size") int size
-    ) {
-        Map<String, Object> response = checkTableService.getAllCheck(page,size);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+    public List<CheckTableDto> getAllCheck() {
+        List<CheckTableDto> response = checkTableService.getAllCheck();
+        return response;
     }
     @GetMapping("/check_inventory/code")
-    public ResponseEntity<ResponseObject> findCheckByCode(
+    public List<CheckTableDto> findCheckByCode(
             @RequestParam(name = "code") String code
     ) {
-        CheckTableDto response = checkTableService.getCheckByCode(code);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+        List<CheckTableDto> response = checkTableService.getCheckByCode(code);
+        return response;
+    }
+    @GetMapping("/check_inventory/filter")
+    public List<CheckTableDto> findCheckByName(
+            @RequestParam(name = "status") String status
+    ) {
+        List<CheckTableDto> response = checkTableService.getCheckByStatus(status);
+        return response;
     }
     @PostMapping("/check_inventory")
     public ResponseEntity<ResponseObject> save(@RequestBody CheckTableDto checkTableDto) {

@@ -33,8 +33,12 @@ public class ProductAttribute {
     @Column(name = "size")
     String size;
 
-    @Column(name = "color")
+    @Column
     String color;
+
+    @Column
+    @NotNull
+    private String status;
 
     @Column(name = "original_cost")
     BigDecimal originalCost;
@@ -51,9 +55,6 @@ public class ProductAttribute {
     @Column(name = "update_at")
     LocalDate updateAt;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public void setProductCode(String productCode) {
         this.productCode = productCode;

@@ -16,6 +16,8 @@ import com.sapo.edu.demo.exception.DuplicateException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.time.LocalDate.now;
+
 
 @Service
 //@RequiredArgsConstructor
@@ -38,29 +40,17 @@ public class BookingService {
     @Autowired
     private ModelMapper modelMapperbooking;
 
-//    public BookingService(StaffRepository staffRepository, SupplierRepository supplierRepository, ProductRepository productRepository, BookingLineRepository bookingLineRepository, BookingRepository bookingRepository, ModelMapper modelMapperbooking) {
-//        this.staffRepository = staffRepository;
-//        this.supplierRepository = supplierRepository;
-//        this.productRepository = productRepository;
-//        this.bookingLineRepository = bookingLineRepository;
-//        this.bookingRepository = bookingRepository;
-//        this.modelMapperbooking = modelMapperbooking;
-//    }
+
 
     /**
      * Find all Bookigs
      * @return
      */
-    public Map<String, Object> getAllBooking(int page, int size) {
-        Pageable paging = PageRequest.of(page, size, Sort.by(
-                        Sort.Order.asc("code")
-                )
-        );
-        Page<BookingEntity> pageBooking;
+    public List<BookingDto> getAllBooking() {
+
         List<BookingEntity> booking = new ArrayList<BookingEntity>();
-        pageBooking = bookingRepository.findAll(paging);
-        booking = pageBooking.getContent();
-        Map<String, Object> response = new HashMap<>();
+        booking = bookingRepository.findAll();
+
         List<BookingDto> bookingDtos = Arrays.asList(modelMapperbooking.map(booking, BookingDto[].class));
         for(int i = 0; i < booking.size(); i++) {
             BookingDto bookDto = bookingDtos.get(i);
@@ -69,9 +59,9 @@ public class BookingService {
             bookDto.setSupplierName(supplierRepository.findById(entity.getSupplierCode()).get().getName());
 
         }
-        response.put("products", bookingDtos);
 
-        return response;
+
+        return bookingDtos;
 
     }
     /**
@@ -95,11 +85,6 @@ public class BookingService {
                 bookingEntity.setPayStatus("Chưa thanh toán");
                 bookingEntity.setBookingStatus("Chưa nhập");
                 bookingEntity.setStatus("Đang giao dịch");
-                bookingEntity.setBookingDate(LocalDateTime.now());
-
-
-
-
                 }
                 bookingEntity = bookingRepository.save(bookingEntity);
 

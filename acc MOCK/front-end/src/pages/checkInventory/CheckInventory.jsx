@@ -23,7 +23,8 @@ import TableRow from '@mui/material/TableRow';
 import Card from '@mui/material/Card';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ResultCheckLineSearch } from '../../components/ResultSearch/ResultSearch';
+
+import { ResultCheckRequestSearch } from '../../components/ResultSearch/ResultSearch';
 import { apiBaseUrl } from '../../constant/constant';
 
 const StyledMenu = styled((props) => (
@@ -65,9 +66,11 @@ const StyledMenu = styled((props) => (
 
 const columns = [
     { field: 'code', headerName: 'Mã phiếu kiểm', width: 300, },
-
+    {field: 'inventoryName', headerName: 'Kho', width:300,},
     { field: 'status', headerName: 'Trạng thái', width: 300 },
     { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
+    { field: 'createAt', headerName: 'Ngày tạo', width: 150 },
+
     
 ];
 
@@ -75,28 +78,38 @@ const CheckInventory = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [checking, setChecking] = React.useState([])
-    const [searchCheckline, setSearchCheckline] = React.useState('')
-    const [checkLines,setCheckLines] = React.useState([])
-    const [checkline, setCheckine] = React.useState({});
+    const [searchCheckRequest, setSearchCheckRequest] = React.useState('')
+    const [checkRequests,setCheckRequests] = React.useState([])
+    const [filter, setFilter] = React.useState('');
+    
     const getRowId = (row) => row.code
     const open = Boolean(anchorEl);
+   
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/check_inventory`).then((Response) => {
-            setChecking(Response.data.data.products);
-            // console.log(Response.data.data.products)
+            setChecking(Response.data);
+            // console.log(Response.data)
             });
     },[])
     const handleCreateCheckRequest = () => {
-        navigate('/checkInventory/createChecking')
+        navigate('/inventory/check_inventory/create')
     }
+    const handleFilter = () => {
+            axios.get(`${apiBaseUrl}/check_inventory/filter?status=${filter}`)
+                .then(res => res.data)
+                .then(res => setChecking(res))
+    }
+    
+   
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleOpenDetail = (code) => {
-        navigate(`/checkInventory/${code}`)
+    const handleOpenDetail = (params) => {
+        const code = params.row.code
+        navigate(`/inventory/check_inventory/${code}`)
     }
     return ( 
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -116,20 +129,19 @@ const CheckInventory = () => {
                         // variant="outlined" 
                         id="outlined-start-adornment"
                         onChange={(event) => {
-                            setCheckLines(event.target.value);
+                            setSearchCheckRequest(event.target.value);
                         }}
                         onMouseEnter={React.useEffect(() => {
-                            if (searchCheckline !== '') {
+                            if (searchCheckRequest !== '') {
                                 axios
-                                    .get('http://localhost:8086/admin/check_inventory/code?code=' + searchCheckline)
-                                    .then((Response) => {
-                                        setCheckLines(Response.data.data.products);
-            
+                                    .get(`${apiBaseUrl}/check_inventory/code?code=${searchCheckRequest}`)
+                                    .then((response) => {
+                                        setCheckRequests(response.data);
                                     });
                             } else { 
-                                setCheckLines([]);
+                                setCheckRequests([]);
                             }
-                        }, [searchCheckline])}
+                        }, [searchCheckRequest])}
                         
                         InputProps={{
                             startAdornment: (
@@ -139,7 +151,25 @@ const CheckInventory = () => {
                             ),
                         }}
                 />
-                
+                <div className="result_search" style={{ position: 'fixed' }}>
+                    {checkRequests.map((request,index) => {
+                        
+                        // console.log(checkInventoryBody)
+                        return (
+                            <Card sx={{ minWidth: '60ch' }}>
+                            <ResultCheckRequestSearch
+                                key={index}
+                                checkRequest={request}
+                                onClick={() => {
+                                    setChecking([request])                       
+                                    setSearchCheckRequest('');
+                                        
+                                }}
+                            />
+                            </Card>
+                        );
+                    })}
+                </div>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
                 <Button
                     id="demo-customized-button"
@@ -166,23 +196,24 @@ const CheckInventory = () => {
                     open={open}
                     onClose={handleClose}
                 >
-                    <Box>
+                    <Box sx = {{padding : '8px'}}>
                         <div>
                             <span>Trạng thái</span>
                             <br />
-                            <TextField size="small" variant="outlined" />
+                            <TextField size="small" variant="outlined" onChange={(e) => setFilter(e.target.value)}/>
                         </div>
                         
-                        <Button variant="contained" disableElevation>
+                        <Button sx = {{marginTop : '4px'}} variant="contained" onClick={handleFilter} disableElevation>
                             Lọc
                         </Button>
                     </Box>
                 </StyledMenu>
             </Paper>
-            {/* <DataGrid
+            <DataGrid
                 rows={checking}
                 columns={columns}
                 getRowId={getRowId}
+                onRowClick={handleOpenDetail}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 10 },
@@ -190,17 +221,19 @@ const CheckInventory = () => {
                 }}
                 pageSizeOptions={[5, 10]}
                 
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
-            /> */}
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650, margin: '0px' }} size="small" aria-label="a dense table">
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white',cursor: 'pointer', userSelect: 'none'}}
+            />
+            {/* <TableContainer component={Paper} mt = {16}>
+                <Table  sx={{ minWidth: 650, margin: '0px' }}  aria-label="a dense table">
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx={{ backgroundColor: '#f4f6f8' }}>
                             <TableCell>STT</TableCell>
                         
-                            <TableCell align="center">Code</TableCell>
+                            <TableCell align="center">Mã kiểm hàng</TableCell>
+                            <TableCell align="center">Kho</TableCell>
                             <TableCell align="center">Trạng thái</TableCell>
                             <TableCell align="center">Nhân viên tạo</TableCell>
+                            <TableCell align="center">Ngày tạo</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -213,14 +246,17 @@ const CheckInventory = () => {
                                 {index + 1}
                             </TableCell>
                             <TableCell align="center" onClick={() =>handleOpenDetail(row.code)}>{row.code}</TableCell>
+                            <TableCell align="center">{row.inventoryName}</TableCell>
                             <TableCell align="center">{row.status}</TableCell>
                             <TableCell align="center">{row.staffName}</TableCell>
+                            <TableCell align="center">{row.createAt}</TableCell>
                             
                         </TableRow>
                     ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
+                
+            </TableContainer> */}
         </div>
      );
 }

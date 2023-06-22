@@ -7,6 +7,7 @@ import com.sapo.edu.demo.service.ProductService;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
@@ -39,7 +40,14 @@ public class ProductController {
         }
         return arrayList;
     }
-
+    //nao
+    @GetMapping("/products/search")
+    public List<ProductDto> getAllProductsByCode(
+            @RequestParam("searchString") String searchString,
+            @RequestParam("inventoryName") String inventoryName
+    ) {
+        return productService.getAllProductsBySearchString(searchString,inventoryName);
+    }
     @PostMapping("/products")
     public ProductEntity save(@Valid @RequestBody CreateProduct product) {
         return productService.saveProduct(product);
@@ -50,9 +58,13 @@ public class ProductController {
         productService.delete(code);
     }
 
-    @GetMapping("/products/{code}")
-    public ProductEntity getProductByCode(@PathVariable("code") String code) {
-        return productService.getProductByCode(code);
+    @GetMapping("/products/searchString")
+    public List<ProductEntity> getProductByCode(
+            @RequestParam("searchString") String searchString,
+            @RequestParam("inventoryName") String inventoryName
+
+    ) {
+        return productService.getProductsBySearchString(searchString,inventoryName);
     }
 
     @GetMapping("/products")
@@ -60,6 +72,14 @@ public class ProductController {
             @RequestParam("code") String code
     ) {
         return productService.getAllProductsByCode(code);
+    }
+//
+    @GetMapping("/product/search")
+    public List<ProductEntity> searchProductByCode(
+            @RequestParam String code,
+            @RequestParam String inventoryName
+    ){
+        return productService.searchProductByCodeAndInventoryName(code, inventoryName);
     }
 
     @PutMapping("product/update")

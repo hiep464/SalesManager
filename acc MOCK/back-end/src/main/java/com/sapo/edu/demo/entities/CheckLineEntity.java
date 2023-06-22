@@ -22,15 +22,15 @@ public class CheckLineEntity {
     private String productCode;
     @Column
     @NotNull
-    private Long inventoryQuantity;
+    private Integer inventoryQuantity;
     @Column
     @NotNull
-    private Long actualQuantity;
+    private Integer actualQuantity;
     @Column
     @NotNull
     private String reason;
     @Column
     @NotNull
-    private String note;
+    private Integer attributeId;
 
 }

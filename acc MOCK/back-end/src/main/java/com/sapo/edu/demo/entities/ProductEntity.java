@@ -30,6 +30,8 @@ public class ProductEntity {
 
     @Column
     private String brand;
+    @Column
+    private String description;
 
     @Column
     private LocalDate createAt;
@@ -37,9 +39,6 @@ public class ProductEntity {
     @Column
     private LocalDate updateAt;
 
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;

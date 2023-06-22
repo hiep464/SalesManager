@@ -4,6 +4,8 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 @Entity
@@ -19,4 +21,10 @@ public class CheckTableEntity {
     @Column
     @NotNull
     private String status;
+    @Column
+    @NotNull
+    private String inventoryName;
+    @Column
+    @NotNull
+    private LocalDate createAt;
 }
