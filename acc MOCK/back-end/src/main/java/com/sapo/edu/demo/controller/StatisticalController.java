@@ -51,13 +51,13 @@ public class StatisticalController {
         return productAttributeService.getTotalQuantity();
     }
 
-//    @GetMapping("/revenue_by_period")
-//    public ArrayList<BigDecimal> getTotalRevenueByPeriod(@RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//        LocalDate dateS = LocalDate.parse(start, formatter);
-//        LocalDate dateE = LocalDate.parse(end, formatter);
-//        return orderService.getTotalRevenueByPeriod(dateS, dateE);
-//    }
+    @GetMapping("/revenue_by_period")
+    public ArrayList<BigDecimal> getTotalRevenueByPeriod(@RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateS = LocalDate.parse(start, formatter);
+        LocalDate dateE = LocalDate.parse(end, formatter);
+        return orderService.getTotalRevenueByPeriod(dateS, dateE);
+    }
 
     @GetMapping("/revenue_by_staff_code")
     public ArrayList<BigDecimal> getTotalRevenueByStaffCode(@RequestParam(name = "staff code") String staffCode, @RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){

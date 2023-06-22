@@ -27,7 +27,7 @@ public class BookingEntity {
     @Column
     @NotNull
     @Size(max = 8)
-    private String supplerCode;
+    private String supplierCode;
     @Column
     private BigDecimal total;
     @Column

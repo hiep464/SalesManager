@@ -75,7 +75,7 @@ function Sidebar() {
                     title={'Bán hàng'}
                     icon={<StorefrontIcon />}
                     variant={'text'}
-                    subTitle={[{title: 'Bán tại quầy'}, {title: 'Báo cáo'}]}
+                    subTitle={[{title: 'Bán tại quầy', path: '/saleInShop'}, {title: 'Báo cáo', path: '/report'}]}
                 />
                 <NavbarItem
                     location={location}
@@ -89,7 +89,7 @@ function Sidebar() {
                     title={'Quản lý kho'}
                     icon={<WarehouseIcon />}
                     variant={location.pathname.includes('inventory') ? 'contained' : 'text'}
-                    subTitle={[{title: 'Sản phẩm', path: '/inventory/product'}, {title: 'Đặt hàng', path: '/inventory/booking'}, {title: 'Nhập hàng'}, {title: 'Kiểm hàng'}]}
+                    subTitle={[{title: 'Sản phẩm', path: '/inventory/product'}, {title: 'Đặt hàng', path: '/inventory/booking'}, {title: 'Nhập hàng'}, {title: 'Kiểm hàng', path: '/inventory/check_inventory'}]}
                 />
             </Stack>
         </Box>

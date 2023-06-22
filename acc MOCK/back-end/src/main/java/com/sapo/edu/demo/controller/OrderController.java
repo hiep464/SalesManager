@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/sales")
 @CrossOrigin("*")
 public class OrderController {
     OrderService orderService;

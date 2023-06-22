@@ -3,13 +3,18 @@ package com.sapo.edu.demo.service;
 import com.sapo.edu.demo.authentication.CustomUserDetails;
 import com.sapo.edu.demo.entities.User;
 import com.sapo.edu.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -37,5 +42,9 @@ public class UserService implements UserDetailsService {
 
         return new CustomUserDetails(user);
     }
+
+//    private Collection<? extends GrantedAuthority> getAuthorities(String role) {
+//        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+//    }
 
 }
