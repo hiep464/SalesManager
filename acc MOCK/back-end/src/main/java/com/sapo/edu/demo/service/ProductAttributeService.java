@@ -2,7 +2,10 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.dto.product.attribute.CreateProductAttribute;
 import com.sapo.edu.demo.entities.ProductAttribute;
+import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.repository.ProductAttributeRepository;
+import com.sapo.edu.demo.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,18 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductAttributeService {
 
     @Autowired
     ProductAttributeRepository productAttributeRepository;
+
+    private final ProductRepository productRepository;
     ModelMapper modelMapperProductAttribute = new ModelMapper();
     public List<ProductAttribute> findAllAttribute(String code){
         return productAttributeRepository.findByProductCode(code);
     }
-    public CreateProductAttribute findAllAttributeByProductCodeAndSizeAndName(String code, String size, String color, String inventoryName) {
-        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(code, size, color, inventoryName );
-        CreateProductAttribute attributeDto = modelMapperProductAttribute.map(attribute,CreateProductAttribute.class);
-        return attributeDto;
+    public ProductAttribute findAllAttributeByProductNameAndSizeAndName(String name, String size, String color, String inventoryName) {
+        ProductEntity product = productRepository.findByName(name);
+        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), size, color, inventoryName );
+
+        return attribute;
 
     }
 

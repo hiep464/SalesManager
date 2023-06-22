@@ -38,11 +38,14 @@ const CreateChecking = () => {
     const [products,setProducts] = React.useState([])
     const [checkInventoryBody,setCheckInventoryBody] = React.useState([])
     const [inventories, setInventories] = React.useState([]);
-   
+   const [dateCreated,setDateCreated] = React.useState('')
     const [inventory, setInventory] = React.useState('');
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
-    console.log(inventory)
+    React.useEffect (() => {
+        console.log(dateCreated)
+    },[dateCreated])
+    
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
@@ -79,6 +82,7 @@ const CreateChecking = () => {
                             code: code,
                             staffName: staff,
                             inventoryName: inventory,
+                            createAt: dateCreated,
                             checkLines: checkInventoryBody
                         }
         axios.post(`${apiBaseUrl}/check_inventory`,dataCheck)
@@ -103,10 +107,10 @@ const CreateChecking = () => {
                 </Box>
             </Box>
             <Box mt = {4} sx={{width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between'}}>
-                <Box ml ={8} width={'60%'} backgroundColor={'white'}>
+                <Box borderRadius={4}  width={'60%'} backgroundColor={'white'}>
                     
                     
-                    
+                    <Box ml = {4} >
                             <h3>Nhập mã kiểm kho</h3>
                             <TextField
                                 label="Mã kiểm kho"
@@ -125,13 +129,13 @@ const CreateChecking = () => {
                                     ),
                                 }}
                             />
-                    
+                    </Box>
                     
                     
                    
                 </Box>
 
-                <Box width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} borderRadius={'4px'}>
+                <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} >
                     <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
                     <List dense={true}>
                         <ListItem>
@@ -167,8 +171,8 @@ const CreateChecking = () => {
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Ngày kiểm kho:" />
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker sx={{ width: '50%' }} />
+                            <LocalizationProvider  dateAdapter={AdapterDayjs} >
+                                <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' } } />
                             </LocalizationProvider>
                         </ListItem>
                     </List>
@@ -191,7 +195,7 @@ const CreateChecking = () => {
                     }}
                     onMouseEnter={React.useEffect(() => {
                         if(searchProduct !== '') {
-                            axios.get(`${apiBaseUrl}/products?code=${searchProduct}&inventoryName=${inventory}`)
+                            axios.get(`${apiBaseUrl}/products?searchString=${searchProduct}&inventoryName=${inventory}`)
                                 .then((response) => {
                                     
                                     setProducts(response.data)
@@ -211,7 +215,8 @@ const CreateChecking = () => {
                     }}
                 />
                 </Paper>
-                <div className="result_search">
+                </Box>
+                <div className="result_search" style={{ position: 'fixed' }}>
                     {products.map((product,index) => {
                         
                         // console.log(checkInventoryBody)
@@ -256,11 +261,13 @@ const CreateChecking = () => {
                         );
                     })}
                 </div>
-
-                <Grid xs={8}>
+                
+               
+                    <Box sx ={{border: "1px solid #ccc", borderRadius: '6px'}}>
                         {checkInventoryBody ? (
                             
                                     <CheckInventoryBody
+                    
                                         rows={checkInventoryBody}
                                         // index={value}
                                         setUpdateProducts={setCheckInventoryBody}
@@ -273,8 +280,11 @@ const CreateChecking = () => {
                                 
                             
                         
-                    </Grid>
-            </Box>
+                    </Box>
+                {/* </Box> */}
+         
+
+
             <Box backgroundColor={'white'} marginTop={'20px'}>
                 <Box sx={{float: 'right'}}>
                   

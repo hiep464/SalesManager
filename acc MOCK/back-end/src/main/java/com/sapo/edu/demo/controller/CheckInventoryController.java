@@ -23,19 +23,23 @@ public class CheckInventoryController {
     @Autowired
     private CheckTableService checkTableService;
     @GetMapping("/check_inventory")
-    public List<CheckTableDto> getAllCheck(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "10", name = "size") int size
-    ) {
-        List<CheckTableDto> response = checkTableService.getAllCheck(page,size);
+    public List<CheckTableDto> getAllCheck() {
+        List<CheckTableDto> response = checkTableService.getAllCheck();
         return response;
     }
     @GetMapping("/check_inventory/code")
-    public ResponseEntity<ResponseObject> findCheckByCode(
+    public List<CheckTableDto> findCheckByCode(
             @RequestParam(name = "code") String code
     ) {
-        CheckTableDto response = checkTableService.getCheckByCode(code);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
+        List<CheckTableDto> response = checkTableService.getCheckByCode(code);
+        return response;
+    }
+    @GetMapping("/check_inventory/filter")
+    public List<CheckTableDto> findCheckByName(
+            @RequestParam(name = "status") String status
+    ) {
+        List<CheckTableDto> response = checkTableService.getCheckByStatus(status);
+        return response;
     }
     @PostMapping("/check_inventory")
     public ResponseEntity<ResponseObject> save(@RequestBody CheckTableDto checkTableDto) {

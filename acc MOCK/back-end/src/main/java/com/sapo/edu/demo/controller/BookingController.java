@@ -20,18 +20,15 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-//    @GetMapping("/booking")
-//    public ResponseEntity<ResponseObject> getAllCheck(
-//            @RequestParam(defaultValue = "0", name = "page") int page,
-//            @RequestParam(defaultValue = "10", name = "size") int size
-//    ) {
-//        Map<String, Object> response = bookingService.getAllBooking(page,size);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
-//    }
-    @GetMapping("/booking")
-    public List<BookingEntity> getAllBooking(){
-        return bookingService.getAll();
+    @GetMapping("/bookings")
+    public List<BookingDto> getAllCheck() {
+        List<BookingDto> response = bookingService.getAllBooking();
+        return response;
     }
+//    @GetMapping("/booking")
+//    public List<BookingEntity> getAllBooking(){
+//        return bookingService.getAll();
+//    }
 
     @PostMapping("/bookings")
     public ResponseEntity<ResponseObject> save(

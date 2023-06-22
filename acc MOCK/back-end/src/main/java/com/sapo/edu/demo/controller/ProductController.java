@@ -43,10 +43,10 @@ public class ProductController {
     //nao
     @GetMapping("/products")
     public List<ProductDto> getAllProductsByCode(
-            @RequestParam("code") String code,
+            @RequestParam("searchString") String searchString,
             @RequestParam("inventoryName") String inventoryName
     ) {
-        return productService.getAllProductsByCode(code,inventoryName);
+        return productService.getAllProductsBySearchString(searchString,inventoryName);
     }
     @PostMapping("/products")
     public ProductEntity save(@Valid @RequestBody CreateProduct product) {
@@ -58,9 +58,13 @@ public class ProductController {
         productService.delete(code);
     }
 
-    @GetMapping("/products/{code}")
-    public ProductEntity getProductByCode(@PathVariable("code") String code) {
-        return productService.getProductByCode(code);
+    @GetMapping("/products/searchString")
+    public List<ProductEntity> getProductByCode(
+            @RequestParam("searchString") String searchString,
+            @RequestParam("inventoryName") String inventoryName
+
+    ) {
+        return productService.getProductsBySearchString(searchString,inventoryName);
     }
 //
     @GetMapping("/product/search")

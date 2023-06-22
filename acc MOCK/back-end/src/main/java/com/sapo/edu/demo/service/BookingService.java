@@ -46,27 +46,22 @@ public class BookingService {
      * Find all Bookigs
      * @return
      */
-    public Map<String, Object> getAllBooking(int page, int size) {
-        Pageable paging = PageRequest.of(page, size, Sort.by(
-                        Sort.Order.asc("code")
-                )
-        );
-        Page<BookingEntity> pageBooking;
+    public List<BookingDto> getAllBooking() {
+
         List<BookingEntity> booking = new ArrayList<BookingEntity>();
-        pageBooking = bookingRepository.findAll(paging);
-        booking = pageBooking.getContent();
-        Map<String, Object> response = new HashMap<>();
+        booking = bookingRepository.findAll();
+
         List<BookingDto> bookingDtos = Arrays.asList(modelMapperbooking.map(booking, BookingDto[].class));
         for(int i = 0; i < booking.size(); i++) {
             BookingDto bookDto = bookingDtos.get(i);
             BookingEntity entity = booking.get(i);
             bookDto.setStaffName(staffRepository.findById(entity.getStaffCode()).get().getName());
-            bookDto.setSupplerName(supplierRepository.findById(entity.getSupplierCode()).get().getName());
+            bookDto.setSupplierName(supplierRepository.findById(entity.getSupplierCode()).get().getName());
 
         }
-        response.put("products", bookingDtos);
 
-        return response;
+
+        return bookingDtos;
 
     }
     /**
@@ -86,15 +81,10 @@ public class BookingService {
 
                 bookingEntity = modelMapperbooking.map(bookingDto,BookingEntity.class);
                 bookingEntity.setStaffCode(staffRepository.findByName(bookingDto.getStaffName()).getCode());
-                bookingEntity.setSupplierCode(supplierRepository.findByName(bookingDto.getSupplerName()).get().getCode());
+                bookingEntity.setSupplierCode(supplierRepository.findByName(bookingDto.getSupplierName()).get().getCode());
                 bookingEntity.setPayStatus("Chưa thanh toán");
                 bookingEntity.setBookingStatus("Chưa nhập");
                 bookingEntity.setStatus("Đang giao dịch");
-                bookingEntity.setBookingDate(now());
-
-
-
-
                 }
                 bookingEntity = bookingRepository.save(bookingEntity);
 

@@ -28,6 +28,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
     Optional<ProductEntity> deleteByCode(String code);
     List<ProductEntity> findByCodeContaining(String code);
+    List<ProductEntity> findByCodeContainingOrNameContaining(String code,String name);
 
     ProductEntity findByCode(String code);
 

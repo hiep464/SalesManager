@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -59,16 +60,18 @@ function CheckInventoryBody(props) {
         setUpdateProducts(updatedProducts);
       };
     return (
-        <div
+        <Box
+            borderRadius={6}
             role="tabpanel"
             {...other}
+            // style={{marginTop: "10px"}}
         >   
           
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650, margin: '0px' }} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>STT</TableCell>
+            <TableContainer  component={Box}>
+                <Table sx={{ minWidth: 650, margin: '0px' , userSelect: 'none', borderRadius: '6px'}} aria-label="aria-label">
+                    <TableHead sx = {{fontWeight : 'bold', borderRadius: '6px'}}>
+                        <TableRow sx={{ backgroundColor: '#f4f6f8' }}>
+                            <TableCell align="center">STT</TableCell>
                             <TableCell align="center"></TableCell>
                             <TableCell align="center">Mã SP</TableCell>
                             <TableCell align="center">Tên SP</TableCell>
@@ -85,7 +88,7 @@ function CheckInventoryBody(props) {
                     {rows.map((row,index) => (
                         <TableRow
                             key={index}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 }, borderRadius: '6px' }}
                             >
                             <TableCell component="th" scope="row">
                                 {index + 1}
@@ -120,7 +123,7 @@ function CheckInventoryBody(props) {
             
           
            
-        </div>
+        </Box>
         
     );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import './ResultSearch.scss';
 export function ResultSupllierSearch(props) {
     const supllier = props.supllier;
@@ -15,6 +16,15 @@ export function ResultCheckLineSearch(props) {
     return (
         <div className="result-search" onClick={props.onClick}>
             <p>{checkLine.name}</p>
+        </div>
+    );
+}
+export function ResultCheckRequestSearch(props) {
+    const checkRequest = props.checkRequest;
+    return (
+        <div className="result-search" onClick={props.onClick}>
+            <p>{checkRequest.code}</p>
+            <p>{checkRequest.staffName}</p>
         </div>
     );
 }

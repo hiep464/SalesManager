@@ -40,9 +40,9 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size);
         return productRepository.findAll(pageable);
     }
-    public List<ProductDto> getAllProductsByCode(String code, String inventoryName){
+    public List<ProductDto> getAllProductsBySearchString(String searchString, String inventoryName){
 //        List<>
-        List<ProductEntity> products = productRepository.findByCodeContaining(code);
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
         List<ProductDto> productDtos = new ArrayList<ProductDto>();
         for(ProductEntity product : products) {
 //            System.out.println(product);
@@ -66,9 +66,11 @@ public class ProductService {
         return productDtos;
     }
 
-    public ProductEntity getProductByCode(String code) {
-        return productRepository.findByCode(code);
+    public List<ProductEntity> getProductsBySearchString(String searchString, String inventoryName){
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
+        return products;
     }
+
 
     public ProductEntity saveProduct(CreateProduct p) {
         ProductEntity productEntity = new ProductEntity();

@@ -26,33 +26,38 @@ const CheckInventoryDetail = () => {
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/check_line?checkCode=${code}`)
                 .then(res => { 
-                            setCheckLines(res.data.data.checkLines)
+                            setCheckLines(res.data)
                 })
         axios.get(`${apiBaseUrl}/check_inventory/code?code=${code}`)
+                .then (res =>  res.data)
+                .then(res => res[0])
                 .then(res => {
-                    setCheckInvetoryRequest(res.data.data)
+                    setCheckInvetoryRequest(res)
                     
                 })
     },[])
     const handleDeleteRequest = () => {
         axios.delete(`${apiBaseUrl}/check_inventory/${code}`)
               .then(res => {
-                    navigate("/checkInventory")
+                    navigate(`/inventory/check_inventory`)
                 })
         
     }
     const handleUpdateProductQuantity = () => {
-        axios.post(`${apiBaseUrl}/admin/check_line/${code}`)
+        axios.post(`${apiBaseUrl}/check_line/${code}`)
             .then(res => {
                 alert("Đã cập nhập số lượng trong kho")
                 window.location.reload()
+            })
+            .catch((e) => {
+                alert(e)
             })
                 
     }
 
     return (
         <Box>
-            <Box sx={{width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between', alignItems : "center"}}>
+            <Box sx={{width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between', alignItems : "center", borderRadius: '10px'}}>
                 <Grid container spacing={3} display="flex" alignItems="center">
                   
                         <Grid >
@@ -77,17 +82,17 @@ const CheckInventoryDetail = () => {
                     
                 </Grid> : null}
             </Box>
-            <Box   sx = {{width: 'calc(82vw - 44px)', backgroundColor : "white"}}>
+            <Box   sx = {{width: 'calc(82vw - 44px)', backgroundColor : "white", borderRadius: '10px'}}>
                 <Box p = "12px" borderBottom = "1px solid"><h3>Thông tin phiếu</h3></Box>
                 <Box>
                     
                     <Stack  p ="12px" pb = "50px" direction="row" spacing={60}>
                         <Stack spacing={2}>
-                            <p>Chi nhánh kiểm : Chi nhánh 1</p>
+                            <p>Chi nhánh kiểm : {checkInvetoryRequest.inventoryName}</p>
                             <p>Nhân viên kiểm : {checkInvetoryRequest.staffName}</p>
                         </Stack>
                         <Stack spacing={20}>
-                            <p>Ngày tạo :</p>
+                            <p>Ngày tạo :{checkInvetoryRequest.createAt}</p>
                             
                         </Stack>
                         

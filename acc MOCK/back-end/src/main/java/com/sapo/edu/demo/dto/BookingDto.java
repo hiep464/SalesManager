@@ -24,7 +24,7 @@ public class BookingDto {
     private String staffName;
     @NotEmpty
 
-    private String supplerName;
+    private String supplierName;
     @NotEmpty
 
     private BigDecimal total;

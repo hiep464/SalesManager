@@ -55,11 +55,12 @@ const StyledMenu = styled((props) => (
 
 const columns = [
     { field: 'code', headerName: 'Mã đơn', width: 100 },
+    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
+    { field: 'staffName', headerName: 'Nhân viên tạo', width: 200 },
+    { field: 'supplierName', headerName: 'Nhà cung cấp', width: 150 },
+    { field: 'inventoryName', headerName: 'Kho', width: 150 },
     { field: 'total', headerName: 'Giá trị đơn', width: 200 },
     { field: 'bookingDate', headerName: 'Ngày đặt', width: 200 },
-    { field: 'payStatus', headerName: 'Thanh toán', width: 150 },
-    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
-    { field: 'status', headerName: 'Trạng thái', width: 150 },
 ];
 
 function Booking() {
@@ -71,7 +72,8 @@ function Booking() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/booking`).then((response) => {
+        axios.get(`${apiBaseUrl}/bookings`)
+            .then((response) => {
             // setBooking(Response.products);
             console.log(response.data)
             setBooking(response.data)
@@ -164,7 +166,7 @@ function Booking() {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
+                
                 getRowId={(row) => row.code}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />

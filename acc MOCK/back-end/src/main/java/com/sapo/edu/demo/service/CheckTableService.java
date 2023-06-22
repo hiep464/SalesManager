@@ -34,15 +34,11 @@ public class CheckTableService {
      * get all check lines
      * @return
      */
-    public List<CheckTableDto> getAllCheck(int page, int size) {
-        Pageable paging = PageRequest.of(page, size, Sort.by(
-                        Sort.Order.asc("code")
-                )
-        );
-        Page<CheckTableEntity> pageCheckTable;
+    public List<CheckTableDto> getAllCheck() {
+
         List<CheckTableEntity> checkTable = new ArrayList<CheckTableEntity>();
-        pageCheckTable = checkTableRepository.findAll(paging);
-        checkTable = pageCheckTable.getContent();
+        checkTable = checkTableRepository.findAll();
+
         List<CheckTableDto> checkTableDtos = Arrays.asList(modelMapperCheckInventory.map(checkTable, CheckTableDto[].class));
 
         for(int i = 0; i < checkTable.size(); i++) {
@@ -57,20 +53,33 @@ public class CheckTableService {
      * get all check request By code
      * @return
      */
-    public CheckTableDto getCheckByCode(String code) {
+    public List<CheckTableDto> getCheckByCode(String code) {
+        List<CheckTableEntity> checkTable = checkTableRepository.findByCodeContaining(code);
+        List<CheckTableDto> checkTableDtos = Arrays.asList(modelMapperCheckInventory.map(checkTable, CheckTableDto[].class));
+        for(int i =0 ; i < checkTableDtos.size();i ++) {
+            CheckTableDto checkTableDto = checkTableDtos.get(i);
+            CheckTableEntity entity = checkTable.get(i);
+            checkTableDto.setStaffName(staffRepository.findById(entity.getStaffCode()).get().getName());
+        }
 
 
-        CheckTableEntity checkTable = new CheckTableEntity();
-        checkTable = checkTableRepository.findById(code).get();
 
-
-        CheckTableDto checkTableDto = modelMapperCheckInventory.map(checkTable, CheckTableDto.class);
-        checkTableDto.setStaffName(staffRepository.findById(checkTable.getStaffCode()).get().getName());
-
-
-        return checkTableDto;
-
+        return checkTableDtos;
     }
+    public List<CheckTableDto> getCheckByStatus(String status) {
+        List<CheckTableEntity> checkTable = checkTableRepository.findByStatus(status);
+        List<CheckTableDto> checkTableDtos = Arrays.asList(modelMapperCheckInventory.map(checkTable, CheckTableDto[].class));
+        for(int i =0 ; i < checkTableDtos.size();i ++) {
+            CheckTableDto checkTableDto = checkTableDtos.get(i);
+            CheckTableEntity entity = checkTable.get(i);
+            checkTableDto.setStaffName(staffRepository.findById(entity.getStaffCode()).get().getName());
+        }
+
+
+
+        return checkTableDtos;
+    }
+
     /**
      * save new check lines
      * @Param checkTableDto
