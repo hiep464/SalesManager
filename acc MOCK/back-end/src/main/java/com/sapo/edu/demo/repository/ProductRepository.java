@@ -1,4 +1,6 @@
 package com.sapo.edu.demo.repository;
+import com.sapo.edu.demo.dto.product.ProductsWithCategory;
+import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.entities.ProductEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +30,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
     Optional<ProductEntity> deleteByCode(String code);
 
-    List<ProductEntity> findByCodeContainingOrNameContaining(String code,String name);
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt) " +
+            "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code " +
+            "WHERE p.name LIKE %:keyword% OR p.code LIKE %:keyword%")
+    List<ProductsWithCategory> findByCodeContainingOrNameContaining(@Param("keyword") String keyword);
 
     ProductEntity findByCode(String code);
 
@@ -48,4 +53,12 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             + "group by p.code order by total desc")
     List<Object> findTopProductsByQuantity();
 
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt) " +
+            "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code")
+    List<ProductsWithCategory> getProductsWithCategory();
+
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt)  " +
+            "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code " +
+            "WHERE c IN :categories")
+    List<ProductsWithCategory> findByCategoryIn(List<CategoryEntity> categories);
 }

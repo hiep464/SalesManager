@@ -2,6 +2,8 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
+import com.sapo.edu.demo.dto.product.ProductsWithCategory;
+import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.entities.CheckTableEntity;
 import com.sapo.edu.demo.entities.ProductAttribute;
 import com.sapo.edu.demo.entities.ProductEntity;
@@ -41,34 +43,9 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size);
         return productRepository.findAll(pageable);
     }
-    public List<ProductDto> getAllProductsBySearchString(String searchString, String inventoryName){
-//        List<>
-        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
-        List<ProductDto> productDtos = new ArrayList<ProductDto>();
-        for(ProductEntity product : products) {
-//            System.out.println(product);
-            List<ProductAttribute> attributes = productAttributeRepository.findByProductCodeAndInventoryName(product.getCode(),inventoryName);
 
-            List<ProductDto> Dtos = Arrays.asList(modelMapperProduct.map(attributes,ProductDto[].class));
-            for(ProductAttribute attribute : attributes) {
-                ProductDto dto = modelMapperProduct.map(product,ProductDto.class);
-                dto.setInventoryName(attribute.getInventoryName());
-                dto.setPrice(attribute.getPrice());
-                dto.setQuantity(attribute.getQuantity());
-                dto.setSize(attribute.getSize());
-                dto.setColor(attribute.getColor());
-                dto.setImage(attribute.getImage());
-                dto.setPrice(attribute.getPrice());
-                dto.setOriginalCost(attribute.getOriginalCost());
-                productDtos.add(dto);
-            }
-
-        }
-        return productDtos;
-    }
-
-    public List<ProductEntity> getProductsBySearchString(String searchString, String inventoryName){
-        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
+    public List<ProductsWithCategory> getProductsBySearch(String keyword){
+        List<ProductsWithCategory> products = productRepository.findByCodeContainingOrNameContaining(keyword);
         return products;
     }
 
@@ -130,6 +107,18 @@ public class ProductService {
     public ProductEntity updateProduct(ProductEntity productEntity){
         productEntity.setUpdateAt(LocalDate.now());
         return productRepository.save(productEntity);
+    }
+
+    public ProductEntity getProductByCode(String code){
+        return productRepository.findByCode(code);
+    }
+
+    public List<ProductsWithCategory> getProductsWithCategory(){
+        return productRepository.getProductsWithCategory();
+    }
+
+    public List<ProductsWithCategory> filterByCategory(List<CategoryEntity> categoryEntities){
+        return productRepository.findByCategoryIn(categoryEntities);
     }
 }
 

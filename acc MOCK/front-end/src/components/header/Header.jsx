@@ -13,15 +13,41 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useLogout } from '../../api/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const cx = classNames.bind(styles);
 
 function AccountMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [title, setTitle] = React.useState(false);
+    const [details, setDetails] = React.useState(false);
     const open = Boolean(anchorEl);
+
+    const location = useLocation();
+
+    React.useEffect(() => {
+        if (location.pathname.includes('product/P')) {
+            setDetails(true);
+            setTitle('Quay lại danh sách sản phẩm');
+        } else if (location.pathname.includes('product')) {
+            setTitle('Danh sách sản phẩm');
+            setDetails(false);
+        } else {
+            setTitle('Tổng quan');
+            setDetails(false);
+        }
+    }, [location]);
+
+    const navigate = useNavigate();
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const { mutate: logout } = useLogout();
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -37,18 +63,30 @@ function AccountMenu() {
                     backgroundColor: '#fefefe',
                     borderRadius: '6px',
                     justifyContent: 'space-between',
-                    border: '1px solid #1976d2'
+                    border: '1px solid #1976d2',
                 }}
             >
                 <div style={{ display: 'flex' }}>
-                    <Typography sx={{ minWidth: 100, margin: '0 30px' }}>Tổng quan</Typography>
-                    <MoreVertIcon />
+                    <Typography sx={{ minWidth: 100, margin: '0 30px' }}>
+                        {details ? (
+                            <Link
+                                to={'/inventory/product'}
+                                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                            >
+                                <ArrowBackIosIcon sx={{ width: '14px', height: '14px' }} />
+                                {title}
+                            </Link>
+                        ) : (
+                            title
+                        )}
+                    </Typography>
+                    {details ? '' : <MoreVertIcon />}
                 </div>
                 <Tooltip title="Account settings">
                     <Box
                         onClick={handleClick}
                         size="small"
-                        className={cx('account')}
+                        // className={cx('account')}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
@@ -57,13 +95,13 @@ function AccountMenu() {
                             padding: '8px',
                             borderRadius: '4px',
                             height: '100%',
-                            marginRight: '14px'
+                            marginRight: '14px',
                         }}
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}/>
+                        <Avatar sx={{ width: 32, height: 32 }} />
                         <span style={{ margin: '0 8px' }}>Admin</span>
                     </Box>
                 </Tooltip>
@@ -122,7 +160,13 @@ function AccountMenu() {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem
+                    onClick={() => {
+                        handleClose();
+                        logout();
+                        navigate('/');
+                    }}
+                >
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>

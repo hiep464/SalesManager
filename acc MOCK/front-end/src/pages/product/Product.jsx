@@ -25,9 +25,11 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Slide from '@mui/material/Slide';
 import { apiBaseUrl } from '../../constant/constant';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import app from '../../firebase/app';
+import { getCookie } from '../../utils/api';
+import Avatar from '@mui/material/Avatar';
+import Checkbox from '@mui/material/Checkbox';
 
 const uploadImage = async (file) => {
     const storage = getStorage(app);
@@ -90,17 +92,21 @@ const columns = [
     {
         field: 'imgage',
         headerName: 'Ảnh',
-        width: 100,
+        width: 150,
         renderCell: (data) =>
-            data.row.image ? <img src={data.row.image} style={{ width: '24px', height: '24px' }} /> : <ImageIcon />,
+            data.row.image ? (
+                <img src={data.row.image} style={{ width: '24px', height: '24px' }} alt="image" />
+            ) : (
+                <ImageIcon />
+            ),
     },
     { field: 'code', headerName: 'Mã SP', width: 200 },
-    { field: 'name', headerName: 'Sản phẩm', width: 200 },
-    { field: 'categoryCode', headerName: 'Loại', width: 150 },
-    // { field: 'price', headerName: 'Giá bán', width: 150 },
+    { field: 'productName', headerName: 'Sản phẩm', width: 250 },
+    { field: 'categoryName', headerName: 'Loại', width: 200 },
+    { field: 'brand', headerName: 'Thương hiệu', width: 200 },
     // { field: 'inventoryName', headerName: 'Kho', width: 150 },
     // { field: 'originalCost', headerName: 'Giá nhập', width: 160 },
-    { field: 'createAt', headerName: 'Ngày tạo', width: 160 },
+    { field: 'createAt', headerName: 'Ngày tạo', width: 150 },
 ];
 
 function TransitionDown(props) {
@@ -114,17 +120,25 @@ export default function Product() {
     const [category, setCategory] = React.useState('');
     const [categories, setCategories] = React.useState([]);
     const [name, setName] = React.useState('');
-    // const [categoryCode, setCategoryCode] = React.useState('');
     const [brand, setBrand] = React.useState('');
-    const [inventory, setInventory] = React.useState('');
-    // const [inventories, setInventories] = React.useState([]);
-    // const [price, setPrice] = React.useState(0);
-    // const [originCost, setOriginCost] = React.useState(0);
     const [openSnackBar, setOpenSnackBar] = React.useState(false);
     const [imageURL, setImageURL] = React.useState(null);
     const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = React.useState(null);
+    const [refesh, setRefesh] = React.useState(null);
+    const [search, setSearch] = React.useState('');
+    const [anchorEl1, setAnchorEl1] = React.useState(null);
+    const [selectedItems, setSelectedItems] = React.useState([]);
+    const open1 = Boolean(anchorEl1);
     const inputFileRef = React.useRef(null);
+
+    const handleClick1 = (event) => {
+        setAnchorEl1(event.currentTarget);
+    };
+
+    const handleClose1 = () => {
+        setAnchorEl1(null);
+    };
 
     const handleClickSnackBar = () => {
         setOpenSnackBar(true);
@@ -147,19 +161,30 @@ export default function Product() {
     };
 
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/products/page?page=0&size=24`).then((response) => {
-            setRows(response.data);
-        });
-
-        axios.get(`${apiBaseUrl}/categories`).then((response) => {
-            setCategories(response.data);
-        });
-
-        // axios.get(`${apiBaseUrl}/inventories`).then((response) => {
-        //     setInventories(response.data);
-        // });
+        axios
+            .get(`${apiBaseUrl}/inventory/categories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setCategories(response.data);
+            });
     }, []);
 
+    React.useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/inventory/products`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setRows(response.data);
+            });
+    }, [refesh]);
     const handleClickRow = (e) => {
         navigate(`${e?.id}`);
     };
@@ -169,27 +194,27 @@ export default function Product() {
         console.log(e.target.value);
     };
 
-    // const handleChangeInventory = (e) => {
-    //     setInventory(e.target.value);
-    //     console.log(e.target.value);
-    // };
-
     const hangleCreate = async () => {
         const url = await uploadImage(selectedImage);
         const formData = {
             brand: brand,
             categoryCode: category,
-            // inventoryName: inventory,
             name: name,
-            // originalCost: parseFloat(originCost.replace(/,/g, '')),
-            // price: parseFloat(price.replace(/,/g, '')),
             image: url,
         };
-        axios.post(`${apiBaseUrl}/products`, formData).then(() => {
-            setAdd(false);
-            // handleClickVariant('success');
-            handleClickSnackBar();
-        });
+        axios
+            .post(`${apiBaseUrl}/inventory/products`, formData, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then(() => {
+                setAdd(false);
+                // handleClickVariant('success');
+                setRefesh(refesh + 1);
+                handleClickSnackBar();
+            });
         console.log(url);
     };
 
@@ -208,6 +233,65 @@ export default function Product() {
             setSelectedImage(null);
         }
     }
+
+    const handleSearch = () => {
+        axios
+            .get(`${apiBaseUrl}/inventory/products/searchString`, {
+                params: { text: search },
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setRows(response.data);
+            });
+    };
+
+    React.useEffect(() => {
+        if (search !== '') {
+            axios
+                .get(`${apiBaseUrl}/inventory/products/searchString`, {
+                    params: { text: search },
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                })
+                .then((response) => {
+                    setRows(response.data);
+                });
+        }
+    }, [search]);
+
+    const handleCheckboxChange = (item) => {
+        const selectedIndex = selectedItems.indexOf(item);
+
+        if (selectedIndex === -1) {
+            // Nếu item chưa tồn tại trong mảng selectedItems, thêm item vào mảng
+            setSelectedItems([...selectedItems, item]);
+        } else {
+            // Nếu item đã tồn tại trong mảng selectedItems, xóa item khỏi mảng
+            const updatedItems = [...selectedItems];
+            updatedItems.splice(selectedIndex, 1);
+            setSelectedItems(updatedItems);
+        }
+    };
+
+    const handleFilterByCategory = () => {
+        console.log(selectedItems);
+        axios
+            .post(`${apiBaseUrl}/inventory/products/filter_by_category`, selectedItems, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setRows(response.data);
+                setAnchorEl1(null);
+            });
+    };
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -272,53 +356,7 @@ export default function Product() {
                                 </Select>
                             </Box>
                         </Box>
-                        {/* <Box width={'50%'}>
-                            <ListItemText primary="Kho" />
-                            <Select
-                                size="small"
-                                sx={{ width: 'calc(100%)' }}
-                                value={inventory}
-                                onChange={handleChangeInventory}
-                            >
-                                {inventories?.map((item) => (
-                                    <MenuItem key={item?.name} value={item?.name}>
-                                        {item?.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </Box> */}
                     </ListItem>
-                    {/* <ListItem>
-                        <Box marginRight={'12px'}>
-                            <ListItemText primary="Giá bán" />
-                            <NumericFormat
-                                thousandSeparator={true}
-                                prefix={''}
-                                customInput={TextField}
-                                type="text"
-                                // Các thuộc tính khác của TextField
-                                size="small"
-                                onChange={(e) => {
-                                    setPrice(e.target.value);
-                                }}
-                            />
-                        </Box>
-                        <Box>
-                            <ListItemText primary="Giá nhập" />
-                            <NumericFormat
-                                thousandSeparator={true}
-                                prefix={''}
-                                customInput={TextField}
-                                type="text"
-                                // Các thuộc tính khác của TextField
-                                size="small"
-                                onChange={(e) => {
-                                    setOriginCost(e.target.value);
-                                }}
-                            />
-                        </Box> */
-                    /* </ListItem> */}
-
                     <ListItem>
                         <input type="file" accept="image/*" ref={inputFileRef} onChange={handleImageUpload} />
                         {imageURL && (
@@ -327,7 +365,6 @@ export default function Product() {
                                 <button onClick={deleteImage}>Delete Image</button>
                             </div>
                         )}
-                        {/* <AddPhotoAlternateIcon sx={{ width: '60px', height: '60px', margin: '20px' }} /> */}
                     </ListItem>
 
                     <ListItem sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -366,9 +403,70 @@ export default function Product() {
                     sx={{ ml: 1, flex: 1, border: '1px' }}
                     placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
                     inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                    }}
                 />
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button
+
+                <Box
+                    onClick={handleClick1}
+                    size="small"
+                    // className={cx('account')}
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        padding: '8px',
+                        borderRadius: '4px',
+                        height: '100%',
+                        marginRight: '14px',
+                    }}
+                    aria-controls={open1 ? 'account-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open1 ? 'true' : undefined}
+                >
+                    <Button variant="outlined" startIcon={<FilterAltIcon />}>Loại sản phẩm</Button>
+                </Box>
+                <Menu
+                    anchorEl={anchorEl1}
+                    id="account-menu"
+                    open={open1}
+                    onClose={handleClose1}
+                    // onClick={handleClose1}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                    {categories?.map((item, index) => {
+                        return (
+                            <MenuItem key={index}>
+                                <Checkbox
+                                    checked={selectedItems.includes(item)}
+                                    onChange={() => handleCheckboxChange(item)}
+                                />
+                                {item?.name}
+                            </MenuItem>
+                        );
+                    })}
+                    {/* <MenuItem> */}
+                    <Button
+                        variant="outlined"
+                        onClick={() => {setSelectedItems([])}}
+                        sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
+                    >
+                        Hủy
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleFilterByCategory}
+                        sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
+                    >
+                        Lọc
+                    </Button>
+                    {/* </MenuItem> */}
+                </Menu>
+                {/* <Button
                     id="demo-customized-button"
                     aria-controls={open ? 'demo-customized-menu' : undefined}
                     aria-haspopup="true"
@@ -379,7 +477,7 @@ export default function Product() {
                     endIcon={<FilterAltIcon />}
                 >
                     Bộ lọc
-                </Button>
+                </Button> */}
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
                 <Button
                     onClick={() => {
@@ -443,17 +541,21 @@ export default function Product() {
                 getRowId={(row) => row.code}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
                 onRowClick={handleClickRow}
+                localeText={{
+                    MuiTablePagination: {
+                        labelDisplayedRows: ({ from, to, count }) =>
+                            `Kết quả từ ${from} đến ${to} trên tổng số ${count}`,
+                        labelRowsPerPage: 'Hiển thị',
+                    },
+                }}
             />
             <div>
-                {/* <Button onClick={handleClickSnackBar}>Open simple snackbar</Button> */}
                 <Snackbar
                     open={openSnackBar}
                     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     autoHideDuration={3000}
                     onClose={handleCloseSnackBar}
                     TransitionComponent={TransitionDown}
-                    // message="Tạo sản phẩm thành công"
-                    // action={action}
                 >
                     <Alert sx={{ padding: '8px' }} severity="success" color="info">
                         Tạo sản phẩm thành công
@@ -463,11 +565,3 @@ export default function Product() {
         </div>
     );
 }
-
-// export default function Product() {
-//     return (
-//       <SnackbarProvider persist>
-//         <ProductElement />
-//       </SnackbarProvider>
-//     );
-// }

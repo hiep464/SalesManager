@@ -48,11 +48,7 @@ export function ResultProductSearch(props) {
                 <p>{product.name}</p>
                 <p>Số lượng:{product.quantity}</p>
             </div>
-<<<<<<< HEAD
             <div>Size&color: {product.size + ',' + product.color}</div>
-=======
-            <div>Size&color: {product.size+","+product.color}</div>
->>>>>>> ee3c43aa12d3d230a44e513d269dcabd837e7f37
             <p>Giá:{product.price}</p>
         </div>
     );

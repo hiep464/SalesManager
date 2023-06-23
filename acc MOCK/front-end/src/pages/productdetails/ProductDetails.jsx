@@ -35,7 +35,7 @@ import { apiBaseUrl } from '../../constant/constant';
 import app from '../../firebase/app';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import CloseIcon from '@mui/icons-material/Close';
-import ImageIcon from '@mui/icons-material/Image';
+import { getCookie } from '../../utils/api';
 
 const uploadImage = async (file) => {
     const storage = getStorage(app);
@@ -112,7 +112,6 @@ function ProductDetails() {
     const [addAttribute, setAddAttribute] = useState([]);
     const [product, setProduct] = useState({});
     const [categoryName, setCategoryName] = useState('');
-    // const [category, setCategory] = useState('');
     const [categories, setCategories] = useState('');
     const [update, setUpdate] = useState(false);
     const [open, setOpen] = useState(false);
@@ -123,9 +122,6 @@ function ProductDetails() {
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [refesh, setRefesh] = useState(0);
     const [message, setMessage] = useState('');
-    const [imgLink, setImgLink] = useState(null);
-    // const [selectedFile, setSelectedFile] = useState(null);
-    // const [attributeUpdate, setAttributeUpdate] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageURL, setImageURL] = useState(null);
     const inputFileRef = useRef(null);
@@ -147,36 +143,60 @@ function ProductDetails() {
     };
 
     useEffect(() => {
-        axios.get(`${apiBaseUrl}/product/${code}/attribute`).then((response) => {
-            console.log(response.data);
-            setAttributes(response.data);
-        });
-        axios.get(`${apiBaseUrl}/products/${code}`).then((response) => {
-            // console.log(response.data);
-            setProduct(response.data);
-        });
+        axios
+            .get(`${apiBaseUrl}/inventory/product/${code}/attribute`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                console.log(response.data);
+                setAttributes(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/inventory/products/${code}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                // console.log(response.data);
+                setProduct(response.data);
+            });
         // ${apiBaseUrl}/categories
     }, [refesh]);
 
     useEffect(() => {
-        axios.get(`${apiBaseUrl}/categories`).then((response) => {
-            // console.log(response.data);
-            setCategories(response.data);
-        });
+        axios
+            .get(`${apiBaseUrl}/inventory/categories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                // console.log(response.data);
+                setCategories(response.data);
+            });
     }, []);
 
     useEffect(() => {
         if (product?.categoryCode) {
-            axios.get(`${apiBaseUrl}/categories/${product?.categoryCode}`).then((response) => {
-                // console.log(response.data);
-                setCategoryName(response.data?.name);
-            });
+            axios
+                .get(`${apiBaseUrl}/inventory/categories/${product?.categoryCode}`, {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                })
+                .then((response) => {
+                    // console.log(response.data);
+                    setCategoryName(response.data?.name);
+                });
         }
     }, [product]);
-
-    // const handleChangeCategory = (e) => {
-    //     ;
-    // };
 
     const addElement = (newElement) => {
         setAddAttribute((prevArray) => [...prevArray, newElement]);
@@ -253,28 +273,44 @@ function ProductDetails() {
                 setErrorDetails(resultFilter);
             } else {
                 if (addAttribute.length > 0) {
-                    axios.post(`${apiBaseUrl}/product/attribute/add_list`, addAttribute).then(() => {
-                        console.log('sucess');
-                    });
+                    axios
+                        .post(`${apiBaseUrl}/inventory/product/attribute/add_list`, addAttribute, {
+                            headers: {
+                                // token: Cookies.get('token'),
+                                Authorization: getCookie('Authorization'),
+                            },
+                        })
+                        .then(() => {
+                            console.log('sucess');
+                        });
                 }
 
                 if (selectedImage) {
                     const url = await uploadImage(selectedImage);
                     product.image = url;
-                    // setProduct((prev) => ({
-                    //     ...prev,
-                    //     image: url,
-                    // }));
-                    // console.log(url, product)
                 }
-                console.log(attributes)
+                console.log(attributes);
 
-                axios.put(`${apiBaseUrl}/product/update`, product).then(() => {
-                    console.log('update product sucess');
-                });
-                axios.put(`${apiBaseUrl}/product/attribute/update_list`, attributes).then(() => {
-                    console.log('update list sucess');
-                });
+                axios
+                    .put(`${apiBaseUrl}/inventory/product/update`, product, {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    })
+                    .then(() => {
+                        console.log('update product sucess');
+                    });
+                axios
+                    .put(`${apiBaseUrl}/inventory/product/attribute/update_list`, attributes, {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    })
+                    .then(() => {
+                        console.log('update list sucess');
+                    });
                 setAddAttribute([]);
                 setUpdate(false);
                 setMessage('Cập nhật thành công');
@@ -288,26 +324,21 @@ function ProductDetails() {
     };
 
     const handleDeleteAttribute = () => {
-        axios.delete(`${apiBaseUrl}/product/attribute/${deleteElement}`).then(() => {
-            setOpen(false);
-            const updatedAttribute = attributes.filter((item) => item.id !== deleteElement);
-            setAttributes(updatedAttribute);
-            setMessage('Xóa thành công');
-            handleClickSnackBar();
-        });
+        axios
+            .delete(`${apiBaseUrl}/inventory/product/attribute/${deleteElement}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then(() => {
+                setOpen(false);
+                const updatedAttribute = attributes.filter((item) => item.id !== deleteElement);
+                setAttributes(updatedAttribute);
+                setMessage('Xóa thành công');
+                handleClickSnackBar();
+            });
     };
-
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     setSelectedFile(file);
-    // };
-
-    // const handleUpload = async () => {
-    //     if (selectedFile) {
-    //         const url = await uploadImage(selectedFile);
-    //         setImgLink(url);
-    //     }
-    // };
 
     function handleImageUpload(event) {
         const file = event.target.files[0];
@@ -389,31 +420,6 @@ function ProductDetails() {
                                     categoryName
                                 )}
                             </Box>
-                            {/* <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
-                                <ListItemText primary="Giá bán :" />
-                                {update ? (
-                                    // <TextField sx={{width: '50%'}} type='number' size="small" defaultValue={product?.price} variant="outlined" />
-                                    <NumericFormat
-                                        thousandSeparator={true}
-                                        prefix={''}
-                                        customInput={TextField}
-                                        type="text"
-                                        // Các thuộc tính khác của TextField
-                                        value={product?.price}
-                                        sx={{ width: '50%' }}
-                                        size="small"
-                                        variant="outlined"
-                                        onChange={(e) => {
-                                            setProduct((prev) => ({
-                                                ...prev,
-                                                price: parseFloat(e.target.value.replace(/,/g, '')),
-                                            }));
-                                        }}
-                                    />
-                                ) : (
-                                    <Numeral value={product?.price} format={'0,0'} />
-                                )}
-                            </Box> */}
                         </ListItem>
                         <ListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
@@ -436,31 +442,6 @@ function ProductDetails() {
                                     product?.brand
                                 )}
                             </Box>
-                            {/* <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
-                                <ListItemText primary="Giá nhập :" />
-                                {update ? (
-                                    // <TextField sx={{width: '50%'}} type='number' size="small" defaultValue={product?.price} variant="outlined" />
-                                    <NumericFormat
-                                        thousandSeparator={true}
-                                        prefix={''}
-                                        customInput={TextField}
-                                        type="text"
-                                        // Các thuộc tính khác của TextField
-                                        value={product?.originalCost}
-                                        sx={{ width: '50%' }}
-                                        size="small"
-                                        variant="outlined"
-                                        onChange={(e) => {
-                                            setProduct((prev) => ({
-                                                ...prev,
-                                                originalCost: parseFloat(e.target.value.replace(/,/g, '')),
-                                            }));
-                                        }}
-                                    />
-                                ) : (
-                                    <Numeral value={product?.originalCost} format={'0,0'} />
-                                )}
-                            </Box> */}
                         </ListItem>
                         {update ? (
                             ''
@@ -610,13 +591,6 @@ function ProductDetails() {
                         <TableBody>
                             {attributes.map((row, index) => (
                                 <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    {/* <TableCell sx={{ width: '18%' }} component="th" scope="row">
-                                        {row?.image ? (
-                                            <img src={row?.image} style={{ width: '24px', height: '24px' }} />
-                                        ) : (
-                                            <ImageIcon />
-                                        )}
-                                    </TableCell> */}
                                     <TableCell sx={{ width: '18%' }} component="th" scope="row">
                                         {row.size}
                                     </TableCell>

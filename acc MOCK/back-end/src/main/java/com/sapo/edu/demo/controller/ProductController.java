@@ -1,6 +1,8 @@
 package com.sapo.edu.demo.controller;
 import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
+import com.sapo.edu.demo.dto.product.ProductsWithCategory;
+import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.service.ProductService;
 
@@ -31,7 +33,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "lấy số trang")
-    @GetMapping("categories/page_size")
+    @GetMapping("products/page_size")
     public ArrayList getPageOption(@RequestParam(name = "size", required = false, defaultValue = "5") Integer size){
         Integer pageSize =  productService.getAllInPage(0, size).getTotalPages();
         ArrayList arrayList = new ArrayList();
@@ -40,14 +42,7 @@ public class ProductController {
         }
         return arrayList;
     }
-    //nao
-    @GetMapping("/products/search")
-    public List<ProductDto> getAllProductsByCode(
-            @RequestParam("searchString") String searchString,
-            @RequestParam("inventoryName") String inventoryName
-    ) {
-        return productService.getAllProductsBySearchString(searchString,inventoryName);
-    }
+
     @PostMapping("/products")
     public ProductEntity save(@Valid @RequestBody CreateProduct product) {
         return productService.saveProduct(product);
@@ -59,19 +54,18 @@ public class ProductController {
     }
 
     @GetMapping("/products/searchString")
-    public List<ProductEntity> getProductByCode(
-            @RequestParam("searchString") String searchString,
-            @RequestParam("inventoryName") String inventoryName
+    public List<ProductsWithCategory> searchByCodeOrName(
+            @RequestParam("text") String search
 
     ) {
-        return productService.getProductsBySearchString(searchString,inventoryName);
+        return productService.getProductsBySearch(search);
     }
 
-    @GetMapping("/products")
-    public List<ProductDto> getAllProductsByCode(
-            @RequestParam("code") String code
+    @GetMapping("/products/{code}")
+    public ProductEntity getAllProductsByCode(
+            @PathVariable("code") String code
     ) {
-        return productService.getAllProductsByCode(code);
+        return productService.getProductByCode(code);
     }
 //
     @GetMapping("/product/search")
@@ -87,4 +81,13 @@ public class ProductController {
         return productService.updateProduct(productEntity);
     }
 
+    @GetMapping("/products")
+    public List<ProductsWithCategory> getProductsWithCategory() {
+        return productService.getProductsWithCategory();
+    }
+
+    @PostMapping("/products/filter_by_category")
+    public List<ProductsWithCategory> filterByCategory(@RequestBody List<CategoryEntity> categoryEntities) {
+        return productService.filterByCategory(categoryEntities);
+    }
 }
