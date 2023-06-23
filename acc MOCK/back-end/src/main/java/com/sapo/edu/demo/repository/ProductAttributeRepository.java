@@ -29,5 +29,6 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
     @Query("SELECT DISTINCT p.color FROM ProductAttribute p")
     List<String> findDistinctColor();
 
+    List<ProductAttribute> findAllByProductCode(String code);
 
 }

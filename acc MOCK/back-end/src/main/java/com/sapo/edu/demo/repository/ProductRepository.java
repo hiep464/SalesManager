@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
     Optional<ProductEntity> deleteByCode(String code);
 
-    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt) " +
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.status, p.createAt) " +
             "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code " +
             "WHERE p.name LIKE %:keyword% OR p.code LIKE %:keyword%")
     List<ProductsWithCategory> findByCodeContainingOrNameContaining(@Param("keyword") String keyword);
@@ -53,11 +53,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
             + "group by p.code order by total desc")
     List<Object> findTopProductsByQuantity();
 
-    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt) " +
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.status, p.createAt) " +
             "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code")
     List<ProductsWithCategory> getProductsWithCategory();
 
-    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.createAt)  " +
+    @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.status, p.createAt)  " +
             "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code " +
             "WHERE c IN :categories")
     List<ProductsWithCategory> findByCategoryIn(List<CategoryEntity> categories);

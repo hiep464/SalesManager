@@ -90,4 +90,10 @@ public class ProductController {
     public List<ProductsWithCategory> filterByCategory(@RequestBody List<CategoryEntity> categoryEntities) {
         return productService.filterByCategory(categoryEntities);
     }
+
+    @DeleteMapping("/products/delete/{code}")
+    public String deleteProduct(@PathVariable("code") String code){
+        productService.deleteProduct(code);
+        return code;
+    }
 }

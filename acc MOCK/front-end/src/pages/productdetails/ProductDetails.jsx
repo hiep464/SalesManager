@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
 import Table from '@mui/material/Table';
@@ -107,6 +107,7 @@ function checkEmptyAttributesArray(array) {
 
 function ProductDetails() {
     let { code } = useParams();
+    const navigate = useNavigate();
 
     const [attributes, setAttributes] = useState([]);
     const [addAttribute, setAddAttribute] = useState([]);
@@ -124,6 +125,7 @@ function ProductDetails() {
     const [message, setMessage] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageURL, setImageURL] = useState(null);
+    const [deleteProduct, setDeleteProduct] = useState(false);
     const inputFileRef = useRef(null);
 
     function TransitionDown(props) {
@@ -151,7 +153,7 @@ function ProductDetails() {
                 },
             })
             .then((response) => {
-                console.log(response.data);
+                console.log('attribute: ', response.data);
                 setAttributes(response.data);
             });
         axios
@@ -355,6 +357,21 @@ function ProductDetails() {
             // inputFileRef.current.value = null;
             setSelectedImage(null);
         }
+    }
+
+    const handleDeleteProduct = () => {
+        axios.delete(`${apiBaseUrl}/inventory/products/delete/${code}`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        }).then(() => {
+            setMessage('Xóa thành công');
+            handleClickSnackBar();
+            setDeleteProduct(false);
+            alert("Xóa thành công");
+            navigate('/inventory/product');
+        })
     }
 
     return (
@@ -589,129 +606,135 @@ function ProductDetails() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {attributes.map((row, index) => (
-                                <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell sx={{ width: '18%' }} component="th" scope="row">
-                                        {row.size}
-                                    </TableCell>
-                                    <TableCell sx={{ width: '18%' }} align="left">
-                                        {row.color}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {update ? (
-                                            <NumericFormat
-                                                thousandSeparator={true}
-                                                prefix={''}
-                                                customInput={TextField}
-                                                type="text"
-                                                // Các thuộc tính khác của TextField
-                                                // defaultValue={row.quantity}
-                                                value={row?.price}
-                                                sx={{ width: '50%' }}
-                                                size="small"
-                                                variant="standard"
-                                                onChange={(e) => {
-                                                    setAttributes((prevItems) =>
-                                                        prevItems.map((item) =>
-                                                            item.id === row.id
-                                                                ? {
-                                                                      ...item,
-                                                                      price: parseFloat(
-                                                                          e.target.value.replace(/,/g, ''),
-                                                                      ),
-                                                                  }
-                                                                : item,
-                                                        ),
-                                                    );
-                                                }}
-                                            />
-                                        ) : (
-                                            <Numeral value={row?.price} format={'0,0'} />
-                                        )}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {update ? (
-                                            <NumericFormat
-                                                thousandSeparator={true}
-                                                prefix={''}
-                                                customInput={TextField}
-                                                type="text"
-                                                // Các thuộc tính khác của TextField
-                                                value={row?.originalCost}
-                                                sx={{ width: '50%' }}
-                                                size="small"
-                                                variant="standard"
-                                                onChange={(e) => {
-                                                    setAttributes((prevItems) =>
-                                                        prevItems.map((item) =>
-                                                            item.id === row.id
-                                                                ? {
-                                                                      ...item,
-                                                                      originalCost: parseFloat(
-                                                                          e.target.value.replace(/,/g, ''),
-                                                                      ),
-                                                                  }
-                                                                : item,
-                                                        ),
-                                                    );
-                                                }}
-                                            />
-                                        ) : (
-                                            <Numeral value={row?.originalCost} format={'0,0'} />
-                                        )}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {update ? (
-                                            <NumericFormat
-                                                thousandSeparator={true}
-                                                prefix={''}
-                                                customInput={TextField}
-                                                type="text"
-                                                // Các thuộc tính khác của TextField
-                                                value={row?.quantity}
-                                                sx={{ width: '50%' }}
-                                                size="small"
-                                                variant="standard"
-                                                onChange={(e) => {
-                                                    setAttributes((prevItems) =>
-                                                        prevItems.map((item) =>
-                                                            item.id === row.id
-                                                                ? {
-                                                                      ...item,
-                                                                      quantity: parseFloat(
-                                                                          e.target.value.replace(/,/g, ''),
-                                                                      ),
-                                                                  }
-                                                                : item,
-                                                        ),
-                                                    );
-                                                }}
-                                            />
-                                        ) : (
-                                            row?.quantity
-                                        )}
-                                    </TableCell>
-                                    {!update ? (
-                                        <TableCell sx={{ width: '15%' }} align="left">
-                                            {row.createAt}
-                                        </TableCell>
-                                    ) : (
-                                        ''
-                                    )}
-                                    {update ? (
-                                        <TableCell align="center">
-                                            <DeleteIcon
-                                                onClick={() => {
-                                                    handleClickOpen();
-                                                    setDeleteElement(row?.id);
-                                                }}
-                                            />
-                                        </TableCell>
-                                    ) : (
-                                        ''
-                                    )}
-                                </TableRow>
-                            ))}
+                            {attributes.map((row, index) => {
+                                if (row?.status !== `delete`)
+                                    return (
+                                        <TableRow
+                                            key={index}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell sx={{ width: '18%' }} component="th" scope="row">
+                                                {row.size}
+                                            </TableCell>
+                                            <TableCell sx={{ width: '18%' }} align="left">
+                                                {row.color}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {update ? (
+                                                    <NumericFormat
+                                                        thousandSeparator={true}
+                                                        prefix={''}
+                                                        customInput={TextField}
+                                                        type="text"
+                                                        // Các thuộc tính khác của TextField
+                                                        // defaultValue={row.quantity}
+                                                        value={row?.price}
+                                                        sx={{ width: '50%' }}
+                                                        size="small"
+                                                        variant="standard"
+                                                        onChange={(e) => {
+                                                            setAttributes((prevItems) =>
+                                                                prevItems.map((item) =>
+                                                                    item.id === row.id
+                                                                        ? {
+                                                                              ...item,
+                                                                              price: parseFloat(
+                                                                                  e.target.value.replace(/,/g, ''),
+                                                                              ),
+                                                                          }
+                                                                        : item,
+                                                                ),
+                                                            );
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Numeral value={row?.price} format={'0,0'} />
+                                                )}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {update ? (
+                                                    <NumericFormat
+                                                        thousandSeparator={true}
+                                                        prefix={''}
+                                                        customInput={TextField}
+                                                        type="text"
+                                                        // Các thuộc tính khác của TextField
+                                                        value={row?.originalCost}
+                                                        sx={{ width: '50%' }}
+                                                        size="small"
+                                                        variant="standard"
+                                                        onChange={(e) => {
+                                                            setAttributes((prevItems) =>
+                                                                prevItems.map((item) =>
+                                                                    item.id === row.id
+                                                                        ? {
+                                                                              ...item,
+                                                                              originalCost: parseFloat(
+                                                                                  e.target.value.replace(/,/g, ''),
+                                                                              ),
+                                                                          }
+                                                                        : item,
+                                                                ),
+                                                            );
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Numeral value={row?.originalCost} format={'0,0'} />
+                                                )}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {update ? (
+                                                    <NumericFormat
+                                                        thousandSeparator={true}
+                                                        prefix={''}
+                                                        customInput={TextField}
+                                                        type="text"
+                                                        // Các thuộc tính khác của TextField
+                                                        value={row?.quantity}
+                                                        sx={{ width: '50%' }}
+                                                        size="small"
+                                                        variant="standard"
+                                                        onChange={(e) => {
+                                                            setAttributes((prevItems) =>
+                                                                prevItems.map((item) =>
+                                                                    item.id === row.id
+                                                                        ? {
+                                                                              ...item,
+                                                                              quantity: parseFloat(
+                                                                                  e.target.value.replace(/,/g, ''),
+                                                                              ),
+                                                                          }
+                                                                        : item,
+                                                                ),
+                                                            );
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    row?.quantity
+                                                )}
+                                            </TableCell>
+                                            {!update ? (
+                                                <TableCell sx={{ width: '15%' }} align="left">
+                                                    {row.createAt}
+                                                </TableCell>
+                                            ) : (
+                                                ''
+                                            )}
+                                            {update ? (
+                                                <TableCell align="center">
+                                                    <DeleteIcon
+                                                        onClick={() => {
+                                                            handleClickOpen();
+                                                            setDeleteElement(row?.id);
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                            ) : (
+                                                ''
+                                            )}
+                                        </TableRow>
+                                    );
+                            })}
                             {update
                                 ? addAttribute?.map((row, index) => {
                                       return (
@@ -823,7 +846,7 @@ function ProductDetails() {
                 {update ? (
                     ''
                 ) : (
-                    <Button variant="outlined" sx={{ margin: '10px', backgroundColor: 'white' }}>
+                    <Button variant="outlined" onClick={() => {handleClickOpen(); setDeleteProduct(true)}} sx={{ margin: '10px', backgroundColor: 'white' }}>
                         Xóa
                     </Button>
                 )}
@@ -843,7 +866,7 @@ function ProductDetails() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Hủy</Button>
-                    <Button onClick={handleDeleteAttribute} autoFocus>
+                    <Button onClick={deleteProduct ? handleDeleteProduct : handleDeleteAttribute} autoFocus>
                         Đồng ý
                     </Button>
                 </DialogActions>
@@ -874,13 +897,6 @@ function ProductDetails() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    {/* <Button
-                        onClick={() => {
-                            setError(false);
-                        }}
-                    >
-                        Hoàn tác
-                    </Button> */}
                     <Button
                         onClick={() => {
                             setError(false);

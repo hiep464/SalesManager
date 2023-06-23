@@ -4,7 +4,6 @@ import com.sapo.edu.demo.dto.ProductDto;
 import com.sapo.edu.demo.dto.product.CreateProduct;
 import com.sapo.edu.demo.dto.product.ProductsWithCategory;
 import com.sapo.edu.demo.entities.CategoryEntity;
-import com.sapo.edu.demo.entities.CheckTableEntity;
 import com.sapo.edu.demo.entities.ProductAttribute;
 import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.repository.CategoryRepository;
@@ -14,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import com.sapo.edu.demo.dto.ProductDto;
 
 import org.springframework.stereotype.Service;
 
@@ -119,6 +117,16 @@ public class ProductService {
 
     public List<ProductsWithCategory> filterByCategory(List<CategoryEntity> categoryEntities){
         return productRepository.findByCategoryIn(categoryEntities);
+    }
+
+    public void deleteProduct(String code){
+        ProductEntity productEntity = productRepository.findByCode(code);
+        productEntity.setStatus("delete");
+        List<ProductAttribute> productAttributes = productAttributeRepository.findByProductCode(code);
+        for(ProductAttribute productAttribute : productAttributes){
+            productAttribute.setStatus("delete");
+            productAttributeRepository.save(productAttribute);
+        }
     }
 }
 
