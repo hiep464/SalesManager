@@ -154,10 +154,18 @@ function SalesInShop() {
     };
 
     const handleDeleteOrder = (orderID) => {
-        console.log('1111111');
-        console.log(orderID);
         const newState = orders;
         const updatedOrderItems = newState.filter((item, index) => index !== orderID);
+        if (newState.length > 0 && newState.includes(value)) {
+            // Nếu tab hiện tại vẫn còn trong danh sách tabs được chọn,
+            // chuyển sang tab trước đó.
+            const prevIndex = newState[newState.length - 2];
+            setValue(prevIndex);
+        } else {
+            // Nếu tab hiện tại không còn trong danh sách tabs được chọn,
+            // chuyển sang tab đầu tiên trong danh sách.
+            setValue(newState[0]);
+        }
         setOrders(updatedOrderItems);
     };
     return (
@@ -201,9 +209,10 @@ function SalesInShop() {
                                     }, [searchProduct])}
                                     sx={{ m: 1, width: '60ch' }}
                                     InputProps={{
+                                        style: { color: 'white' },
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <SearchIcon />
+                                                <SearchIcon sx={{ color: 'white' }} />
                                             </InputAdornment>
                                         ),
                                     }}
@@ -255,6 +264,8 @@ function SalesInShop() {
                                             aria-label="basic tabs example"
                                             variant="scrollable"
                                             scrollButtons="auto"
+                                            textColor="white"
+                                            indicatorColor="red"
                                         >
                                             {orders ? (
                                                 orders.map((order, index) => {
@@ -266,10 +277,9 @@ function SalesInShop() {
                                                             className="tabs"
                                                             icon={
                                                                 <CloseIcon
-                                                                    onClick={() => handleDeleteOrder(index)}
-                                                                    {...a11yProps(
-                                                                        index - 1 > 0 ? index - 1 : index + 1,
-                                                                    )}
+                                                                    onClick={() => {
+                                                                        handleDeleteOrder(index);
+                                                                    }}
                                                                 />
                                                             }
                                                             iconPosition="end"
@@ -319,7 +329,7 @@ function SalesInShop() {
                                         onDeleteProduct={handleDelete}
                                         onUpdateAttribute={handleAttribute}
                                         onDown={handleDown}
-                                        onUp ={handleUp}
+                                        onUp={handleUp}
                                     />
                                 );
                             })

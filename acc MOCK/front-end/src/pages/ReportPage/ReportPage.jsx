@@ -9,6 +9,12 @@ import { subDays, format } from 'date-fns';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
+import CreateReportPage from '../CreateReportPage/CreateReportPage';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const options = {
     scales: {
@@ -56,31 +62,29 @@ const labelsInit = generateLabels();
 function ReportPage() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
+    const [staffs, setStaffs] = React.useState([]);
+    const [staffFilter, setStaffFilter] = React.useState(0);
     const [labels, setLabels] = React.useState(labelsInit);
     const [filter, setFilter] = React.useState(7);
     const [data, setData] = React.useState([]);
-    const handleChange = (event) => {
-        setFilter(event.target.value);
-        if (event.target.value === 7) {
-            const labelsInit = generateLabels();
-            setLabels(labelsInit);
-            setStart(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
-            setEnd(format(new Date(), 'dd/MM/yyyy'));
-        } else if (event.target.value === 1) {
-            setLabels([format(subDays(new Date(), 1), 'dd/MM')]);
-            setStart(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
-            setEnd(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
-        } else {
-            setLabels([format(new Date(), 'dd/MM')]);
-            setStart(format(new Date(), 'dd/MM/yyyy'));
-            setEnd(format(new Date(), 'dd/MM/yyyy'));
-        }
+    const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
+    const handleChangeStaff = (event) => {
+        setStaffFilter(event.target.value);
     };
+    React.useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/staff`)
+            .then((response) => {
+                setStaffs(response.data);
+            })
+            .catch((error) => console.log(error));
+    });
     React.useEffect(() => {
         axios
             .get(
                 `${apiBaseUrl}/statistical/revenue_by_staff_code?staff%20code=S002&start%20date=${startD}&end%20date=${endD}`,
             )
+            // ${staffs[staffFilter].code}
             .then((response) => {
                 console.log(response.data);
                 setData(response.data);
@@ -105,13 +109,35 @@ function ReportPage() {
                     }}
                 >
                     <span style={{ fontSize: '24px', color: '#0088FF' }}>Doanh thu bán hàng</span>
-                    <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
-                        <Select value={filter} sx={{ Width: 100 }} onChange={handleChange} displayEmpty>
-                            <MenuItem value={7}>7 ngày</MenuItem>
-                            <MenuItem value={1}>Hôm qua</MenuItem>
-                            <MenuItem value={0}>Hôm nay</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="large">
+                            <Select value={staffFilter} sx={{ Width: 100 }} onChange={handleChangeStaff} displayEmpty>
+                                <MenuItem value={1}>Duẩn</MenuItem>
+                                <MenuItem value={2}>Duy</MenuItem>
+                                <MenuItem value={3}>Bảo</MenuItem>
+                                <MenuItem value={4}>Hiệp</MenuItem>
+                                <MenuItem value={0}>Tất cả</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
+                                <DatePicker
+                                    label="Ngày bắt đầu"
+                                    value={startD}
+                                    onChange={(newValue) => setStart(newValue)}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
+                                <DatePicker
+                                    label="Ngày kết thúc"
+                                    value={endD}
+                                    onChange={(newValue) => setEnd(newValue)}
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>
+                    </>
                 </div>
                 <div style={{ width: '80%', marginBottom: '20px' }}>
                     <Bar
@@ -130,15 +156,8 @@ function ReportPage() {
                         options={options}
                     />
                 </div>
-                {/* <h5 style={{ textAlign: 'center' }}>
-                    Tổng doanh thu:
-                    <Numeral
-                        // data.reduce((accumulator, currentValue) => accumulator + currentValue) || '0'
-                        value={(data === undefined) ? data.reduce((accumulator, currentValue) => accumulator + currentValue) : '0'}
-                        format={'0,0'}
-                    />
-                </h5> */}
             </Paper>
+            <CreateReportPage />
         </>
     );
 }
