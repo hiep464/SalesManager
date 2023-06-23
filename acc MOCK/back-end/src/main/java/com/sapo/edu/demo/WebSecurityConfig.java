@@ -56,9 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/auth/**").permitAll()
 //                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/admin/inventory/**").hasAnyRole("INVENTORY", "ADMIN")// Cho phép tất cả mọi người truy cập vào những địa chỉ này
+                .antMatchers("/admin/inventory/**").hasAnyRole("INVENTORY", "ADMIN","SALES")// Cho phép tất cả mọi người truy cập vào những địa chỉ này
                 .antMatchers("/admin/sales/**").hasAnyRole("SALES", "ADMIN")
-                .antMatchers("/admin/care/**").hasAnyRole("CARE", "ADMIN")
+                .antMatchers("/admin/care/**").hasAnyRole("CARE", "ADMIN","SALES")
                 .anyRequest().authenticated(); // Tất cả các request khác đều cần phải xác thực mới được truy cập
 
         // Thêm một lớp Filter kiểm tra jwt

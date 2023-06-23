@@ -43,7 +43,9 @@ export function ResultProductSearch(props) {
     const product = props.product;
     return (
         <div className="result-product-search" onClick={props.onClick}>
-            <div>image</div>
+            <div className='image'>
+                <img src='' alt=''/>
+            </div>
             <div>
                 <p>{product.name}</p>
                 <p>Số lượng:{product.quantity}</p>

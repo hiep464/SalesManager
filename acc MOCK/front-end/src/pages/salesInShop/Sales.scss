@@ -13,12 +13,12 @@
 }
 
 .Nav {
-    background-color: aqua;
+    background-color: #0964CF;
     display: flex;
     justify-content: space-between;
     
     .addProduct{
-        color: #000;
+        color: #fff;
         display: flex;
         align-items: flex-end;
 
@@ -35,8 +35,32 @@
         justify-content: center;
         align-items: center;
     }
-    .tabs:focus {
-        background-color: #fff;
+    // .tabs:focus {
+    //     background-color: #fff;
+    // }
+
+    .MuiTabs-root .MuiTab-root {
+        color: #FFFFFF;
+    }
+    
+    .MuiTabs-root .Mui-selected {
+        background-color: #2196F3;
+    }
+
+    .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+        border-color: #FFFFFF;
+    }
+    
+    .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: #FFFFFF;
+    }
+
+    .MuiInputLabel-root {
+        color: #FFFFFF;
+    }
+    
+    .MuiInputLabel-shrink {
+        color: #FFFFFF;
     }
     
     .addOrder:hover {
@@ -47,6 +71,7 @@
         display: flex;
         flex-direction: column;
         justify-content:center;
+        color:white;
 
         div{
             display: flex;
