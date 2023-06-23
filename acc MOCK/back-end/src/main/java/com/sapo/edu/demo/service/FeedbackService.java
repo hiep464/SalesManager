@@ -1,7 +1,9 @@
 package com.sapo.edu.demo.service;
 
+import com.sapo.edu.demo.entities.Customer;
 import com.sapo.edu.demo.entities.Feedback;
 import com.sapo.edu.demo.exception.NotFoundException;
+import com.sapo.edu.demo.repository.CustomerRepository;
 import com.sapo.edu.demo.repository.FeedbackRepository;
 import com.sapo.edu.demo.response.FeedbackResponse;
 import org.springframework.data.domain.Page;
@@ -14,14 +16,17 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class FeedbackService {
     private FeedbackRepository feedbackRepository;
+    private CustomerRepository customerRepository;
 
-    public FeedbackService(FeedbackRepository feedbackRepository) {
+    public FeedbackService(FeedbackRepository feedbackRepository, CustomerRepository customerRepository) {
         this.feedbackRepository = feedbackRepository;
+        this.customerRepository = customerRepository;
     }
 
     public FeedbackResponse createFeedback(Feedback feedback) throws ParseException {
@@ -34,11 +39,21 @@ public class FeedbackService {
         FeedbackResponse response = new FeedbackResponse();
         response.setFeedback(createFeedback);
         response.setMessage("Create feedback success");
-        return response;
+        Customer customer = customerRepository.findByCode(feedback.getCustomerCode());
+        if(!Objects.equals(customer.getCode(), feedback.getCustomerCode())){
+            throw new NotFoundException("Customer not found");
+        }else {
+            if (!Objects.equals(customer.getPhone(), feedback.getPhone())){
+                throw new NotFoundException("Customer not found");
+            }else {
+                return response;
+            }
+        }
     }
 
     public FeedbackResponse updateFeedback(Integer id,Feedback feedback){
         feedback.setId(id);
+        feedback.setStatus("S2");
         Feedback updateFeedback = feedbackRepository.save(feedback);
         FeedbackResponse response = new FeedbackResponse();
         response.setFeedback(updateFeedback);

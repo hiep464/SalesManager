@@ -1,0 +1,14 @@
+.item{
+    p{
+        margin-top: 0px;
+        margin-bottom: 5px;
+    }
+    padding-top: 10px;
+    padding-left: 20px;
+    border-radius: 2px;
+    border-bottom: 1px solid #CAC3C3;
+}
+.item:hover{
+    cursor: pointer;
+    background-color: #CAC3C3;
+}

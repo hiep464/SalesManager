@@ -16,7 +16,7 @@ import java.util.Date;
 public interface CustomerRepository extends JpaRepository<Customer, String> {
     Customer findByCode(String code);
 
-    Page<Customer> findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactDesc(String searchText1, String searchText2, String searchText3, Date minDate, Date maxDate, Pageable pageable);
+    Page<Customer> findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactAsc(String searchText1, String searchText2, String searchText3, Date minDate, Date maxDate, Pageable pageable);
 
     @Modifying
     @Query("SELECT c FROM Customer c WHERE c.phone LIKE %?1%")
@@ -29,5 +29,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     List<Object> findTopCustomers();
     @Query("SELECT COUNT(DISTINCT c.code) AS customer_count FROM Customer c")
     Integer getCustomerCount();
+
+    List<Customer> findByCodeContaining(String code);
 
 }

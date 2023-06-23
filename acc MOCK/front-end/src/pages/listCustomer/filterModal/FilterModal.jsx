@@ -2,7 +2,7 @@ import './FilterModal.scss'
 
 function FilterModal (props){
     return (
-        <div className='filter'>
+        <div id='filter' onClick={props.onOutSideClick}>
             <h3>Bộ lọc</h3>
             <span>Lần liên hệ gần nhất</span>
             <div className='input'>

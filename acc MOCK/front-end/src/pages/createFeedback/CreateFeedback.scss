@@ -66,6 +66,7 @@
             width: 100%;
             padding-bottom: 20px;
             margin-top: 20px;
+            position: relative;
             input{
                 width: 95%;
                 height: 40px;
@@ -77,6 +78,30 @@
             }
             span{
                 color: red;
+            }
+            .customerbycode{
+                position: absolute;
+                background-color: white;
+                box-shadow: 0 4px 86px rgba(23, 7, 7, 0.2);
+                width:calc(82vw - 84px);
+                max-height: 350px;
+                border-radius: 5px;
+                top: 66px;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .customerbyphone{
+                position: absolute;
+                background-color: white;
+                box-shadow: 0 4px 8px rgba(23, 7, 7, 0.2);
+                width:calc(82vw - 86px);
+                max-height: 350px;
+                border-radius: 5px;
+                top: 144px;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
             }
         }
     }
