@@ -34,6 +34,9 @@ public class ProductEntity {
     private String description;
 
     @Column
+    private String status;
+
+    @Column
     private LocalDate createAt;
 
     @Column

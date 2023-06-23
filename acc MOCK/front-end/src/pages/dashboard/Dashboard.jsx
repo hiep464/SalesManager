@@ -31,6 +31,7 @@ import Numeral from 'react-numeral';
 import axios from 'axios';
 import { subDays, format } from 'date-fns';
 import { apiBaseUrl } from '../../constant/constant';
+import { getCookie } from '../../utils/api';
 
 Chart.register(CategoryScale);
 
@@ -148,23 +149,48 @@ function DashBoard() {
     };
 
     const fetchRevenue = () => {
-        return axios.get(`${apiBaseUrl}/statistical/revenue`);
+        return axios.get(`${apiBaseUrl}/statistical/revenue`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     const fetchSold = () => {
-        return axios.get(`${apiBaseUrl}/statistical/sold`);
+        return axios.get(`${apiBaseUrl}/statistical/sold`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     const fetchQuantity = () => {
-        return axios.get(`${apiBaseUrl}/statistical/products/quantity`);
+        return axios.get(`${apiBaseUrl}/statistical/products/quantity`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     const fetchTop3Product = () => {
-        return axios.get(`${apiBaseUrl}/statistical/top3_product`);
+        return axios.get(`${apiBaseUrl}/statistical/top3_product`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     const fetchTop3Customer = () => {
-        return axios.get(`${apiBaseUrl}/statistical/top3_customer`);
+        return axios.get(`${apiBaseUrl}/statistical/top3_customer`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     React.useEffect(() => {
@@ -189,7 +215,12 @@ function DashBoard() {
 
     React.useEffect(() => {
         axios
-            .get(`${apiBaseUrl}/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`)
+            .get(`${apiBaseUrl}/statistical/revenue_by_period?end%20date=${end}&start%20date=${start}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
             .then((response) => {
                 console.log(response.data);
                 setData(response.data);

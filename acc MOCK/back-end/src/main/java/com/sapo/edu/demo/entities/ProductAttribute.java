@@ -37,7 +37,6 @@ public class ProductAttribute {
     String color;
 
     @Column
-    @NotNull
     private String status;
 
     @Column(name = "original_cost")
