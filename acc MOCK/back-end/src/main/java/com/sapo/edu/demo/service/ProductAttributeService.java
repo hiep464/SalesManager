@@ -49,7 +49,11 @@ public class ProductAttributeService {
     }
 
     public void deleteAttribute(Integer id){
-        productAttributeRepository.deleteById(id);
+        ProductAttribute productAttribute = productAttributeRepository.findById(id).get();
+        System.out.println("trc: " + productAttribute);
+        productAttribute.setStatus("delete");
+        System.out.println("sau: " + productAttribute);
+        productAttributeRepository.save(productAttribute);
     }
 
     public List<CreateProductAttribute> addListProductAttributes(List<CreateProductAttribute> createProductAttributes){

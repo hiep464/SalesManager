@@ -66,4 +66,16 @@ public class ProductEntity {
     public void setUpdateAt(LocalDate updateAt) {
         this.updateAt = updateAt;
     }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

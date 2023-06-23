@@ -11,14 +11,16 @@ public class ProductsWithCategory {
     String productName;
     String brand;
     String categoryName;
+    String status;
     LocalDate createAt;
 
-    public ProductsWithCategory(String image, String code, String productName, String brand, String categoryName, LocalDate createAt) {
+    public ProductsWithCategory(String image, String code, String productName, String brand, String categoryName, String status, LocalDate createAt) {
         this.image = image;
         this.code = code;
         this.productName = productName;
         this.brand = brand;
         this.categoryName = categoryName;
+        this.status = status;
         this.createAt = createAt;
     }
 
@@ -46,6 +48,10 @@ public class ProductsWithCategory {
         return createAt;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public void setImage(String image) {
         this.image = image;
     }
@@ -68,5 +74,9 @@ public class ProductsWithCategory {
 
     public void setCreateAt(LocalDate createAt) {
         this.createAt = createAt;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

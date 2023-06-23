@@ -87,6 +87,17 @@ public class ProductAttribute {
         this.updateAt = updateAt;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public BigDecimal getPrice() {
         return price;

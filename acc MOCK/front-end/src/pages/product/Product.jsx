@@ -234,20 +234,6 @@ export default function Product() {
         }
     }
 
-    const handleSearch = () => {
-        axios
-            .get(`${apiBaseUrl}/inventory/products/searchString`, {
-                params: { text: search },
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setRows(response.data);
-            });
-    };
-
     React.useEffect(() => {
         if (search !== '') {
             axios
@@ -280,17 +266,19 @@ export default function Product() {
 
     const handleFilterByCategory = () => {
         console.log(selectedItems);
-        axios
-            .post(`${apiBaseUrl}/inventory/products/filter_by_category`, selectedItems, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setRows(response.data);
-                setAnchorEl1(null);
-            });
+        if (selectedItems.length > 0) {
+            axios
+                .post(`${apiBaseUrl}/inventory/products/filter_by_category`, selectedItems, {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                })
+                .then((response) => {
+                    setRows(response.data);
+                    setAnchorEl1(null);
+                });
+        }
     };
 
     return (
@@ -427,7 +415,9 @@ export default function Product() {
                     aria-haspopup="true"
                     aria-expanded={open1 ? 'true' : undefined}
                 >
-                    <Button variant="outlined" startIcon={<FilterAltIcon />}>Loại sản phẩm</Button>
+                    <Button variant="outlined" startIcon={<FilterAltIcon />}>
+                        Loại sản phẩm
+                    </Button>
                 </Box>
                 <Menu
                     anchorEl={anchorEl1}
@@ -452,7 +442,9 @@ export default function Product() {
                     {/* <MenuItem> */}
                     <Button
                         variant="outlined"
-                        onClick={() => {setSelectedItems([])}}
+                        onClick={() => {
+                            setSelectedItems([]);
+                        }}
                         sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
                     >
                         Hủy
@@ -529,7 +521,7 @@ export default function Product() {
                 </StyledMenu>
             </Paper>
             <DataGrid
-                rows={rows}
+                rows={rows.filter((row) => row.status !== 'delete')}
                 columns={columns}
                 initialState={{
                     pagination: {
