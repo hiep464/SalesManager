@@ -86,7 +86,10 @@ const CheckInventory = () => {
     const open = Boolean(anchorEl);
    
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/check_inventory`).then((Response) => {
+        axios.get(`${apiBaseUrl}/inventory/check_inventory`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((Response) => {
             setChecking(Response.data);
             // console.log(Response.data)
             });
@@ -95,7 +98,10 @@ const CheckInventory = () => {
         navigate('/inventory/check_inventory/create')
     }
     const handleFilter = () => {
-            axios.get(`${apiBaseUrl}/check_inventory/filter?status=${filter}`)
+            axios.get(`${apiBaseUrl}/inventory/check_inventory/filter?status=${filter}`,{headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            }})
                 .then(res => res.data)
                 .then(res => setChecking(res))
     }
@@ -134,7 +140,10 @@ const CheckInventory = () => {
                         onMouseEnter={React.useEffect(() => {
                             if (searchCheckRequest !== '') {
                                 axios
-                                    .get(`${apiBaseUrl}/check_inventory/code?code=${searchCheckRequest}`)
+                                    .get(`${apiBaseUrl}/inventory/check_inventory/code?code=${searchCheckRequest}`,{headers: {
+                                        // token: Cookies.get('token'),
+                                        Authorization: getCookie('Authorization'),
+                                    }})
                                     .then((response) => {
                                         setCheckRequests(response.data);
                                     });

@@ -24,11 +24,17 @@ const CheckInventoryDetail = () => {
     const [checkLines, setCheckLines] = React.useState([])
     const [checkInvetoryRequest, setCheckInvetoryRequest] = React.useState({})
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/check_line?checkCode=${code}`)
+        axios.get(`${apiBaseUrl}/inventory/check_line?checkCode=${code}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
                 .then(res => { 
                             setCheckLines(res.data)
                 })
-        axios.get(`${apiBaseUrl}/check_inventory/code?code=${code}`)
+        axios.get(`${apiBaseUrl}/inventory/check_inventory/code?code=${code}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
                 .then (res =>  res.data)
                 .then(res => res[0])
                 .then(res => {
@@ -37,14 +43,20 @@ const CheckInventoryDetail = () => {
                 })
     },[])
     const handleDeleteRequest = () => {
-        axios.delete(`${apiBaseUrl}/check_inventory/${code}`)
+        axios.delete(`${apiBaseUrl}/inventory/check_inventory/${code}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
               .then(res => {
                     navigate(`/inventory/check_inventory`)
                 })
         
     }
     const handleUpdateProductQuantity = () => {
-        axios.post(`${apiBaseUrl}/check_line/${code}`)
+        axios.post(`${apiBaseUrl}/inventory/check_line/${code}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
             .then(res => {
                 alert("Đã cập nhập số lượng trong kho")
                 window.location.reload()

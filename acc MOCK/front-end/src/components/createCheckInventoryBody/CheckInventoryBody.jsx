@@ -27,25 +27,16 @@ function CheckInventoryBody(props) {
     const theme = useTheme();
  
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/product/size`)
+        axios.get(`${apiBaseUrl}/inventory/product/size`)
             .then(response => setSizes(response.data))
             
     },[])
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/product/color`)
+        axios.get(`${apiBaseUrl}/inventory/product/color`)
             .then(response => setColors(response.data))
             
     },[])
-    // const handleGetQuantity = ( productCode,size, color) => {
-    
-        
-    //         axios.get(`${apiBaseUrl}/product/attribute?inventoryName=${inventoryName}&productCode=${productCode}&size=${size}&color=${color}`   )
-    //            .then(response => setAttribute(response.data))
-        
-            
-                
-    //     }
-    
+  
  
     
     const handleDelete = (code) => {
