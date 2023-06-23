@@ -51,11 +51,17 @@ const CreateChecking = () => {
     };
 
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
             setInventories(response.data);
         });
        
-        axios.get(`${apiBaseUrl}/staff`).then((response) => {
+        axios.get(`${apiBaseUrl}/staff`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
             setStaffs(response.data);
         });
     }, []);
@@ -85,7 +91,10 @@ const CreateChecking = () => {
                             createAt: dateCreated,
                             checkLines: checkInventoryBody
                         }
-        axios.post(`${apiBaseUrl}/check_inventory`,dataCheck)
+        axios.post(`${apiBaseUrl}/inventory/check_inventory`,dataCheck,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
             .then(res => {
                 alert("saved")
                 // console.log(res)
@@ -195,7 +204,10 @@ const CreateChecking = () => {
                     }}
                     onMouseEnter={React.useEffect(() => {
                         if(searchProduct !== '') {
-                            axios.get(`${apiBaseUrl}/products?searchString=${searchProduct}&inventoryName=${inventory}`)
+                            axios.get(`${apiBaseUrl}/inventory/products?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
+                                // token: Cookies.get('token'),
+                                Authorization: getCookie('Authorization'),
+                            }})
                                 .then((response) => {
                                     
                                     setProducts(response.data)

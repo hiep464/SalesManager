@@ -60,7 +60,10 @@ function CreateBooking() {
     
     React.useEffect(() => {       
             for(let order of orders) {
-                axios.get(`${apiBaseUrl}/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`)
+                axios.get(`${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,{headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                }})
                     .then((response) => {               
                         handleEditProduct(order.productName, "originalCost" , response.data.originalCost)
                     })    
@@ -79,20 +82,35 @@ function CreateBooking() {
         setOrders(updatedProducts);
       };
     useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventories`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
             setInventories(response.data);
         });
-        axios.get(`${apiBaseUrl}/suppliers`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventory/suppliers`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
             console.log(response?.data);
             setSuppliers(response.data);
         });
-        axios.get(`${apiBaseUrl}/staff`).then((response) => {
+        axios.get(`${apiBaseUrl}/staff`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
             setStaffs(response.data);
         });
-        axios.get(`${apiBaseUrl}/product/size`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventory/product/size`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
                     setSizes(response.data);
                 });
-        axios.get(`${apiBaseUrl}/product/color`).then((response) => {
+        axios.get(`${apiBaseUrl}/inventory/product/color`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
                     setColors(response.data);
                 });
     }, []);
@@ -229,7 +247,10 @@ function CreateBooking() {
                             
                             if (searchProduct !== '') {
                                 axios
-                                    .get(`${apiBaseUrl}/products/searchString?searchString=${searchProduct}&inventoryName=${inventory}`)
+                                    .get(`${apiBaseUrl}/inventory/products/searchString?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
+                                        // token: Cookies.get('token'),
+                                        Authorization: getCookie('Authorization'),
+                                    }})
                                     .then((response) => {
                                         setSearch(response.data);
                                         console.log(response);
