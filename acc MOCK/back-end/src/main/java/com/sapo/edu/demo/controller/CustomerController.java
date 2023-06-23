@@ -33,15 +33,15 @@ public class CustomerController {
     }
 
     @PostMapping("/{code}/lastcontact")
-    public CustumerResponse updateLastContact(@PathVariable String code){
+    public CustumerResponse updateLastContact(@PathVariable String code) throws ParseException {
         return customerService.updateLastcontact(code);
     }
 
     @GetMapping
     public Page<Customer> getListCustomer(
             @RequestParam(value = "searchText", required = false, defaultValue = "") String searchText,
-            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07T01:58:07.000+0000")String minDate,
-            @RequestParam(value = "maxDate", required = false, defaultValue = "2023-06-07T01:58:07.000+0000")String maxDate,
+            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07 01:58:07")String minDate,
+            @RequestParam(value = "maxDate", required = false, defaultValue = "2024-06-07 01:58:07")String maxDate,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) throws ParseException {
@@ -51,6 +51,11 @@ public class CustomerController {
     public List<Customer> seachUserByPhone(@RequestParam String phone){
         return customerService.getCustomerByPhone(phone);
 
+    }
+
+    @GetMapping("/search/code")
+    public List<Customer> searchCustomerByCode(@RequestParam String code){
+        return customerService.getCustomerByCodeContaining(code);
     }
 
     @PostMapping(value="/customers")

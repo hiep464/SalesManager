@@ -23,7 +23,7 @@ function ListFeedback(){
 
     useEffect(()=>{
         const fetchdata = async ()=>{
-            const res =await APIapp.get(`admin/feedbacks?page=${pagination.page-1}&size=${pagination.limit}`)
+            const res =await APIapp.get(`admin/care/feedbacks?page=${pagination.page-1}&size=${pagination.limit}`)
             setPagination({...pagination, total: res.data.totalPages})
             setFeedbacks(res.data.content)
             console.log(res)

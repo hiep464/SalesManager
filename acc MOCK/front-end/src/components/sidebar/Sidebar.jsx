@@ -82,7 +82,7 @@ function Sidebar() {
                     title={'CSKH'}
                     icon={<SupportAgentIcon />}
                     variant={(location.pathname.includes('customers')||location.pathname.includes('feedbacks')) ? 'contained' : 'text'}
-                    subTitle={[{title: 'Khách hàng', path:'/customers'}, {title: 'Phản hồi', path: '/feedbacks'}]}
+                    subTitle={[{title: 'Khách hàng', path:'/care/customers'}, {title: 'Phản hồi', path: '/care/feedbacks'}]}
                 />
                 <NavbarItem
                     location={location}

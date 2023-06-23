@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './FeedbackDetail.scss'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useEffect, useState } from 'react';
@@ -6,6 +6,7 @@ import APIapp from '../../components/APIapp/APIapp';
 
 function FeedbackDetail(){
     const id = useParams()
+    const navigate = useNavigate()
 
     const [feedback, setFeedback] = useState({
         "id": 0,
@@ -20,7 +21,7 @@ function FeedbackDetail(){
     useEffect(()=>{
         async function fetchData(){
             try{
-                const res = await APIapp.get(`admin/feedbacks/${id.id}`)
+                const res = await APIapp.get(`admin/care/feedbacks/${id.id}`)
                 setFeedback(res.data)
             }catch(e){
                 console.log(e)
@@ -30,14 +31,18 @@ function FeedbackDetail(){
     }, [id])
 
     const handleUpdate= async ()=>{
-        setFeedback({...feedback, status: "Đã xử lý"})
-        const res = await APIapp.post(`admin/feedbacks/${id.id}`)
+        const res = await APIapp.post(`admin/care/feedbacks/${id.id}`, feedback)
         console.log(res)
     }
 
     const handleDelete= async ()=>{
-        const res =await APIapp.delete(`admin/feedbacks/${id.id}`)
+        const res =await APIapp.delete(`admin/care/feedbacks/${id.id}`)
         console.log(res)
+        navigate('/care/feedbacks')
+    }
+
+    const handleReturn= ()=>{
+        navigate('/care/feedbacks')
     }
 
     const createdate = new Date(feedback.feedbackDate)
@@ -45,7 +50,7 @@ function FeedbackDetail(){
     return(
         <div className='feedbackpage'>
             <div className='header'>
-                <span className='return'>
+                <span className='return' onClick={handleReturn}>
                     <ChevronLeftIcon className='icon'/>
                     Quay lại trang danh sách
                 </span>
@@ -76,7 +81,7 @@ function FeedbackDetail(){
                     </div>
                     <div className='rightcontent'>
                         <p>: {feedback.status}</p>
-                        <p>: {createdate.getDate()}/{createdate.getMonth()}/{createdate.getFullYear()}</p>
+                        <p>: {createdate.getDate()}/{createdate.getMonth()+1}/{createdate.getFullYear()}</p>
                     </div>
                 </div>
             </div>
