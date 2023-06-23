@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from './routes/Routes';
 import { Fragment } from 'react';
-import GlobalStyles from './components/globalstyles/GlobalStyles'
+import GlobalStyles from './components/GlobalStyles/GlobalStyles'
 import { AuthContextProvider } from './context/AuthContext';
 
 function App() {

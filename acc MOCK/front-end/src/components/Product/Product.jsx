@@ -41,8 +41,8 @@ const Product = (props) => {
         <div className="product">
             {row ? (
                 <Grid container spacing={3} sx={{ width: '100%', height: '100px' }} className="product1">
-                    <Grid xs={1}>{props.index + 1}</Grid>
-                    <Grid xs={1}>
+                    <Grid xs={0.5}>{props.index + 1}</Grid>
+                    <Grid xs={0.5}>
                         <div onClick={handleDelete}>
                             <DeleteOutlineIcon />
                         </div>
@@ -70,15 +70,15 @@ const Product = (props) => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid xs={2}>{row.code}</Grid>
+                    <Grid xs={1}>{row.code}</Grid>
                     <Grid xs={3}>{row.name}</Grid>
-                    <Grid xs={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <ArrowDropDownIcon onClick={handleDown}/>
+                    <Grid xs={1.5} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <ArrowDropDownIcon onClick={handleDown} />
                         {row.quantity}
-                        <ArrowDropUpIcon onClick={handleUp}/>
+                        <ArrowDropUpIcon onClick={handleUp} />
                     </Grid>
-                    <Grid xs={1}>{row.price.toLocaleString('en-US')}</Grid>
-                    <Grid xs={1}>{(row.price * row.quantity).toLocaleString('en-US')}</Grid>
+                    <Grid xs={1.5}>{row.price.toLocaleString('en-US')}</Grid>
+                    <Grid xs={2}>{(row.price * row.quantity).toLocaleString('en-US')}</Grid>
                 </Grid>
             ) : (
                 <></>

@@ -43,16 +43,14 @@ export function ResultProductSearch(props) {
     const product = props.product;
     return (
         <div className="result-product-search" onClick={props.onClick}>
-            <div>image</div>
+            <div className='image'>
+                <img src='' alt=''/>
+            </div>
             <div>
                 <p>{product.name}</p>
                 <p>Số lượng:{product.quantity}</p>
             </div>
-<<<<<<< HEAD
             <div>Size&color: {product.size + ',' + product.color}</div>
-=======
-            <div>Size&color: {product.size+","+product.color}</div>
->>>>>>> ee3c43aa12d3d230a44e513d269dcabd837e7f37
             <p>Giá:{product.price}</p>
         </div>
     );
