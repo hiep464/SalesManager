@@ -44,7 +44,7 @@ export function ResultProductSearch(props) {
     return (
         <div className="result-product-search" onClick={props.onClick}>
             <div className='image'>
-                <img src='' alt=''/>
+                <img src='https://4.bp.blogspot.com/-TS4lmqV47YE/VPB9HxU2tUI/AAAAAAAAAJE/6XhGWPODrbs/s1600/hinh-nen-de-thuong-cho-may-tinh-7.jpg' alt=''/>
             </div>
             <div>
                 <p>{product.name}</p>

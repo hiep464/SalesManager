@@ -9,11 +9,19 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import OrderBody from '../../components/OrderBody/OrderBody';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getCookie } from '../../utils/api';
+import { NumericFormat } from 'react-number-format';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import axios from 'axios';
 import { ResultCustomerSearch, RetailCustomers, ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
@@ -44,12 +52,21 @@ function SalesInShop() {
     const [products, setProducts] = React.useState([]);
     const [orders, setOrders] = React.useState(orders1);
     const [money, setMoney] = React.useState(0);
-
+    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const [deleteId, setDeleteId] = React.useState();
     useEffect(() => {
         if (search !== '') {
-            axios.get(`${apiBaseUrl}/customers?phone=` + search).then((Response) => {
-                setCustomers(Response.data.content);
-            });
+            axios
+                .get(`${apiBaseUrl}/care/customers?phone=` + search, {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                })
+                .then((Response) => {
+                    setCustomers(Response.data.content);
+                });
         } else {
             setCustomers([]);
         }
@@ -57,6 +74,7 @@ function SalesInShop() {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        setMoney(orders[newValue]?.products.reduce((total, current) => (total += current.quantity * current.price), 0));
     };
 
     const createOrder = () => {
@@ -71,20 +89,30 @@ function SalesInShop() {
             delete line.code;
         });
         axios
-            .post(`${apiBaseUrl}/orders`, {
-                orderLines: orderLines,
-                orderTable: {
-                    customerCode: orders[value].customer.code,
-                    staffCode: 'S002',
-                    quantity: totalQuantity,
-                    status: 'success',
-                    total: total,
+            .post(
+                `${apiBaseUrl}/sales/orders`,
+                {
+                    orderLines: orderLines,
+                    orderTable: {
+                        customerCode: orders[value].customer.code,
+                        staffCode: 'S002',
+                        quantity: totalQuantity,
+                        status: 'success',
+                        total: total,
+                    },
                 },
-            })
+                {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                },
+            )
             .then((response) => {
                 console.log(response);
                 handleDeleteOrder(value);
             });
+        setMoney(0);
     };
 
     const handleAddCustomer = (event) => {
@@ -104,7 +132,9 @@ function SalesInShop() {
             const newState = [...currentState];
             const updatedOrderItems = newState[value].products.filter((item) => item.attributeID !== productId);
             newState[value].products = updatedOrderItems;
-
+            setMoney(
+                newState[value]?.products.reduce((total, current) => (total += current.quantity * current.price), 0),
+            );
             return newState;
         });
     };
@@ -116,14 +146,15 @@ function SalesInShop() {
 
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
-                    if (product.quantity + 1 <= 0) {
-                        handleDelete(productId);
+                    if (product.quantity + 1 > product.inventory_quantity) {
+                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
                     } else {
                         return { ...product, quantity: product.quantity + 1 };
                     }
                 }
                 return product;
             });
+            setMoney(updatedProducts?.reduce((total, current) => (total += current.quantity * current.price), 0));
 
             newState[value].products = updatedProducts;
 
@@ -146,6 +177,7 @@ function SalesInShop() {
                 }
                 return product;
             });
+            setMoney(updatedProducts?.reduce((total, current) => (total += current.quantity * current.price), 0));
 
             newState[value].products = updatedProducts;
 
@@ -154,19 +186,39 @@ function SalesInShop() {
     };
 
     const handleDeleteOrder = (orderID) => {
-        const newState = orders;
-        const updatedOrderItems = newState.filter((item, index) => index !== orderID);
-        if (newState.length > 0 && newState.includes(value)) {
-            // Nếu tab hiện tại vẫn còn trong danh sách tabs được chọn,
-            // chuyển sang tab trước đó.
-            const prevIndex = newState[newState.length - 2];
-            setValue(prevIndex);
+        setDeleteId(orderID);
+        setOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (orders.length === 1) {
+            const newState = orders;
+            const updatedOrderItems = newState.filter((item, index) => index !== deleteId);
+            let newOrder = {
+                order: 1,
+                products: [],
+                customer: null,
+            };
+            updatedOrderItems.push(newOrder);
+            setOrders(updatedOrderItems);
         } else {
-            // Nếu tab hiện tại không còn trong danh sách tabs được chọn,
-            // chuyển sang tab đầu tiên trong danh sách.
-            setValue(newState[0]);
+            const newState = orders;
+            const updatedOrderItems = newState.filter((item, index) => index !== deleteId);
+            setOrders(updatedOrderItems);
         }
-        setOrders(updatedOrderItems);
+        console.log('hello');
+        console.log(deleteId);
+        console.log(orders);
+        setMoney(0);
+        setMessage('Xóa thành công');
+        setOpen(false);
+        // handleClickSnackBar();
+    };
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
     };
     return (
         <div className="body1">
@@ -175,6 +227,26 @@ function SalesInShop() {
                     <AddCustomer handleCloseAddCustomer={handleCloseAddCustomer} />
                 </div>
             )}
+            {/* dialog */}
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa đơn hàng này?'}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Sau khi xóa sẽ không thể hoàn tác được
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Hủy</Button>
+                    <Button onClick={handleConfirmDelete} autoFocus>
+                        Đồng ý
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Box sx={{ width: '100%' }}>
                 <Grid container spacing={2}>
                     <Grid xs={12}>
@@ -189,7 +261,7 @@ function SalesInShop() {
                         <div className="Nav">
                             <div className="addProduct">
                                 <TextField
-                                    label="Add Product"
+                                    label="Thêm sản phẩm"
                                     id="outlined-start-adornment"
                                     value={searchProduct}
                                     onChange={(event) => {
@@ -198,10 +270,19 @@ function SalesInShop() {
                                     onMouseEnter={useEffect(() => {
                                         if (searchProduct !== '') {
                                             axios
-                                                .get(`${apiBaseUrl}/products?code=` + searchProduct)
+                                                .get(
+                                                    `${apiBaseUrl}/sales/products?code=` +
+                                                        searchProduct +
+                                                        `&inventory=Inventory%20ABC`,
+                                                    {
+                                                        headers: {
+                                                            // token: Cookies.get('token'),
+                                                            Authorization: getCookie('Authorization'),
+                                                        },
+                                                    },
+                                                )
                                                 .then((Response) => {
                                                     setProducts(Response.data);
-                                                    console.log('res:', Response);
                                                 });
                                         } else {
                                             setProducts([]);
@@ -228,17 +309,17 @@ function SalesInShop() {
                                                         const product1 = {
                                                             code: product.code,
                                                             name: product.name,
+                                                            inventory_quantity: product.quantity,
                                                             quantity: 1,
                                                             price: product.price,
                                                             attributeID: product.id,
+                                                            size: product.size,
+                                                            color: product.color,
                                                         };
                                                         var duplicate = false;
 
                                                         for (var i = 0; i < orders[value].products.length; i++) {
-                                                            if (
-                                                                orders[value].products[i].attributeID ===
-                                                                product.attributeID
-                                                            ) {
+                                                            if (orders[value].products[i].attributeID === product.id) {
                                                                 orders[value].products[i].quantity += 1;
                                                                 duplicate = true;
                                                             }
@@ -247,6 +328,13 @@ function SalesInShop() {
                                                         if (duplicate === false) {
                                                             orders[value].products.push(product1);
                                                         }
+                                                        setMoney(
+                                                            orders[value]?.products.reduce(
+                                                                (total, current) =>
+                                                                    (total += current.quantity * current.price),
+                                                                0,
+                                                            ),
+                                                        );
                                                         setSearchProduct('');
                                                     }}
                                                 />
@@ -272,16 +360,38 @@ function SalesInShop() {
                                                     let labell = 'Đơn ' + (index + 1);
                                                     return (
                                                         <Tab
-                                                            label={labell}
+                                                            label={
+                                                                <div>
+                                                                    {labell}
+                                                                    <IconButton
+                                                                        aria-label="close"
+                                                                        size="small"
+                                                                        onClick={() => {
+                                                                            handleDeleteOrder(index);
+                                                                        }}
+                                                                        sx={{
+                                                                            marginLeft: '4px',
+                                                                            opacity: 0,
+                                                                            color: 'white',
+                                                                            transition:
+                                                                                'visibility 0s linear 0.2s, opacity 0.2s linear',
+                                                                            '&:hover': {
+                                                                                visibility: 'visible',
+                                                                                opacity: 1,
+                                                                                color: 'white',
+                                                                                transition: 'opacity 0.2s linear',
+                                                                            },
+                                                                        }}
+                                                                    >
+                                                                        <DeleteIcon fontSize="small" />
+                                                                    </IconButton>
+                                                                </div>
+                                                            }
                                                             {...a11yProps(index)}
                                                             className="tabs"
-                                                            icon={
-                                                                <CloseIcon
-                                                                    onClick={() => {
-                                                                        handleDeleteOrder(index);
-                                                                    }}
-                                                                />
-                                                            }
+                                                            // icon={
+
+                                                            // }
                                                             iconPosition="end"
                                                         ></Tab>
                                                     );
@@ -294,12 +404,14 @@ function SalesInShop() {
                                     <div
                                         className="addOrder"
                                         onClick={(event) => {
-                                            let newOrder = {
-                                                order: orders.length + 1,
-                                                products: [],
-                                                customer: null,
-                                            };
-                                            setOrders([...orders, newOrder]);
+                                            if (orders.length < 10) {
+                                                let newOrder = {
+                                                    order: orders.length + 1,
+                                                    products: [],
+                                                    customer: null,
+                                                };
+                                                setOrders([...orders, newOrder]);
+                                            }
                                         }}
                                     >
                                         <AddIcon fontSize="large" />
@@ -341,7 +453,7 @@ function SalesInShop() {
                         {orders[value]?.customer === null ? (
                             <div className="addCustomer">
                                 <TextField
-                                    label="Add Customer"
+                                    label="Thêm khách hàng"
                                     id="outlined-start-adornment"
                                     sx={{ m: 1, width: '53ch' }}
                                     value={search}
@@ -384,26 +496,38 @@ function SalesInShop() {
                         )}
                         <div className="order_info">
                             <p>
-                                Số lượng sản phẩm:
+                                <span>Số lượng sản phẩm:</span>
                                 {orders[value]?.products.reduce((total, current) => (total += current.quantity), 0)}
                             </p>
                             <p>
-                                Thành tiền:
+                                <span>Thành tiền:</span>
                                 {orders[value]?.products
                                     .reduce((total, current) => (total += current.quantity * current.price), 0)
                                     .toLocaleString('en-US')}
                             </p>
-                            <TextField
-                                label="Số tiền khách đưa"
-                                id="outlined-start-adornment"
-                                sx={{ m: 1, width: '53ch' }}
-                                value={money.toLocaleString('en-US')}
-                                onChange={(event) => {
-                                    setMoney(event.target.value);
-                                }}
-                            />
                             <p>
-                                Số tiền phải trả:
+                                <span>Số tiền khách đưa:</span>
+                                <NumericFormat
+                                    thousandSeparator={true}
+                                    prefix={''}
+                                    customInput={TextField}
+                                    type="text"
+                                    // Các thuộc tính khác của TextField
+                                    defaultValue={orders[value]?.products.reduce(
+                                        (total, current) => (total += current.quantity * current.price),
+                                        0,
+                                    )}
+                                    value={money}
+                                    sx={{ width: '50%' }}
+                                    size="small"
+                                    variant="standard"
+                                    onChange={(e) => {
+                                        setMoney(parseFloat(e.target.value.replace(/,/g, '')));
+                                    }}
+                                />
+                            </p>
+                            <p>
+                                <span>Số tiền phải trả:</span>
                                 {(
                                     money -
                                     orders[value]?.products.reduce(

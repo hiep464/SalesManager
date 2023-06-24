@@ -15,6 +15,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import Numeral from 'react-numeral';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { getCookie } from '../../utils/api';
 
 const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
     return (
@@ -46,11 +47,10 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
     );
 };
 
-function CreateReportPage() {
-    const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
-    const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
-    const [filter, setFilter] = React.useState(7);
-    const [data, setData] = React.useState({});
+function CreateReportPage(props) {
+    const startD = props.startD;
+    const endD = props.endD;
+    const filter = props.filter;
     const [rows, setRows] = React.useState([]);
     const myLocaleText = {
         ...viVN,
@@ -60,42 +60,45 @@ function CreateReportPage() {
         },
     };
     const columns = [
-        { field: 'code', headerName: 'Mã đơn', width: 100 },
-        { field: 'customerName', headerName: 'Tên khách hàng', width: 130 },
-        { field: 'phone', headerName: 'SĐT khách hàng', width: 130 },
-        { field: 'total', headerName: 'Tổng tiền', type: 'number', width: 130 },
+        { field: 'code', headerName: 'Mã nhân viên', width: 100 },
+        { field: 'name', headerName: 'Tên nhân viên', width: 130 },
+        { field: 'phone', headerName: 'SĐT nhân viên', width: 130 },
+        { field: 'revenue', headerName: 'Doanh thu', type: 'number', width: 130 },
         {
-            field: 'orderDate',
-            headerName: 'Ngày tạo đơn',
-            type: 'string',
+            field: 'order_count',
+            headerName: 'Số đơn đã bán',
+            type: 'number',
+            width: 190,
+        },
+        {
+            field: 'product_sold',
+            headerName: 'Số SP đã bán',
+            type: 'number',
             width: 190,
         },
     ];
     React.useEffect(() => {
         axios
-            .get(`${apiBaseUrl}/sales/reports?end%20date=${endD}&staff%20code=S002&start%20date=${startD}`)
-            .then((response) => {
-                console.log(response.data);
-                setData(response.data);
+            .get(`${apiBaseUrl}/sales/reports/staff?end%20date=${endD}&start%20date=${startD}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
             })
-            .catch((error) => console.log(error));
-    }, [filter]);
-    React.useEffect(() => {
-        axios
-            .get(`${apiBaseUrl}/sales/reports/orders?end%20date=${endD}&staff%20code=S002&start%20date=${startD}`)
             .then((response) => {
                 setRows(response.data);
             })
             .catch((error) => console.log(error));
     }, [filter]);
+    for (let i = 0; i++; i < rows.length) {}
 
     console.log(rows);
     return (
         <div className="createReport" style={{ width: '100%' }}>
-            <div style={{ display: 'flex', marginTop: '10px' }}>
+            {/* <div style={{ display: 'flex', marginTop: '10px' }}>
                 <BoxItem
                     title={'Doanh thu'}
-                    content={<Numeral value={1200000} format={'0,0'} />}
+                    content={<Numeral value={data.revenue} format={'0,0'} />}
                     backgroundColor={'#0089FF'}
                     icon={
                         <AttachMoneyIcon
@@ -111,7 +114,7 @@ function CreateReportPage() {
                 />
                 <BoxItem
                     title={'Đơn đã bán'}
-                    content={1}
+                    content={data.order_count}
                     backgroundColor={'#0089FF'}
                     icon={
                         <AttachMoneyIcon
@@ -127,7 +130,7 @@ function CreateReportPage() {
                 />
                 <BoxItem
                     title={'SP đã bán'}
-                    content={3}
+                    content={data.product_sold}
                     backgroundColor={'#0FD186'}
                     icon={
                         <ShoppingBasketIcon
@@ -143,7 +146,7 @@ function CreateReportPage() {
                 />
                 <BoxItem
                     title={'Lợi nhuận'}
-                    content={<Numeral value={1100000} format={'0,0'} />}
+                    content={<Numeral value={data.revenue} format={'0,0'} />}
                     backgroundColor={'#FFB92A'}
                     icon={
                         <AttachMoneyIcon
@@ -158,7 +161,7 @@ function CreateReportPage() {
                     }
                     noMargin
                 />
-            </div>
+            </div> */}
             <Paper
                 style={{
                     marginTop: '10px',
@@ -180,7 +183,7 @@ function CreateReportPage() {
                             },
                         }}
                         checkboxSelection
-                        getRowId={(row) => row.code}
+                        getRowId={(data) => data.code}
                     />
                 </div>
             </Paper>

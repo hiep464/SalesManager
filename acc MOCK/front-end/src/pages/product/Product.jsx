@@ -427,7 +427,9 @@ export default function Product() {
                     aria-haspopup="true"
                     aria-expanded={open1 ? 'true' : undefined}
                 >
-                    <Button variant="outlined" startIcon={<FilterAltIcon />}>Loại sản phẩm</Button>
+                    <Button variant="outlined" startIcon={<FilterAltIcon />}>
+                        Loại sản phẩm
+                    </Button>
                 </Box>
                 <Menu
                     anchorEl={anchorEl1}
@@ -452,7 +454,9 @@ export default function Product() {
                     {/* <MenuItem> */}
                     <Button
                         variant="outlined"
-                        onClick={() => {setSelectedItems([])}}
+                        onClick={() => {
+                            setSelectedItems([]);
+                        }}
                         sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
                     >
                         Hủy
