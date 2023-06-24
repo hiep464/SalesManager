@@ -28,7 +28,7 @@ import CheckInventoryBody from '../../components/createCheckInventoryBody/CheckI
 import { ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
 import axios from 'axios';
 import { apiBaseUrl } from '../../constant/constant';
-
+import { getCookie } from '../../utils/api';
 
     
 
@@ -66,7 +66,7 @@ const CreateChecking = () => {
         });
     }, []);
     const theme = useTheme();
- 
+ console.log(products)
    
     const handleDelete = (productCode)=>{
         const updatedCheckInventoryItems = checkInventoryBody.filter(item => item.productCode !== productCode);
@@ -204,7 +204,7 @@ const CreateChecking = () => {
                     }}
                     onMouseEnter={React.useEffect(() => {
                         if(searchProduct !== '') {
-                            axios.get(`${apiBaseUrl}/inventory/products?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
+                            axios.get(`${apiBaseUrl}/inventory/product/search?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
                                 // token: Cookies.get('token'),
                                 Authorization: getCookie('Authorization'),
                             }})
@@ -247,6 +247,7 @@ const CreateChecking = () => {
                                             color :product.color,
                                             inventoryQuantity: product.quantity,
                                             actualQuantity: 0,
+                                            
                                             reason: ''
                                         }   
                                         var duplicate = false

@@ -69,11 +69,11 @@ public class ProductController {
     }
 //
     @GetMapping("/product/search")
-    public List<ProductEntity> searchProductByCode(
-            @RequestParam String code,
+    public List<ProductDto> searchProductByStringSearchAndInventoryName(
+            @RequestParam String searchString,
             @RequestParam String inventoryName
     ){
-        return productService.searchProductByCodeAndInventoryName(code, inventoryName);
+        return productService.searchProductBySearchStringAndInventoryName(searchString, inventoryName);
     }
 
     @PutMapping("product/update")

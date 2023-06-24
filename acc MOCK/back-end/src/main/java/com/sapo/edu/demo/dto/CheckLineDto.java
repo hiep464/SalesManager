@@ -20,6 +20,7 @@ public class CheckLineDto {
     @NotEmpty
 
     private Integer actualQuantity;
+
     @NotEmpty
     private String reason;
     @NotEmpty
