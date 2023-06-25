@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import APIapp from '../../components/APIapp/APIapp';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { display } from '@mui/system';
 
 function CreateFeedback(){
     const [resultByCode,setResultByCode] = useState([])
@@ -22,6 +23,12 @@ function CreateFeedback(){
         content: "",
         status: "S1"
     })
+    const [baseInforStyle, setBaseInfor] = useState({
+        display: 'block'
+    })
+    const [fixedInforStyle, setFixedInfor] = useState({
+        display: 'none'
+    })
     const navigate =useNavigate()
     const urlSearchParam = new URLSearchParams(window.location.search)
     const param = urlSearchParam.get('code')
@@ -35,6 +42,8 @@ function CreateFeedback(){
                 setPhone(res.data.phone)
             }
             getCurrentCustomer()
+            setBaseInfor({...baseInforStyle, display: 'none'})
+            setFixedInfor({...fixedInforStyle, display: 'block'})
         }
     },[])
     
@@ -82,10 +91,8 @@ function CreateFeedback(){
     const handleReturn=()=>{
         navigate('/care/feedbacks')
     }
-
-
     return(
-        <div className='createfeedback'>
+        <div className='createfeedback' >
             <div className='header'>
                 <span className='return' onClick={handleReturn}>
                     <ChevronLeftIcon className='icon'/>
@@ -95,7 +102,27 @@ function CreateFeedback(){
                     <button className='createbtn' onClick={handleCreateFeeback}>Tạo phản hồi</button>
                 </div>
             </div>
-            <div className='baseinfor'>
+            <div className='fixedinfor' style={fixedInforStyle}>
+                <div className='title'>
+                    <span>Thông tin khởi tạo</span>
+                    {/* <a href="">Cập nhật</a> */}
+                </div>
+                <div className='infor'>
+                    <div className='leftname'>
+                        <p>Mã khách hàng</p>
+                    </div>
+                    <div className='leftcontent'>
+                        <p>: {code}</p>
+                    </div>
+                    <div className='rightname'>
+                        <p>SDT khách hàng</p>
+                    </div>
+                    <div className='rightcontent'>
+                        <p>: {phone}</p>
+                    </div>
+                </div>
+            </div>
+            <div className='baseinfor' style={baseInforStyle}>
                 <div className='title'>
                     <span>Thông tin khởi tạo</span>
                 </div>

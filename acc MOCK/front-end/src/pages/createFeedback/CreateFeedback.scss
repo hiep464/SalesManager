@@ -37,7 +37,61 @@
                 cursor: pointer;
             }
         }
-    }   
+    } 
+    
+    .fixedinfor{
+        margin-top: 100px;
+        width:calc(82vw - 44px);
+        min-height: 100px;
+        background-color: white;
+        border-radius: 5px;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .title{
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #CAC3C3;
+            align-items: center;
+            span{
+                padding-left: 20px;
+                font-weight: bold;
+            }
+            a{
+                padding-right: 20px;
+                text-decoration: none;
+                color: #0089FF;
+            }
+            a:hover{
+                text-decoration: underline;
+            }
+        }
+        .infor{
+            display: flex;
+            width: 100%;
+            padding-bottom: 20px;
+            .leftname, .rightname{
+                width: 20%;
+                display: flex;
+                flex-direction: column;
+                padding-left: 20px;
+                p{
+                    margin-bottom: 0px;
+                    margin-top: 20px;
+                    color: #808080;
+                }
+            }
+            .leftcontent, .rightcontent{
+                width: 30%;
+                display: flex;
+                flex-direction: column;
+                p{
+                    margin-bottom: 0px;
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
     
     .baseinfor{
         margin-top: 100px;

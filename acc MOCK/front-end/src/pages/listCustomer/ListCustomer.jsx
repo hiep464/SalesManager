@@ -14,16 +14,10 @@ function ListCustomer(){
         total:1
     })
     const [customers, setCustomers] = useState([])
+    const [searchText, setSearchText] = useState("")
     const [isDivVisible, setDivVisible] = useState(false);
     const toggleDiv = () => {
         setDivVisible(!isDivVisible);
-    };
-
-    const handleOutsideClick = (e) => {
-        if (e.target.id === 'filter') {
-          return;
-        }
-        setDivVisible(false);
     };
 
     const handllePageChange =(newPage) =>{
@@ -35,22 +29,30 @@ function ListCustomer(){
     }
 
     useEffect(()=>{
-        const fetchData= async ()=>{
-            const res =await APIapp.get(`admin/care/customers?page=${pagination.page-1}&size=${pagination.limit}`)
-            setPagination({...pagination, total: res.data.totalPages})
-            setCustomers(res.data.content)
+        if(searchText===""){
+            const fetchData= async ()=>{
+                const res =await APIapp.get(`admin/care/customers?page=${pagination.page-1}&size=${pagination.limit}`)
+                setPagination({...pagination, total: res.data.totalPages})
+                setCustomers(res.data.content)
+            }
+            fetchData()
         }
-        fetchData()
-    },[pagination.page, pagination.limit])
+        if(searchText!==""){
+            const search=async ()=>{
+                const res =await APIapp.get(`admin/care/customers?page=${pagination.page-1}&size=${pagination.limit}&searchText=${searchText}`)
+                setPagination({...pagination, total: res.data.totalPages})
+                setCustomers(res.data.content)
+            }
+            search()
+        }
+    },[pagination.page, pagination.limit, searchText ])
 
     console.log(customers)
 
     return(
         <div className='pagecontent' >
             <div className='searchbar'>
-                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng, số điện thoại' />
-                <button onClick={toggleDiv}>Bộ lọc<FilterAltIcon/> </button>
-                {isDivVisible&& <FilterModal/>}
+                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng, số điện thoại, tên khách hàng' onChange={(e)=>setSearchText(e.target.value)}/>
             </div>
             <div className='table'>
             <table>

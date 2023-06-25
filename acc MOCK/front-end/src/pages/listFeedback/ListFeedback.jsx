@@ -4,6 +4,7 @@ import Paginations from './Pagination/Pagination'
 import { useEffect, useState } from 'react';
 import APIapp from '../../components/APIapp/APIapp';
 import FeedbackItem from './FeedbackItem/FeedbackItem';
+import { useNavigate } from 'react-router-dom';
 
 function ListFeedback(){
     const [pagination,setPagination]=useState({
@@ -12,6 +13,7 @@ function ListFeedback(){
         total:1
     })
     const [feedbacks, setFeedbacks] = useState([])
+    const navigate= useNavigate()
 
     const handllePageChange =(newPage) =>{
         setPagination({...pagination, page: newPage})
@@ -31,14 +33,19 @@ function ListFeedback(){
         fetchdata()
     },[pagination.page, pagination.limit])
 
+    const handleCreateNew=()=>{
+        navigate('/care/feedbacks/new')
+    }
+
     console.log(feedbacks)
     
 
     return(
         <div className='pagecontent'>
+
+            <button className='addnew' onClick={handleCreateNew}>Tạo phản hồi</button>
             <div className='searchbar'>
-                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng, số điện thoại' />
-                <button>Bộ lọc<FilterAltIcon/> </button>
+                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng' />
             </div>
             <div className='table'>
                 <table>
