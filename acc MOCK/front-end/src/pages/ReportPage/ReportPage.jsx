@@ -16,6 +16,26 @@ import CreateReportPage from '../CreateReportPage/CreateReportPage';
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getCookie } from '../../utils/api';
+import { read, writeFileXLSX } from 'xlsx';
+
+var XLSX = require('xlsx');
+function exportToExcel(data) {
+    // Tạo mảng dữ liệu đầu vào cho bảng tính
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const dataBlob = new Blob([excelBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const fileName = 'data.xlsx';
+
+    // Tạo URL cho tệp Excel và tải xuống
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(dataBlob);
+    downloadLink.download = fileName;
+    downloadLink.click();
+}
 
 const options = {
     scales: {
@@ -68,6 +88,7 @@ function ReportPage() {
     const [labels, setLabels] = React.useState(labelsInit);
     const [filter, setFilter] = React.useState(7);
     const [data, setData] = React.useState([]);
+    const [rows, setRows] = React.useState([]);
     // const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
     const handleChangeStaff = (event) => {
         setStaffFilter(event.target.value);
@@ -148,12 +169,31 @@ function ReportPage() {
             })
             .catch((error) => console.log(error));
     }, [filter]);
+    React.useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/sales/reports/staff?end%20date=${endD}&start%20date=${startD}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setRows(response.data);
+            })
+            .catch((error) => console.log(error));
+    }, [filter]);
     return (
         <>
             <div sx={{ margin: '0', padding: '0', display: 'flex' }}>
-                <Link to="/create/report">
-                    <Button variant="contained">Tạo báo cáo mới</Button>
-                </Link>
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        console.log('rows:', rows);
+                        exportToExcel(rows);
+                    }}
+                >
+                    Xuất file excel
+                </Button>
             </div>
             <Paper sx={{ marginTop: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                 <div
@@ -194,7 +234,7 @@ function ReportPage() {
                     />
                 </div>
             </Paper>
-            <CreateReportPage filter={filter} startD={startD} endD={endD} />
+            <CreateReportPage rows={rows} />
         </>
     );
 }

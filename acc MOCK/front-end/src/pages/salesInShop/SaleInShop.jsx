@@ -23,6 +23,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 import axios from 'axios';
 import { ResultCustomerSearch, RetailCustomers, ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
 import AddCustomer from '../../components/AddCustomer/AddCustomer';
@@ -36,6 +41,8 @@ const orders1 = [
     },
 ];
 
+const user = localStorage.getItem('sapo');
+
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -46,14 +53,18 @@ function a11yProps(index) {
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
     const [addCustomer, setAddCustomer] = React.useState(false);
+    const [chooseInventory, setChooseInventory] = React.useState(false);
     const [search, setSearch] = React.useState('');
     const [searchProduct, setSearchProduct] = React.useState('');
     const [customers, setCustomers] = React.useState([]);
     const [products, setProducts] = React.useState([]);
+    const [inventory, setInventory] = React.useState([]);
+    const [inventoryData, setInventoryData] = React.useState('chi nhánh 1');
     const [orders, setOrders] = React.useState(orders1);
     const [money, setMoney] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [message, setMessage] = React.useState('');
+    const [warning, setWarning] = React.useState('');
     const [deleteId, setDeleteId] = React.useState();
     useEffect(() => {
         if (search !== '') {
@@ -71,6 +82,22 @@ function SalesInShop() {
             setCustomers([]);
         }
     }, [search]);
+
+    useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((Response) => {
+                setInventory(Response.data);
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
+    }, [chooseInventory]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -110,7 +137,7 @@ function SalesInShop() {
             )
             .then((response) => {
                 console.log(response);
-                handleDeleteOrder(value);
+                handleDeleteOrderAfterCreate(value);
             });
         setMoney(0);
     };
@@ -125,6 +152,11 @@ function SalesInShop() {
 
     const handleCloseAddCustomer = (event) => {
         setAddCustomer(false);
+    };
+    // handle ChooseInventory
+
+    const handleChangeInventoryData = (event) => {
+        setInventoryData(event.target.value);
     };
 
     const handleDelete = (productId) => {
@@ -187,6 +219,14 @@ function SalesInShop() {
 
     const handleDeleteOrder = (orderID) => {
         setDeleteId(orderID);
+        setMessage('Bạn có chắc chắn muốn xóa đơn hàng này?');
+        setWarning('Sau khi xóa sẽ không thể hoàn tác được');
+        setOpen(true);
+    };
+    const handleDeleteOrderAfterCreate = (orderID) => {
+        setDeleteId(orderID);
+        setMessage('Bạn có chắc chắn muốn tạo đơn hàng này?');
+        setWarning('Sau khi tạo sẽ không thể hoàn tác được');
         setOpen(true);
     };
 
@@ -206,17 +246,10 @@ function SalesInShop() {
             const updatedOrderItems = newState.filter((item, index) => index !== deleteId);
             setOrders(updatedOrderItems);
         }
-        console.log('hello');
-        console.log(deleteId);
-        console.log(orders);
         setMoney(0);
-        setMessage('Xóa thành công');
         setOpen(false);
-        // handleClickSnackBar();
     };
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -234,11 +267,9 @@ function SalesInShop() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa đơn hàng này?'}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Sau khi xóa sẽ không thể hoàn tác được
-                    </DialogContentText>
+                    <DialogContentText id="alert-dialog-description">{warning}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Hủy</Button>
@@ -273,7 +304,8 @@ function SalesInShop() {
                                                 .get(
                                                     `${apiBaseUrl}/sales/products?code=` +
                                                         searchProduct +
-                                                        `&inventory=Inventory%20ABC`,
+                                                        `&inventory=` +
+                                                        inventoryData,
                                                     {
                                                         headers: {
                                                             // token: Cookies.get('token'),
@@ -421,9 +453,51 @@ function SalesInShop() {
                             <div className="user">
                                 <div>
                                     <LocationOnIcon />
-                                    Chi nhánh 1
+                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <Select
+                                            labelId="demo-simple-select-standard-label"
+                                            id="demo-simple-select-standard"
+                                            value={inventoryData}
+                                            onChange={handleChangeInventoryData}
+                                            label="Chi nhánh"
+                                            sx={{
+                                                color: 'white', // Màu chữ
+                                                '&:before': {
+                                                    borderColor: 'white', // Màu đường viền trước khi chọn
+                                                },
+                                                '&:after': {
+                                                    borderColor: 'white', // Màu đường viền sau khi chọn
+                                                },
+                                                '& .MuiSvgIcon-root': {
+                                                    color: 'white', // Màu biểu tượng mũi tên
+                                                },
+                                                '& .MuiListItem-root': {
+                                                    color: 'black', // Màu chữ trong lựa chọn
+                                                    backgroundColor: 'white', // Màu nền lựa chọn
+                                                },
+                                            }}
+                                        >
+                                            {inventory ? (
+                                                inventory.map((item, index) => {
+                                                    return (
+                                                        <MenuItem color="white" key={index} value={item.name}>
+                                                            {item.name}
+                                                        </MenuItem>
+                                                    );
+                                                })
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                                 </div>
-                                <div>
+                                <div
+                                    sx={{
+                                        '&hover': {
+                                            cursor: 'pointer',
+                                        },
+                                    }}
+                                >
                                     <AccountCircleIcon />
                                     Nguyễn Duẩn
                                 </div>

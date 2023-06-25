@@ -48,10 +48,7 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
 };
 
 function CreateReportPage(props) {
-    const startD = props.startD;
-    const endD = props.endD;
-    const filter = props.filter;
-    const [rows, setRows] = React.useState([]);
+    const rows = props.rows;
     const myLocaleText = {
         ...viVN,
         pagination: {
@@ -77,19 +74,6 @@ function CreateReportPage(props) {
             width: 190,
         },
     ];
-    React.useEffect(() => {
-        axios
-            .get(`${apiBaseUrl}/sales/reports/staff?end%20date=${endD}&start%20date=${startD}`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setRows(response.data);
-            })
-            .catch((error) => console.log(error));
-    }, [filter]);
     for (let i = 0; i++; i < rows.length) {}
 
     console.log(rows);

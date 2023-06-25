@@ -35,9 +35,8 @@ import { getCookie } from '../../utils/api';
 
 
 function CreateBooking() {
-    
-    const [searchProduct,setSearchProduct] = React.useState('')
-    const [products,setProducts] = React.useState([])
+    const [searchProduct, setSearchProduct] = React.useState('');
+    const [products, setProducts] = React.useState([]);
     const [search, setSearch] = useState([]);
     const [orders, setOrders] = useState([]);
     const [code, setCode] = useState();
@@ -51,68 +50,91 @@ function CreateBooking() {
     const [size, setSize] = useState('');
     const [colors, setColors] = useState([]);
     const [color, setColor] = useState('');
-    const [active, setActive] = useState(false)
-    const [totalQuantity, setTotalQuantity] = useState(0)
-    console.log(orders)
+    const [active, setActive] = useState(false);
+    const [totalQuantity, setTotalQuantity] = useState(0);
+    console.log(orders);
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
-    
-    React.useEffect(() => {       
-            for(let order of orders) {
-                axios.get(`${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,{headers: {
+
+    React.useEffect(() => {
+        for (let order of orders) {
+            axios
+                .get(
+                    `${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    handleEditProduct(order.productName, 'originalCost', response.data.originalCost);
+                })
+                .then(() => console.log(order.originalCost));
+        }
+    }, [size, color, inventory]);
+    const handleEditTotalQuantity = (quantity) => {
+        setTotalQuantity((prevQuantity) => prevQuantity + quantity);
+    };
+
+    const handleEditProduct = (name, field, value) => {
+        const updatedProducts = orders.map((row) => (row.productName === name ? { ...row, [field]: value } : row));
+        setOrders(updatedProducts);
+    };
+    useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
                     // token: Cookies.get('token'),
                     Authorization: getCookie('Authorization'),
-                }})
-                    .then((response) => {               
-                        handleEditProduct(order.productName, "originalCost" , response.data.originalCost)
-                    })    
-                    .then(() => console.log(order.originalCost))
-                
-            }       
-    },[size,color,inventory])
-    const handleEditTotalQuantity = (quantity) => {
-        setTotalQuantity((prevQuantity) => (prevQuantity + quantity))
-    }
-    
-    const handleEditProduct = (name, field, value) => {
-        const updatedProducts = orders.map((row) =>
-          row.productName === name ? { ...row, [field]: value } : row
-        );
-        setOrders(updatedProducts);
-      };
-    useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setInventories(response.data);
-        });
-        axios.get(`${apiBaseUrl}/inventory/suppliers`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            console.log(response?.data);
-            setSuppliers(response.data);
-        });
-        axios.get(`${apiBaseUrl}/staff`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setStaffs(response.data);
-        });
-        axios.get(`${apiBaseUrl}/inventory/product/size`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-                    setSizes(response.data);
-                });
-        axios.get(`${apiBaseUrl}/inventory/product/color`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-                    setColors(response.data);
-                });
+                },
+            })
+            .then((response) => {
+                setInventories(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/inventory/suppliers`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                console.log(response?.data);
+                setSuppliers(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/staff`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setStaffs(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/inventory/product/size`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setSizes(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/inventory/product/color`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setColors(response.data);
+            });
     }, []);
 
     return (
@@ -127,7 +149,11 @@ function CreateBooking() {
             >
                 <Box borderRadius={'6px'} width={'58%'} backgroundColor={'white'}>
                     <h3 style={{ marginLeft: '20px' }}>Nhập mã đặt hàng</h3>
-                    <TextField sx = {{marginLeft: '20px'}} type='text' onChange={(e) => setCode(e.target.value)}></TextField>
+                    <TextField
+                        sx={{ marginLeft: '20px' }}
+                        type="text"
+                        onChange={(e) => setCode(e.target.value)}
+                    ></TextField>
 
                     <h3 style={{ marginLeft: '20px' }}>Chọn nhà cung cấp</h3>
                     <Select
@@ -229,7 +255,13 @@ function CreateBooking() {
                 <Box
                     borderRadius={'6px'}
                     component="form"
-                    sx={{ p: '2px 0', display: 'absolute', alignItems: 'center', width: '100%', backgroundColor: 'white' }}
+                    sx={{
+                        p: '2px 0',
+                        display: 'absolute',
+                        alignItems: 'center',
+                        width: '100%',
+                        backgroundColor: 'white',
+                    }}
                 >
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon />
@@ -244,13 +276,17 @@ function CreateBooking() {
                         }}
                         onClick={() => setActive(true)}
                         onMouseEnter={useEffect(() => {
-                            
                             if (searchProduct !== '') {
                                 axios
-                                    .get(`${apiBaseUrl}/inventory/products/searchString?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
-                                        // token: Cookies.get('token'),
-                                        Authorization: getCookie('Authorization'),
-                                    }})
+                                    .get(
+                                        `${apiBaseUrl}/inventory/products/searchString?searchString=${searchProduct}&inventoryName=${inventory}`,
+                                        {
+                                            headers: {
+                                                // token: Cookies.get('token'),
+                                                Authorization: getCookie('Authorization'),
+                                            },
+                                        },
+                                    )
                                     .then((response) => {
                                         setSearch(response.data);
                                         console.log(response);
@@ -261,14 +297,19 @@ function CreateBooking() {
                         }, [searchProduct])}
                     />
                 </Box>
-                <div className="result_search" style={{ position: 'fixed',backgroundColor : '#fff', border : "1px solid #ccc" }}>
-                    
-                    {(active === true && search !== [])? <Box sx ={{background: '#fff', justifyContent: 'flex-start'}}> <Button sx = {{width: '100%'}}>+ Tạo sản phẩm mới</Button></Box> : null}
+                <div
+                    className="result_search"
+                    style={{ position: 'fixed', backgroundColor: '#fff', border: '1px solid #ccc' }}
+                >
+                    {active === true && search !== [] ? (
+                        <Box sx={{ background: '#fff', justifyContent: 'flex-start' }}>
+                            {' '}
+                            <Button sx={{ width: '100%' }}>+ Tạo sản phẩm mới</Button>
+                        </Box>
+                    ) : null}
                     {search?.map((product, key) => {
                         return (
                             <Box key={key} sx={{ minWidth: '60ch', backgroundColor: 'white' }}>
-                                
-
                                 <ResultProductSearch
                                     key={key}
                                     product={product}
@@ -281,9 +322,9 @@ function CreateBooking() {
                                             size: '',
                                             color: '',
                                             price: 0,
-                                            quantity : 0
-                                        }
-                                        setActive(false)
+                                            quantity: 0,
+                                        };
+                                        setActive(false);
                                         setOrders((prevState) => [...prevState, productOder]);
                                         setSearch([]);
                                         setSearchProduct('');
@@ -293,35 +334,44 @@ function CreateBooking() {
                         );
                     })}
                 </div>
-                    </Box> <Box>
+            </Box>{' '}
+            <Box>
                 <Box>
                     <TableContainer component={Box}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead sx={{ backgroundColor: '#f4f6f8' }}>
                                 <TableRow>
-                                    <TableCell width='5%'>STT</TableCell>
-                                    <TableCell width='15%' align="center">Tên</TableCell>
-                                    <TableCell width='3%' align="center"></TableCell>
-                                    <TableCell width='12%' align="center">Kích cỡ </TableCell>
-                                    <TableCell width='12%' align="center">Màu sắc </TableCell>
-                                    <TableCell width='15%' align="center">Đơn giá</TableCell>
-                                    <TableCell width='12%' align="center">Số lượng</TableCell>
+                                    <TableCell width="5%">STT</TableCell>
+                                    <TableCell width="15%" align="center">
+                                        Tên
+                                    </TableCell>
+                                    <TableCell width="3%" align="center"></TableCell>
+                                    <TableCell width="12%" align="center">
+                                        Kích cỡ{' '}
+                                    </TableCell>
+                                    <TableCell width="12%" align="center">
+                                        Màu sắc{' '}
+                                    </TableCell>
+                                    <TableCell width="15%" align="center">
+                                        Đơn giá
+                                    </TableCell>
+                                    <TableCell width="12%" align="center">
+                                        Số lượng
+                                    </TableCell>
                                     <TableCell align="center">Thành tiền</TableCell>
-                                    
                                 </TableRow>
                             </TableHead>
                             <TableBody sx={{ backgroundColor: '#fff' }}>
                                 {orders?.map((row, key) => (
-                                    <TableRow key={key} sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+                                    <TableRow key={key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                         <TableCell component="th">{key + 1}</TableCell>
                                         <TableCell align="center">{row.productName}</TableCell>
                                         <TableCell align="center">
                                             <DeleteIcon
                                                 onClick={() => {
                                                     // setOrders(() => orders.splice(orders.indexOf(row), 1));
-                                                    
+
                                                     setOrders((prevState) => prevState.filter((_, i) => i !== key));
-                                                    
                                                 }}
                                             />
                                         </TableCell>
@@ -331,10 +381,11 @@ function CreateBooking() {
                                                 // sx={{ width: '150%' }}
                                                 value={row.size}
                                                 onChange={(e) => {
-                                                    setSize(e.target.value)
-                                                    handleEditProduct(row.productName,"size",e.target.value)}}
+                                                    setSize(e.target.value);
+                                                    handleEditProduct(row.productName, 'size', e.target.value);
+                                                }}
                                             >
-                                                {sizes?.map((item,index) => {
+                                                {sizes?.map((item, index) => {
                                                     return (
                                                         <MenuItem key={index} value={item}>
                                                             {item}
@@ -343,17 +394,18 @@ function CreateBooking() {
                                                 })}
                                             </Select>
                                         </TableCell>
-                                        
+
                                         <TableCell align="center">
                                             <Select
                                                 size="small"
                                                 sx={{ width: '100%' }}
                                                 value={row.color}
                                                 onChange={(e) => {
-                                                    setColor(e.target.value)                                       
-                                                    handleEditProduct(row.productName, "color" , e.target.value)}}
+                                                    setColor(e.target.value);
+                                                    handleEditProduct(row.productName, 'color', e.target.value);
+                                                }}
                                             >
-                                                {colors?.map((item,index) => {
+                                                {colors?.map((item, index) => {
                                                     return (
                                                         <MenuItem key={index} value={item}>
                                                             {item}
@@ -362,20 +414,29 @@ function CreateBooking() {
                                                 })}
                                             </Select>
                                         </TableCell>
-                                        
+
                                         <TableCell align="center">
-                                            <TextField align="center" type="number" sx={{ width: '100%' }} variant="standard" value={row.originalCost}></TextField>
+                                            <TextField
+                                                align="center"
+                                                type="number"
+                                                sx={{ width: '100%' }}
+                                                variant="standard"
+                                                value={row.originalCost}
+                                            ></TextField>
                                         </TableCell>
                                         <TableCell align="center">
-                                            <TextField type="number" align="center" sx={{ width: '100%', justifyContent: 'center' }} variant="standard" onChange={(e) => {
-                                                handleEditTotalQuantity(e.target.value)
-                                                handleEditProduct(row.productName, "quantity" , e.target.value)
-                                            }} />
-                                            
-                                           
+                                            <TextField
+                                                type="number"
+                                                align="center"
+                                                sx={{ width: '100%', justifyContent: 'center' }}
+                                                variant="standard"
+                                                onChange={(e) => {
+                                                    handleEditTotalQuantity(e.target.value);
+                                                    handleEditProduct(row.productName, 'quantity', e.target.value);
+                                                }}
+                                            />
                                         </TableCell>
                                         <TableCell align="center">{row?.quantity * row?.originalCost || 0}</TableCell>
-
                                     </TableRow>
                                 ))}
                             </TableBody>
