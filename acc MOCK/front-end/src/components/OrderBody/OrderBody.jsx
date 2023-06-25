@@ -21,9 +21,9 @@ function OrderBody(props) {
                     <Grid container spacing={3} sx={{ width: '100%',padding:'10px'}} className="product1">
                         <Grid xs={0.5}>STT</Grid>
                         <Grid xs={0.5}></Grid>
-                        <Grid xs={2}>Loại</Grid>
+                        <Grid xs={1}>Loại</Grid>
                         <Grid xs={1}>Mã SP</Grid>
-                        <Grid xs={3}>Tên SP</Grid>
+                        <Grid xs={2}>Tên SP</Grid>
                         <Grid xs={1.5}>Số lượng</Grid>
                         <Grid xs={1.5}>Giá</Grid>
                         <Grid xs={2}>Thành tiền</Grid>
