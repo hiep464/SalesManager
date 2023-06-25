@@ -83,16 +83,12 @@ const labelsInit = generateLabels();
 function ReportPage() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
-    const [staffs, setStaffs] = React.useState([]);
-    const [staffFilter, setStaffFilter] = React.useState(5);
     const [labels, setLabels] = React.useState(labelsInit);
     const [filter, setFilter] = React.useState(7);
     const [data, setData] = React.useState([]);
     const [rows, setRows] = React.useState([]);
     // const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
-    const handleChangeStaff = (event) => {
-        setStaffFilter(event.target.value);
-    };
+
     const handleChange = (event) => {
         setFilter(event.target.value);
         if (event.target.value === 7) {
@@ -103,7 +99,7 @@ function ReportPage() {
         } else if (event.target.value === 30) {
             const labelsInit = generateLabels(30);
             setLabels(labelsInit);
-            setStart(format(subDays(new Date(), 30), 'dd/MM/yyyy'));
+            setStart(format(subDays(new Date(), 29), 'dd/MM/yyyy'));
             setEnd(format(new Date(), 'dd/MM/yyyy'));
         } else {
             setLabels([format(new Date(), 'dd/MM')]);
@@ -112,58 +108,14 @@ function ReportPage() {
         }
     };
 
-    // async function fetchData() {
-    //     try {
-    //         const response = await axios.get(
-    //             `${apiBaseUrl}/statistical/revenue_by_staff_code?staff%20code=${staffs[staffFilter].code}&start%20date=${startD}&end%20date=${endD}`,
-    //             {
-    //                 headers: {
-    //                     // token: Cookies.get('token'),
-    //                     Authorization: getCookie('Authorization'),
-    //                 },
-    //             },
-    //         );
-    //         setData(response.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     async function fetchStaff() {
-    //         try {
-    //             const response = await axios.get(`${apiBaseUrl}/staff`, {
-    //                 headers: {
-    //                     // token: Cookies.get('token'),
-    //                     Authorization: getCookie('Authorization'),
-    //                 },
-    //             });
-    //             console.log(response.data);
-    //             setStaffs(response.data);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-
-    //     async function getStaff() {
-    //         await fetchStaff();
-    //         await fetchData();
-    //     }
-
-    //     getStaff();
-    // }, []);
-
     React.useEffect(() => {
         axios
-            .get(
-                `${apiBaseUrl}/statistical/revenue_by_staff_code?staff%20code=S002&start%20date=${startD}&end%20date=${endD}`,
-                {
-                    headers: {
-                        // token: Cookies.get('token'),
-                        Authorization: getCookie('Authorization'),
-                    },
+            .get(`${apiBaseUrl}/statistical/revenue_by_period?end%20date=${endD}&start%20date=${startD}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
                 },
-            )
+            })
             .then((response) => {
                 setData(response.data);
             })
@@ -234,7 +186,7 @@ function ReportPage() {
                     />
                 </div>
             </Paper>
-            <CreateReportPage rows={rows} />
+            <CreateReportPage rows={rows} filter={filter} />
         </>
     );
 }
