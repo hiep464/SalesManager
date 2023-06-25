@@ -26,6 +26,7 @@ import axios from 'axios';
 
 import { ResultCheckRequestSearch } from '../../components/ResultSearch/ResultSearch';
 import { apiBaseUrl } from '../../constant/constant';
+import { getCookie } from '../../utils/api';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -65,48 +66,52 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'code', headerName: 'Mã phiếu kiểm', width: 300, },
-    {field: 'inventoryName', headerName: 'Kho', width:300,},
+    { field: 'code', headerName: 'Mã phiếu kiểm', width: 300 },
+    { field: 'inventoryName', headerName: 'Kho', width: 300 },
     { field: 'status', headerName: 'Trạng thái', width: 300 },
     { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
     { field: 'createAt', headerName: 'Ngày tạo', width: 150 },
-
-    
 ];
 
 const CheckInventory = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [checking, setChecking] = React.useState([])
-    const [searchCheckRequest, setSearchCheckRequest] = React.useState('')
-    const [checkRequests,setCheckRequests] = React.useState([])
+    const [checking, setChecking] = React.useState([]);
+    const [searchCheckRequest, setSearchCheckRequest] = React.useState('');
+    const [checkRequests, setCheckRequests] = React.useState([]);
     const [filter, setFilter] = React.useState('');
-    
-    const getRowId = (row) => row.code
+
+    const getRowId = (row) => row.code;
     const open = Boolean(anchorEl);
-   
+
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/check_inventory`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((Response) => {
-            setChecking(Response.data);
-            // console.log(Response.data)
+        axios
+            .get(`${apiBaseUrl}/inventory/check_inventory`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((Response) => {
+                setChecking(Response.data);
+                // console.log(Response.data)
             });
-    },[])
+    }, []);
     const handleCreateCheckRequest = () => {
-        navigate('/inventory/check_inventory/create')
-    }
+        navigate('/inventory/check_inventory/create');
+    };
     const handleFilter = () => {
-            axios.get(`${apiBaseUrl}/inventory/check_inventory/filter?status=${filter}`,{headers: {
-                // token: Cookies.get('token'),
-                Authorization: getCookie('Authorization'),
-            }})
-                .then(res => res.data)
-                .then(res => setChecking(res))
-    }
-    
-   
+        axios
+            .get(`${apiBaseUrl}/inventory/check_inventory/filter?status=${filter}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => res.data)
+            .then((res) => setChecking(res));
+    };
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -114,10 +119,10 @@ const CheckInventory = () => {
         setAnchorEl(null);
     };
     const handleOpenDetail = (params) => {
-        const code = params.row.code
-        navigate(`/inventory/check_inventory/${code}`)
-    }
-    return ( 
+        const code = params.row.code;
+        navigate(`/inventory/check_inventory/${code}`);
+    };
+    return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Paper
                 component="form"
@@ -131,50 +136,49 @@ const CheckInventory = () => {
                     placeholder="Tìm kiếm theo mã hiểm hàng"
                     inputProps={{ 'aria-label': 'Tìm kiếm theo mã hiểm hàng' }}
                     label="find check line"
-                        // size="small" 
-                        // variant="outlined" 
-                        id="outlined-start-adornment"
-                        onChange={(event) => {
-                            setSearchCheckRequest(event.target.value);
-                        }}
-                        onMouseEnter={React.useEffect(() => {
-                            if (searchCheckRequest !== '') {
-                                axios
-                                    .get(`${apiBaseUrl}/inventory/check_inventory/code?code=${searchCheckRequest}`,{headers: {
+                    // size="small"
+                    // variant="outlined"
+                    id="outlined-start-adornment"
+                    onChange={(event) => {
+                        setSearchCheckRequest(event.target.value);
+                    }}
+                    onMouseEnter={React.useEffect(() => {
+                        if (searchCheckRequest !== '') {
+                            axios
+                                .get(`${apiBaseUrl}/inventory/check_inventory/code?code=${searchCheckRequest}`, {
+                                    headers: {
                                         // token: Cookies.get('token'),
                                         Authorization: getCookie('Authorization'),
-                                    }})
-                                    .then((response) => {
-                                        setCheckRequests(response.data);
-                                    });
-                            } else { 
-                                setCheckRequests([]);
-                            }
-                        }, [searchCheckRequest])}
-                        
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
-                        }}
+                                    },
+                                })
+                                .then((response) => {
+                                    setCheckRequests(response.data);
+                                });
+                        } else {
+                            setCheckRequests([]);
+                        }
+                    }, [searchCheckRequest])}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
                 />
                 <div className="result_search" style={{ position: 'fixed' }}>
-                    {checkRequests.map((request,index) => {
-                        
+                    {checkRequests.map((request, index) => {
                         // console.log(checkInventoryBody)
                         return (
                             <Card sx={{ minWidth: '60ch' }}>
-                            <ResultCheckRequestSearch
-                                key={index}
-                                checkRequest={request}
-                                onClick={() => {
-                                    setChecking([request])                       
-                                    setSearchCheckRequest('');
-                                        
-                                }}
-                            />
+                                <ResultCheckRequestSearch
+                                    key={index}
+                                    checkRequest={request}
+                                    onClick={() => {
+                                        setChecking([request]);
+                                        setSearchCheckRequest('');
+                                    }}
+                                />
                             </Card>
                         );
                     })}
@@ -193,7 +197,12 @@ const CheckInventory = () => {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button onClick={handleCreateCheckRequest} startIcon={<AddIcon />} variant="contained" sx={{ marginRight: '10px' }}>
+                <Button
+                    onClick={handleCreateCheckRequest}
+                    startIcon={<AddIcon />}
+                    variant="contained"
+                    sx={{ marginRight: '10px' }}
+                >
                     Tạo đơn kiểm hàng
                 </Button>
                 <StyledMenu
@@ -205,14 +214,14 @@ const CheckInventory = () => {
                     open={open}
                     onClose={handleClose}
                 >
-                    <Box sx = {{padding : '8px'}}>
+                    <Box sx={{ padding: '8px' }}>
                         <div>
                             <span>Trạng thái</span>
                             <br />
-                            <TextField size="small" variant="outlined" onChange={(e) => setFilter(e.target.value)}/>
+                            <TextField size="small" variant="outlined" onChange={(e) => setFilter(e.target.value)} />
                         </div>
-                        
-                        <Button sx = {{marginTop : '4px'}} variant="contained" onClick={handleFilter} disableElevation>
+
+                        <Button sx={{ marginTop: '4px' }} variant="contained" onClick={handleFilter} disableElevation>
                             Lọc
                         </Button>
                     </Box>
@@ -229,8 +238,13 @@ const CheckInventory = () => {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white',cursor: 'pointer', userSelect: 'none'}}
+                sx={{
+                    width: '100%',
+                    marginTop: '10px',
+                    backgroundColor: 'white',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                }}
             />
             {/* <TableContainer component={Paper} mt = {16}>
                 <Table  sx={{ minWidth: 650, margin: '0px' }}  aria-label="a dense table">
@@ -267,7 +281,7 @@ const CheckInventory = () => {
                 
             </TableContainer> */}
         </div>
-     );
-}
+    );
+};
 
-export default CheckInventory
+export default CheckInventory;
