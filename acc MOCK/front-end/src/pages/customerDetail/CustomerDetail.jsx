@@ -9,6 +9,9 @@ import APIapp from '../../components/APIapp/APIapp';
 function CustomerDetail (){
     const [update, setUpdate] = useState(false) 
     const [customer, setCustomer] = useState({})
+    const [lastOrder, setLastOrder]=useState("")
+    const [totalPaid, setTotalPaid]=useState(0)
+    const [totalOrder, setTotalOrder] = useState(0)
     const navigate= useNavigate()
     const param= useParams()
 
@@ -26,8 +29,13 @@ function CustomerDetail (){
     useEffect(()=>{
         const fetchData =async ()=>{
             const res= await APIapp.get(`/admin/care/customers/${param.id}`)
-            console.log(res)
+            const res1= await APIapp.get(`/admin/care/customers/${param.id}/last_order`)
+            const res2= await APIapp.get(`/admin/care/customers/${param.id}/total_order`)
+            console.log(res2)
             setCustomer(res.data)
+            setLastOrder(res1.data)
+            setTotalOrder(res2.data[1])
+            setTotalPaid(res2.data[0])
         }
         fetchData()
     },[])
@@ -38,6 +46,7 @@ function CustomerDetail (){
     }
 
     const lastContact= new Date(customer.lastContact)
+    const lastOrderFix=new Date(lastOrder)
 
     return(
         <div className='customerpage'>
@@ -48,7 +57,6 @@ function CustomerDetail (){
                 </span>
                 <div className='btn'>
                     <button className='createfeeback' onClick={handleCreateFeedback}>Tạo phản hồi</button>
-                    <button className='updatebtn' onClick={handleUpdateLastContact}>Cập nhật liên hệ</button>
                 </div>
             </div>
             <div className='customerName'>
@@ -73,7 +81,7 @@ function CustomerDetail (){
                         <p>Email</p>
                     </div>
                     <div className='rightcontent'>
-                        <p>: {(customer.lastContact!==null)?lastContact.getDate()+"/"+(lastContact.getMonth()+1)+"/"+lastContact.getFullYear():"Chưa liên hệ"}</p>
+                        <p className='lastcontact'>: {(customer.lastContact!==null)?lastContact.getDate()+"/"+(lastContact.getMonth()+1)+"/"+lastContact.getFullYear():"Chưa liên hệ"}<button className='updatebtn' onClick={handleUpdateLastContact}>Cập nhật liên hệ</button></p>
                         <p>: {customer.email}</p>
                     </div>
                 </div>
@@ -88,18 +96,18 @@ function CustomerDetail (){
                         <p>Lần cuối mua hàng</p>
                     </div>
                     <div className='leftcontent'>
-                        <p>:</p>
-                        <p>:</p>
+                        <p>: {totalOrder}</p>
+                        <p>: {lastOrderFix.getDate()}/{lastOrderFix.getMonth()+1}/{lastOrderFix.getFullYear()}</p>
                     </div>
                     <div className='rightname'>
                         <p>Tổng chi tiêu</p>
                     </div>
                     <div className='rightcontent'>
-                        <p>:</p>
+                        <p>: {totalPaid}</p>
                     </div>
                 </div>
             </div>
-            {update &&<UpdateModal clickMethod={toggleUpdate}/>}
+            {update &&<UpdateModal clickMethod={toggleUpdate} data={customer}/>}
         </div>
     )
 }

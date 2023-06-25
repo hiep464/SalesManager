@@ -7,7 +7,9 @@ import APIapp from '../../components/APIapp/APIapp';
 function FeedbackDetail(){
     const id = useParams()
     const navigate = useNavigate()
-
+    const [solveButtonStyle, setStyle]=useState({
+        display: 'block'
+    }) 
     const [feedback, setFeedback] = useState({
         "id": 0,
         "customerCode": "",
@@ -29,6 +31,11 @@ function FeedbackDetail(){
         }
         fetchData()
     }, [id])
+    useEffect(()=>{
+        if(feedback.status ==='S2'){
+            setStyle({...solveButtonStyle, display: 'none'})
+        } 
+    })
 
     const handleUpdate= async ()=>{
         const res = await APIapp.post(`admin/care/feedbacks/${id.id}`, feedback)
@@ -55,8 +62,8 @@ function FeedbackDetail(){
                     Quay lại trang danh sách
                 </span>
                 <div className='btn'>
-                    <button className='deletebtn' onClick={handleDelete}>Xóa phản hồi</button>
-                    <button className='solvedbtn' onClick={handleUpdate}>Đã xử lý</button>
+                    {/* <button className='deletebtn' onClick={handleDelete}>Xóa phản hồi</button> */}
+                    <button className='solvedbtn' onClick={handleUpdate} style={solveButtonStyle}>Đã xử lý</button>
                 </div>
             </div>
             <div className='baseinfor'>
@@ -80,7 +87,7 @@ function FeedbackDetail(){
                         <p>Ngày tạo</p>
                     </div>
                     <div className='rightcontent'>
-                        <p>: {feedback.status}</p>
+                        <p>: {(feedback.status==='S1')?"Chưa xử lý":"Đã xử lý"}</p>
                         <p>: {createdate.getDate()}/{createdate.getMonth()+1}/{createdate.getFullYear()}</p>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/care/customers")
@@ -40,12 +41,10 @@ public class CustomerController {
     @GetMapping
     public Page<Customer> getListCustomer(
             @RequestParam(value = "searchText", required = false, defaultValue = "") String searchText,
-            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07 01:58:07")String minDate,
-            @RequestParam(value = "maxDate", required = false, defaultValue = "2024-06-07 01:58:07")String maxDate,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) throws ParseException {
-        return customerService.getListCustumer(searchText, minDate, maxDate, page, size);
+        return customerService.getListCustumer(searchText, page, size);
     }
     @GetMapping(value = "/search")
     public List<Customer> seachUserByPhone(@RequestParam String phone){
@@ -73,5 +72,15 @@ public class CustomerController {
         }
         customer.setCode(code);
         return customerService.createCustomer(customer);
+    }
+
+    @GetMapping("/{code}/last_order")
+    public List<Object> getLastOrderDateByCustomer(@PathVariable String code){
+        return customerService.getLastOrderDateByCustomer(code);
+    }
+
+    @GetMapping("/{code}/total_order")
+    public Optional<Object> getTotalOrderByCustomer(@PathVariable String code){
+        return customerService.getTotalOrderByCustomer(code);
     }
 }

@@ -16,6 +16,8 @@ import com.sapo.edu.demo.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -36,6 +38,8 @@ public class CustomerService {
 
     public CustumerResponse updateCustomer(String code, Customer customer) {
         customer.setCode(code);
+        Customer currentCustomer = customerRepository.findByCode(code);
+        customer.setLastContact(currentCustomer.getLastContact());
         Customer updateCustomer=customerRepository.save(customer);
         CustumerResponse custumerResponse = new CustumerResponse();
         custumerResponse.setCustomer(updateCustomer);
@@ -57,12 +61,9 @@ public class CustomerService {
         return custumerResponse;
     }
 
-    public Page<Customer> getListCustumer(String searchText, String minDate, String maxDate, int page, int size) throws ParseException {
+    public Page<Customer> getListCustumer(String searchText, int page, int size) throws ParseException {
         Pageable pageable = PageRequest.of(page, size);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minDateConvert = dateFormat.parse(minDate);
-        Date maxDateConvert = dateFormat.parse(maxDate);
-        return customerRepository.findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactAsc(searchText, searchText, searchText, minDateConvert, maxDateConvert, pageable);
+            return customerRepository.findByCodeContainingOrPhoneContainingOrNameContainingOrderByLastContactAsc(searchText, searchText, searchText, pageable);
     }
     public List<Customer> getCustomerByPhone(String Phone){
         return customerRepository.findByPhoneNumberContaining(Phone);
@@ -77,5 +78,13 @@ public class CustomerService {
 
     public Customer createCustomer(Customer customer){
         return customerRepository.save(customer);
+    }
+
+    public List<Object> getLastOrderDateByCustomer(String code){
+        return customerRepository.getLastOrderDateByCustomer(code).subList(0,1);
+    }
+
+    public Optional<Object> getTotalOrderByCustomer(String code) {
+        return customerRepository.getTotalOrderByCustomer(code);
     }
 }
