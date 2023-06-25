@@ -26,7 +26,7 @@ import axios from 'axios';
 
 import { ResultCheckRequestSearch } from '../../components/ResultSearch/ResultSearch';
 import { apiBaseUrl } from '../../constant/constant';
-
+import { getCookie } from '../../utils/api';
 const StyledMenu = styled((props) => (
     <Menu
         elevation={0}

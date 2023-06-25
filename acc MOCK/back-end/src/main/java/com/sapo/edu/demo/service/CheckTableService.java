@@ -103,7 +103,7 @@ public class CheckTableService {
                     checkLineEntity.setCheckCode(checkTableDto.getCode());
                     ProductEntity product = productRepository.findByName(checkLineDto.getProductName());
                     ProductAttribute attribute = attributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), checkLineDto.getSize(),checkLineDto.getColor(), checkTableDto.getInventoryName());
-
+                    System.out.println(attribute);
                     checkLineEntity.setProductCode(product.getCode());
                     checkLineEntity.setAttributeId(attribute.getId());
                     checkLineRepository.save(checkLineEntity);

@@ -18,6 +18,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import "./CheckInventoryDetail.scss"
 import CheckInventoryRequestDetail from '../../components/requestCheckInventoryDetail/CheckInventoryRequestDetail';
 import { apiBaseUrl } from '../../constant/constant';
+import { getCookie } from '../../utils/api';
 const CheckInventoryDetail = () => {
     const navigate = useNavigate()
     const {code} = useParams()

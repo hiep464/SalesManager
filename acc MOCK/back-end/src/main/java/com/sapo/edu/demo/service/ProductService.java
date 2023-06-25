@@ -43,7 +43,7 @@ public class ProductService {
     }
 
     public List<ProductsWithCategory> getProductsBySearch(String keyword){
-        List<ProductsWithCategory> products = productRepository.findByCodeContainingOrNameContaining(keyword);
+        List<ProductsWithCategory> products = productRepository.searchByCodeAndName(keyword);
         return products;
     }
 
@@ -87,15 +87,30 @@ public class ProductService {
         }
         return productDtos;
     }
-    public List<ProductEntity> searchProductByCodeAndInventoryName(String code,String inventoryName){
-        List<ProductAttribute> attributes = productAttributeRepository.findByProductCodeAndInventoryName(code,inventoryName);
-        List<ProductEntity> result = new ArrayList<ProductEntity>();
-        for(ProductAttribute attribute : attributes) {
-            ProductEntity productEntity = new ProductEntity();
-            productEntity = productRepository.findByCode(attribute.getProductCode());
-            result.add(productEntity);
+    public List<ProductDto> searchProductBySearchStringAndInventoryName(String searchString,String inventoryName){
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(searchString,searchString);
+        List<ProductDto> productDtos = new ArrayList<ProductDto>();
+        for(ProductEntity product : products) {
+
+            List<ProductAttribute> attributes = productAttributeRepository.findByProductCode(product.getCode());
+
+            List<ProductDto> Dtos = Arrays.asList(modelMapperProduct.map(attributes,ProductDto[].class));
+            for(ProductAttribute attribute : attributes) {
+                ProductDto dto = modelMapperProduct.map(product,ProductDto.class);
+                dto.setInventoryName(attribute.getInventoryName());
+                dto.setPrice(attribute.getPrice());
+                dto.setQuantity(attribute.getQuantity());
+                dto.setID(attribute.getId());
+                dto.setSize(attribute.getSize());
+                dto.setColor(attribute.getColor());
+//                dto.setImage(attribute.getImage());
+                dto.setPrice(attribute.getPrice());
+                dto.setOriginalCost(attribute.getOriginalCost());
+                productDtos.add(dto);
+            }
+
         }
-        return result;
+        return productDtos;
     }
 
     public List<Object> getTop3ProductByQuantity() {
