@@ -30,6 +30,8 @@ import axios from 'axios';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
 
+    
+
 const CreateChecking = () => {
     const [code, setCode] = React.useState('');
     const [searchProduct, setSearchProduct] = React.useState('');
@@ -72,11 +74,12 @@ const CreateChecking = () => {
             });
     }, []);
     const theme = useTheme();
-
-    const handleDelete = (productCode) => {
-        const updatedCheckInventoryItems = checkInventoryBody.filter((item) => item.productCode !== productCode);
-        setCheckInventoryBody(updatedCheckInventoryItems);
-    };
+ console.log(products)
+   
+    const handleDelete = (productCode)=>{
+        const updatedCheckInventoryItems = checkInventoryBody.filter(item => item.productCode !== productCode);
+        setCheckInventoryBody(updatedCheckInventoryItems) 
+    }
     const currentTime = () => {
         const currentTime = new Date().getDate() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getFullYear();
 
@@ -186,46 +189,43 @@ const CreateChecking = () => {
             </Box>
             <Box sx={{ backgroundColor: 'white', width: 'calc(82vw - 44px)', marginTop: '10px' }}>
                 <Paper
-                    component="form"
-                    sx={{ p: '2px 0', display: 'flex', alignItems: 'center', width: '100%', backgroundColor: 'white' }}
-                >
-                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                        <SearchIcon />
-                    </IconButton>
-                    <InputBase
-                        sx={{ ml: 1, flex: 1, border: '1px' }}
-                        placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
-                        inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
-                        onChange={(event) => {
-                            setSearchProduct(event.target.value);
-                        }}
-                        onMouseEnter={React.useEffect(() => {
-                            if (searchProduct !== '') {
-                                axios
-                                    .get(
-                                        `${apiBaseUrl}/inventory/products?searchString=${searchProduct}&inventoryName=${inventory}`,
-                                        {
-                                            headers: {
-                                                // token: Cookies.get('token'),
-                                                Authorization: getCookie('Authorization'),
-                                            },
-                                        },
-                                    )
-                                    .then((response) => {
-                                        setProducts(response.data);
-                                    });
-                            } else {
-                                setProducts([]);
-                            }
-                        }, [searchProduct])}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
+                component="form"
+                sx={{ p: '2px 0', display: 'flex', alignItems: 'center', width: '100%', backgroundColor: 'white' }}
+            >
+                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                    <SearchIcon />
+                </IconButton>
+                <InputBase
+                    sx={{ ml: 1, flex: 1, border: '1px' }}
+                    placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
+                    inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
+                    onChange={(event) => {
+                        setSearchProduct(event.target.value);
+                    }}
+                    onMouseEnter={React.useEffect(() => {
+                        if(searchProduct !== '') {
+                            axios.get(`${apiBaseUrl}/inventory/product/search?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
+                                // token: Cookies.get('token'),
+                                Authorization: getCookie('Authorization'),
+                            }})
+                                .then((response) => {
+                                    
+                                    setProducts(response.data)
+                                })
+                            
+                        } else {
+                            setProducts([])
+                        }
+                    
+                    },[searchProduct])}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
                 </Paper>
             </Box>
             <div className="result_search" style={{ position: 'fixed' }}>
@@ -237,23 +237,33 @@ const CreateChecking = () => {
                                 key={index}
                                 product={product}
                                 onClick={() => {
-                                    const product1 = {
-                                        productCode: product.code,
-                                        productName: product.name,
-                                        brand: product.brand,
-                                        size: product.size,
-                                        color: product.color,
-                                        inventoryQuantity: product.quantity,
-                                        actualQuantity: 0,
-                                        reason: '',
-                                    };
-                                    var duplicate = false;
-                                    let count = 0;
-                                    console.log(count);
-                                    for (var i = 0; i < checkInventoryBody.length; i++) {
-                                        if (checkInventoryBody[i].productCode === product1.productCode) {
-                                            alert('This products was exits!');
-                                            duplicate = true;
+                                        
+                                        const product1 = {
+                                            productCode: product.code,
+                                            productName: product.name,
+                                            brand : product.brand,
+                                            size: product.size,
+                                            color :product.color,
+                                            inventoryQuantity: product.quantity,
+                                            actualQuantity: 0,
+                                            
+                                            reason: ''
+                                        }   
+                                        var duplicate = false
+                                        let count = 0
+                                        console.log(count)
+                                        for (var i = 0; i < checkInventoryBody.length; i++) {
+                                            
+                                            if (checkInventoryBody[i].productCode === product1.productCode) {
+                                                alert("This products was exits!")
+                                                duplicate = true;
+                                              
+                                                    
+                                            }
+                                        }
+                                        if (duplicate === false) {
+                                            checkInventoryBody.push(product1);
+                                                
                                         }
                                     }
                                     if (duplicate === false) {

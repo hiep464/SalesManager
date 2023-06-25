@@ -36,8 +36,7 @@ public class Staff {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "role")
-    private String role;
+
 
     public Staff() {
     }
@@ -48,7 +47,7 @@ public class Staff {
         this.name = name;
         this.email = email;
         this.address = address;
-        this.role = role;
+
     }
 
     public String getCode() {
@@ -91,9 +90,6 @@ public class Staff {
         this.address = address;
     }
 
-    public String getRole() {
-        return role;
-    }
 
     public void setRole(String role) {
         this.role = role;

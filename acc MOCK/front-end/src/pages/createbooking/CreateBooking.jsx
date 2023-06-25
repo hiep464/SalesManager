@@ -31,6 +31,9 @@ import { apiBaseUrl } from '../../constant/constant';
 import { color } from '@mui/system';
 import { getCookie } from '../../utils/api';
 
+
+
+
 function CreateBooking() {
     const [searchProduct, setSearchProduct] = React.useState('');
     const [products, setProducts] = React.useState([]);

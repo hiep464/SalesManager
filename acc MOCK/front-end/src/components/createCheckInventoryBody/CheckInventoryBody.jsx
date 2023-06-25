@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import MenuItem from '@mui/material/MenuItem';
 import { apiBaseUrl } from '../../constant/constant';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import { getCookie } from '../../utils/api';
 
 function CheckInventoryBody(props) {
     const { rows,inventoryName,  onDeleteProduct,setUpdateProducts ,...other } = props;
@@ -27,12 +27,18 @@ function CheckInventoryBody(props) {
     const theme = useTheme();
  
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/product/size`)
+        axios.get(`${apiBaseUrl}/inventory/product/size`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
             .then(response => setSizes(response.data))
             
     },[])
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/product/color`)
+        axios.get(`${apiBaseUrl}/inventory/product/color`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
             .then(response => setColors(response.data))
             
     },[])
