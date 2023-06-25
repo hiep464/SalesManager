@@ -230,26 +230,26 @@ function ProductDetails() {
         });
     };
 
-    const handleChangeQuantity = (event, index) => {
+    const handleChangePrice = (event, index) => {
         const { value } = event.target;
         setAddAttribute((prevValues) => {
             const updatedValues = [...prevValues];
-            updatedValues[index].quantity = parseFloat(value.replace(/,/g, ''));
+            updatedValues[index].price = parseFloat(value.replace(/,/g, ''));
             return updatedValues;
         });
     };
 
-    const handleChangeSold = (event, index) => {
+    const handleChangeOriginalCost = (event, index) => {
         const { value } = event.target;
         setAddAttribute((prevValues) => {
             const updatedValues = [...prevValues];
-            updatedValues[index].sold = parseFloat(value.replace(/,/g, ''));
+            updatedValues[index].originalCost = parseFloat(value.replace(/,/g, ''));
             return updatedValues;
         });
     };
 
     const handleAddAttribute = () => {
-        let newAttribute = { productCode: code, quantity: 0, sold: 0, size: '', color: '' };
+        let newAttribute = { productCode: code, size: '', color: '', price: 0, originalCost: 0 };
         addElement(newAttribute);
     };
 
@@ -360,19 +360,21 @@ function ProductDetails() {
     }
 
     const handleDeleteProduct = () => {
-        axios.delete(`${apiBaseUrl}/inventory/products/delete/${code}`, {
-            headers: {
-                // token: Cookies.get('token'),
-                Authorization: getCookie('Authorization'),
-            },
-        }).then(() => {
-            setMessage('Xóa thành công');
-            handleClickSnackBar();
-            setDeleteProduct(false);
-            alert("Xóa thành công");
-            navigate('/inventory/product');
-        })
-    }
+        axios
+            .delete(`${apiBaseUrl}/inventory/products/delete/${code}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then(() => {
+                setMessage('Xóa thành công');
+                handleClickSnackBar();
+                setDeleteProduct(false);
+                alert('Xóa thành công');
+                navigate('/inventory/product');
+            });
+    };
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -600,7 +602,7 @@ function ProductDetails() {
                                 </TableCell>
                                 <TableCell align="left">Giá bán</TableCell>
                                 <TableCell align="left">Giá nhập</TableCell>
-                                <TableCell align="left">Số lượng</TableCell>
+                                {update ? '' : <TableCell align="left">Số lượng</TableCell>}
                                 {!update ? <TableCell align="left">Ngày tạo</TableCell> : ''}
                                 {update ? <TableCell /> : ''}
                             </TableRow>
@@ -682,37 +684,41 @@ function ProductDetails() {
                                                     <Numeral value={row?.originalCost} format={'0,0'} />
                                                 )}
                                             </TableCell>
-                                            <TableCell align="left">
-                                                {update ? (
-                                                    <NumericFormat
-                                                        thousandSeparator={true}
-                                                        prefix={''}
-                                                        customInput={TextField}
-                                                        type="text"
-                                                        // Các thuộc tính khác của TextField
-                                                        value={row?.quantity}
-                                                        sx={{ width: '50%' }}
-                                                        size="small"
-                                                        variant="standard"
-                                                        onChange={(e) => {
-                                                            setAttributes((prevItems) =>
-                                                                prevItems.map((item) =>
-                                                                    item.id === row.id
-                                                                        ? {
-                                                                              ...item,
-                                                                              quantity: parseFloat(
-                                                                                  e.target.value.replace(/,/g, ''),
-                                                                              ),
-                                                                          }
-                                                                        : item,
-                                                                ),
-                                                            );
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    row?.quantity
-                                                )}
-                                            </TableCell>
+                                            {update ? (
+                                                ''
+                                            ) : (
+                                                <TableCell align="left">
+                                                    {update ? (
+                                                        <NumericFormat
+                                                            thousandSeparator={true}
+                                                            prefix={''}
+                                                            customInput={TextField}
+                                                            type="text"
+                                                            // Các thuộc tính khác của TextField
+                                                            value={row?.quantity}
+                                                            sx={{ width: '50%' }}
+                                                            size="small"
+                                                            variant="standard"
+                                                            onChange={(e) => {
+                                                                setAttributes((prevItems) =>
+                                                                    prevItems.map((item) =>
+                                                                        item.id === row.id
+                                                                            ? {
+                                                                                  ...item,
+                                                                                  quantity: parseFloat(
+                                                                                      e.target.value.replace(/,/g, ''),
+                                                                                  ),
+                                                                              }
+                                                                            : item,
+                                                                    ),
+                                                                );
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        row?.quantity
+                                                    )}
+                                                </TableCell>
+                                            )}
                                             {!update ? (
                                                 <TableCell sx={{ width: '15%' }} align="left">
                                                     {row.createAt}
@@ -767,11 +773,11 @@ function ProductDetails() {
                                                       customInput={TextField}
                                                       type="text"
                                                       // Các thuộc tính khác của TextField
-                                                      defaultValue={row.quantity}
+                                                      defaultValue={row?.price}
                                                       sx={{ width: '50%' }}
                                                       size="small"
                                                       variant="standard"
-                                                      onChange={(e) => handleChangeQuantity(e, index)}
+                                                      onChange={(e) => handleChangePrice(e, index)}
                                                   />
                                               </TableCell>
                                               <TableCell component="th" scope="row">
@@ -781,11 +787,11 @@ function ProductDetails() {
                                                       customInput={TextField}
                                                       type="text"
                                                       // Các thuộc tính khác của TextField
-                                                      defaultValue={row.sold}
+                                                      defaultValue={row?.originalCost}
                                                       sx={{ width: '50%' }}
                                                       size="small"
                                                       variant="standard"
-                                                      onChange={(e) => handleChangeSold(e, index)}
+                                                      onChange={(e) => handleChangeOriginalCost(e, index)}
                                                   />
                                               </TableCell>
                                               <TableCell align="center">
@@ -846,7 +852,14 @@ function ProductDetails() {
                 {update ? (
                     ''
                 ) : (
-                    <Button variant="outlined" onClick={() => {handleClickOpen(); setDeleteProduct(true)}} sx={{ margin: '10px', backgroundColor: 'white' }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            handleClickOpen();
+                            setDeleteProduct(true);
+                        }}
+                        sx={{ margin: '10px', backgroundColor: 'white' }}
+                    >
                         Xóa
                     </Button>
                 )}

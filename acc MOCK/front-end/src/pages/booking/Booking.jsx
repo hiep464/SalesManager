@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
+import { getCookie } from '../../utils/api';
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -65,32 +66,36 @@ const columns = [
 
 function Booking() {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [booking, setBooking] = React.useState([])
-    const getRowId = (row) => row.code
+    const [booking, setBooking] = React.useState([]);
+    const getRowId = (row) => row.code;
     const open = Boolean(anchorEl);
 
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/bookings`)
+        axios
+            .get(`${apiBaseUrl}/inventory/bookings`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
             .then((response) => {
-            // setBooking(Response.products);
-            console.log(response.data)
-            setBooking(response.data)
+                // setBooking(Response.products);
+                console.log(response.data);
+                setBooking(response.data);
             });
-    },[])
-    console.log(booking)
+    }, []);
+    console.log(booking);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleOpenDetail = () => {
-        
-    }
-    
-    return ( 
+    const handleOpenDetail = () => {};
+
+    return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Paper
                 component="form"
@@ -118,7 +123,14 @@ function Booking() {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                        navigate('create');
+                    }}
+                    variant="contained"
+                    sx={{ marginRight: '10px' }}
+                >
                     Tạo đơn đặt
                 </Button>
                 <StyledMenu
@@ -166,12 +178,11 @@ function Booking() {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                
                 getRowId={(row) => row.code}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
         </div>
-     );
+    );
 }
 
 export default Booking;

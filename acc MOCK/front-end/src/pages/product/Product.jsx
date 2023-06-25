@@ -278,6 +278,9 @@ export default function Product() {
                     setRows(response.data);
                     setAnchorEl1(null);
                 });
+        } else{
+            setRefesh(refesh + 1);
+            setAnchorEl1(null);
         }
     };
 
@@ -444,6 +447,8 @@ export default function Product() {
                         variant="outlined"
                         onClick={() => {
                             setSelectedItems([]);
+                            setAnchorEl1(null);
+                            setRefesh(refesh + 1);
                         }}
                         sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
                     >
