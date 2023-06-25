@@ -78,4 +78,13 @@ public class ProductAttributeService {
         }
         return productAttributes;
     }
+
+    public ProductAttribute updateQuantity(Integer ID,Integer sold){
+        ProductAttribute updateProductAttribute = productAttributeRepository.findById(ID).get();
+        Integer quantity = updateProductAttribute.getQuantity() - sold;
+        updateProductAttribute.setQuantity(quantity);
+        updateProductAttribute.setSold(updateProductAttribute.getSold() + sold);
+        productAttributeRepository.save(updateProductAttribute);
+        return updateProductAttribute;
+    }
 }

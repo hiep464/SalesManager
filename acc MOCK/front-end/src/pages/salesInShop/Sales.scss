@@ -100,3 +100,11 @@
 .orders {
     display: flex;
 }
+
+.order_info {
+  p{
+    span{
+        font-weight: bold;
+    }
+  }
+}

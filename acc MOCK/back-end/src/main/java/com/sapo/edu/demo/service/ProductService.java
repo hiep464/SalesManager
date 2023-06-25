@@ -62,12 +62,12 @@ public class ProductService {
         return productRepository.save(productEntity);
     }
 
-    public List<ProductDto> getAllProductsByCode(String code){
+    public List<ProductDto> getAllProductsByCode(String code,String inventory){
         List<ProductEntity> products = productRepository.findByCodeContaining(code);
         List<ProductDto> productDtos = new ArrayList<ProductDto>();
         for(ProductEntity product : products) {
 
-            List<ProductAttribute> attributes = productAttributeRepository.findByProductCode(product.getCode());
+            List<ProductAttribute> attributes = productAttributeRepository.findByProductCodeAndInventoryName(product.getCode(),inventory);
 
             List<ProductDto> Dtos = Arrays.asList(modelMapperProduct.map(attributes,ProductDto[].class));
             for(ProductAttribute attribute : attributes) {

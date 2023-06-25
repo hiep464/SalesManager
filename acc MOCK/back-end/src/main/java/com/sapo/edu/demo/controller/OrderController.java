@@ -5,6 +5,7 @@ import com.sapo.edu.demo.entities.Order;
 import com.sapo.edu.demo.entities.OrderLine;
 import com.sapo.edu.demo.service.OrderLineService;
 import com.sapo.edu.demo.service.OrderService;
+import com.sapo.edu.demo.service.ProductAttributeService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -20,9 +21,12 @@ public class OrderController {
     OrderService orderService;
     OrderLineService orderLineService;
 
-    public OrderController(OrderService orderService, OrderLineService orderLineService) {
+    ProductAttributeService productAttributeService;
+
+    public OrderController(OrderService orderService, OrderLineService orderLineService,ProductAttributeService productAttributeService) {
         this.orderService = orderService;
         this.orderLineService = orderLineService;
+        this.productAttributeService = productAttributeService;
     }
 
     @PostMapping("/orders")
@@ -31,7 +35,7 @@ public class OrderController {
         LocalDate date = LocalDate.now();
         newOrder.getOrderTable().setOrderDate(date);
         String code;
-        Integer count = orderService.getOrderCount();
+        Integer count = orderService.getOrderCount()+1;
         if(count<10){
             code = "O00"+count;
         }else if (count < 100 && count >= 10){
@@ -44,6 +48,7 @@ public class OrderController {
         Integer i;
         for(i = 0; i < orderLines.size();i++){
             orderLines.get(i).setOrderCode(code);
+            productAttributeService.updateQuantity(orderLines.get(i).getAttributeID(),orderLines.get(i).getQuantity());
         }
         orderService.createOrder(newOrder.getOrderTable());
         orderLineService.createOrderLine(orderLines);

@@ -15,4 +15,10 @@ public class StaffServicce {
     public List<Staff> getAll() {
         return staffRepository.findAll();
     }
+
+    public List<Staff> getAllbyRole() {
+        String role = "sales";
+        return staffRepository.findAllByRole(role);
+    }
+
 }
