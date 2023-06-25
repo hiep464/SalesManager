@@ -53,7 +53,7 @@ public class OrderService {
         return orderRepository.getRevenueOrderCountAndProductSoldForStaffCode(staffCode,startDate,endDate);
     }
 
-    public List<Order> getDetailOrderOnReport(String staffCode,LocalDate startDate, LocalDate endDate){
+    public List<Map<String, Object>> getDetailOrderOnReport(String staffCode,LocalDate startDate, LocalDate endDate){
         return orderRepository.getRevenueOrderForStaffCode(staffCode,startDate,endDate);
     }
 

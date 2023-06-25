@@ -37,7 +37,7 @@ public class ReportController {
     }
 
     @GetMapping("/reports/orders")
-    public List<Order> getReportOrders(@RequestParam(name = "staff code") String staffCode, @RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){
+    public List<Map<String, Object>> getReportOrders(@RequestParam(name = "staff code") String staffCode, @RequestParam(name = "start date") String start, @RequestParam(name = "end date") String end){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dateS = LocalDate.parse(start,formatter);
         LocalDate dateE = LocalDate.parse(end,formatter);
