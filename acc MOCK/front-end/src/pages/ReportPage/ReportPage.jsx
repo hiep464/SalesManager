@@ -21,7 +21,20 @@ import { read, writeFileXLSX } from 'xlsx';
 var XLSX = require('xlsx');
 function exportToExcel(data) {
     // Tạo mảng dữ liệu đầu vào cho bảng tính
+
     const worksheet = XLSX.utils.json_to_sheet(data);
+
+    const rowStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'FFFF00' } }, alignment: { horizontal: 'left' } };
+    for (let i = 1; i <= data.length; i++) {
+        const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
+        worksheet[cellRef].s = rowStyle;
+    }
+
+    const columnWidths = Object.keys(data[0]).map((key) => ({
+        wch: key.length + 5,
+    }));
+    worksheet['!cols'] = columnWidths;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -147,13 +160,20 @@ function ReportPage() {
                     Xuất file excel
                 </Button>
             </div>
-            <Paper sx={{ marginTop: '10px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Paper
+                sx={{
+                    marginTop: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                }}
+            >
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         margin: '20px 0',
-                        width: '1170px',
+                        width: '1300px',
                         alignItems: 'center',
                     }}
                 >
