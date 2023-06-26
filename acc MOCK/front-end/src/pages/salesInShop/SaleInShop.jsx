@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -23,7 +24,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -41,7 +41,7 @@ const orders1 = [
     },
 ];
 
-const user = localStorage.getItem('sapo');
+// const user = JSON.parse(localStorage.getItem('sapo'));
 
 function a11yProps(index) {
     return {
@@ -53,7 +53,7 @@ function a11yProps(index) {
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
     const [addCustomer, setAddCustomer] = React.useState(false);
-    const [chooseInventory, setChooseInventory] = React.useState(false);
+    // const [chooseInventory, setChooseInventory] = React.useState(false);
     const [search, setSearch] = React.useState('');
     const [searchProduct, setSearchProduct] = React.useState('');
     const [customers, setCustomers] = React.useState([]);
@@ -66,6 +66,7 @@ function SalesInShop() {
     const [message, setMessage] = React.useState('');
     const [warning, setWarning] = React.useState('');
     const [deleteId, setDeleteId] = React.useState();
+    const [userInfo, setUserInfo] = React.useState();
     useEffect(() => {
         if (search !== '') {
             axios
@@ -97,7 +98,14 @@ function SalesInShop() {
             .catch((err) => {
                 alert(err.message);
             });
-    }, [chooseInventory]);
+    }, []);
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('sapo'));
+        axios.get(`${apiBaseUrl}/auth/user/info?id=${user?.userId}`).then((response) => {
+            setUserInfo(response.data);
+        });
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -122,7 +130,7 @@ function SalesInShop() {
                     orderLines: orderLines,
                     orderTable: {
                         customerCode: orders[value].customer.code,
-                        staffCode: 'S002',
+                        staffCode: userInfo.code,
                         quantity: totalQuantity,
                         status: 'success',
                         total: total,
@@ -173,46 +181,85 @@ function SalesInShop() {
 
     const handleUp = (productId) => {
         setOrders((currentState) => {
-            const newState = [...currentState];
+            const newState = JSON.parse(JSON.stringify(currentState));
             const updatedOrderItems = newState[value];
 
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
                     if (product.quantity + 1 > product.inventory_quantity) {
                         alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        return product;
                     } else {
                         return { ...product, quantity: product.quantity + 1 };
                     }
                 }
                 return product;
             });
+
+            updatedOrderItems.products = updatedProducts;
+
             setMoney(updatedProducts?.reduce((total, current) => (total += current.quantity * current.price), 0));
-
-            newState[value].products = updatedProducts;
-
             return newState;
         });
     };
 
     const handleDown = (productId) => {
         setOrders((currentState) => {
-            const newState = [...currentState];
+            const newState = JSON.parse(JSON.stringify(currentState));
             const updatedOrderItems = newState[value];
 
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
                     if (product.quantity - 1 <= 0) {
-                        handleDelete(productId);
+                        return null; // Trả về null để đánh dấu sản phẩm cần bị xóa
                     } else {
                         return { ...product, quantity: product.quantity - 1 };
                     }
                 }
                 return product;
             });
-            setMoney(updatedProducts?.reduce((total, current) => (total += current.quantity * current.price), 0));
 
-            newState[value].products = updatedProducts;
+            // Loại bỏ sản phẩm có giá trị là null
+            updatedOrderItems.products = updatedProducts.filter((product) => product !== null);
 
+            setMoney(
+                updatedProducts?.reduce(
+                    (total, current) => (total += (current?.quantity || 0) * (current?.price || 0)),
+                    0,
+                ),
+            );
+            return newState;
+        });
+    };
+
+    const handleChangeQuantity = (productId, quantity) => {
+        setOrders((currentState) => {
+            const newState = JSON.parse(JSON.stringify(currentState));
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (quantity > product.inventory_quantity) {
+                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        return { ...product, quantity: product.inventory_quantity };
+                    } else if (quantity <= 0) {
+                        return null;
+                    } else {
+                        return { ...product, quantity: quantity };
+                    }
+                }
+                return product;
+            });
+
+            // Loại bỏ sản phẩm có giá trị là null
+            updatedOrderItems.products = updatedProducts.filter((product) => product !== null);
+
+            setMoney(
+                updatedProducts?.reduce(
+                    (total, current) => (total += (current?.quantity || 0) * (current?.price || 0)),
+                    0,
+                ),
+            );
             return newState;
         });
     };
@@ -247,6 +294,7 @@ function SalesInShop() {
             setOrders(updatedOrderItems);
         }
         setMoney(0);
+        setValue((prevValue) => (prevValue === deleteId ? prevValue - 1 : prevValue));
         setOpen(false);
     };
 
@@ -283,10 +331,12 @@ function SalesInShop() {
                     <Grid xs={12}>
                         <div className="logo">
                             <div className="image">
-                                <img
-                                    src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
-                                    alt=""
-                                />
+                                <Link to="/dashboard">
+                                    <img
+                                        src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
+                                        alt=""
+                                    />
+                                </Link>
                             </div>
                         </div>
                         <div className="Nav">
@@ -499,7 +549,7 @@ function SalesInShop() {
                                     }}
                                 >
                                     <AccountCircleIcon />
-                                    Nguyễn Duẩn
+                                    <span className="name">{userInfo?.name}</span>
                                 </div>
                             </div>
                         </div>
@@ -513,9 +563,9 @@ function SalesInShop() {
                                         value={value}
                                         index={index}
                                         onDeleteProduct={handleDelete}
-                                        onUpdateAttribute={handleAttribute}
                                         onDown={handleDown}
                                         onUp={handleUp}
+                                        onChangeQuantity={handleChangeQuantity}
                                     />
                                 );
                             })
@@ -571,7 +621,9 @@ function SalesInShop() {
                         <div className="order_info">
                             <p>
                                 <span>Số lượng sản phẩm:</span>
-                                {orders[value]?.products.reduce((total, current) => (total += current.quantity), 0)}
+                                {parseInt(
+                                    orders[value]?.products.reduce((total, current) => (total += current.quantity), 0),
+                                )}
                             </p>
                             <p>
                                 <span>Thành tiền:</span>

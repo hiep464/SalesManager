@@ -13,7 +13,8 @@
 }
 
 .Nav {
-    background-color: #0964CF;
+    // background-color: #0964CF;
+    background-color: #1976D2;
     display: flex;
     justify-content: space-between;
     
@@ -107,4 +108,8 @@
         font-weight: bold;
     }
   }
+}
+
+.name {
+    margin-left: 10px;
 }

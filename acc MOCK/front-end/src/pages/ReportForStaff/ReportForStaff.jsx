@@ -52,42 +52,104 @@ function ReportForStaff() {
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [orders, setOrders] = React.useState([]);
     React.useEffect(() => {
-        if (filter === 7) {
-            setStart(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
-            setEnd(format(new Date(), 'dd/MM/yyyy'));
-        } else if (filter === 30) {
-            setStart(format(subDays(new Date(), 29), 'dd/MM/yyyy'));
-            setEnd(format(new Date(), 'dd/MM/yyyy'));
+        if (filter == 7) {
+            axios
+                .get(
+                    `${apiBaseUrl}/sales/reports?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${format(
+                        subDays(new Date(), 6),
+                        'dd/MM/yyyy',
+                    )}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    setData(response.data);
+                })
+                .catch((error) => console.log(error));
+            axios
+                .get(
+                    `${apiBaseUrl}/sales/reports/orders?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${format(
+                        subDays(new Date(), 6),
+                        'dd/MM/yyyy',
+                    )}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    setOrders(response.data);
+                })
+                .catch((error) => console.log(error));
+        } else if (filter == 30) {
+            axios
+                .get(
+                    `${apiBaseUrl}/sales/reports?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${format(
+                        subDays(new Date(), 29),
+                        'dd/MM/yyyy',
+                    )}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    setData(response.data);
+                })
+                .catch((error) => console.log(error));
+            axios
+                .get(
+                    `${apiBaseUrl}/sales/reports/orders?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${format(
+                        subDays(new Date(), 29),
+                        'dd/MM/yyyy',
+                    )}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    setOrders(response.data);
+                })
+                .catch((error) => console.log(error));
         } else {
-            setStart(format(new Date(), 'dd/MM/yyyy'));
-            setEnd(format(new Date(), 'dd/MM/yyyy'));
-        }
-        axios
-            .get(`${apiBaseUrl}/sales/reports?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${startD}`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setData(response.data);
-            })
-            .catch((error) => console.log(error));
-        axios
-            .get(
-                `${apiBaseUrl}/sales/reports/orders?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${startD}`,
-                {
+            axios
+                .get(`${apiBaseUrl}/sales/reports?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${endD}`, {
                     headers: {
                         // token: Cookies.get('token'),
                         Authorization: getCookie('Authorization'),
                     },
-                },
-            )
-            .then((response) => {
-                setOrders(response.data);
-            })
-            .catch((error) => console.log(error));
-    }, [filter]);
+                })
+                .then((response) => {
+                    setData(response.data);
+                })
+                .catch((error) => console.log(error));
+            axios
+                .get(
+                    `${apiBaseUrl}/sales/reports/orders?end%20date=${endD}&staff%20code=${staffCode}&start%20date=${endD}`,
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    setOrders(response.data);
+                })
+                .catch((error) => console.log(error));
+        }
+    }, []);
     const columns = [
         { field: 'code', headerName: 'Mã đơn hàng', width: 100 },
         { field: 'name', headerName: 'Tên khách hàng', width: 130 },
@@ -112,7 +174,7 @@ function ReportForStaff() {
         },
     ];
     return (
-        <div style={{ width: '1170px' }}>
+        <div style={{ width: '1300px' }}>
             <div style={{ display: 'flex', marginTop: '10px' }}>
                 <BoxItem
                     title={'Doanh thu'}
@@ -186,7 +248,7 @@ function ReportForStaff() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1170,
+                    width: 1300,
                     height: 300,
                 }}
             >
