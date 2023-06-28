@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
-
+import AddIcon from '@mui/icons-material/Add';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -376,6 +376,10 @@ function ProductDetails() {
             });
     };
 
+    const handleOpenFileDialog = () => {
+        inputFileRef.current.click();
+    };
+
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
             {/* product info */}
@@ -395,11 +399,11 @@ function ProductDetails() {
             ) : (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>{product?.name}</h2>
-                    <Box>
+                    {/* <Box>
                         <Button variant="contained" disableElevation>
                             Đặt hàng
                         </Button>
-                    </Box>
+                    </Box> */}
                 </div>
             )}
             <Box>
@@ -515,21 +519,30 @@ function ProductDetails() {
                             <>
                                 {update ? (
                                     imageURL ? (
-                                        <div>
+                                        <div style={{ position: 'relative', marginLeft: '10px' }}>
                                             <img
-                                                style={{ width: '48px', height: '48px' }}
+                                                style={{ width: '68px', height: '68px', borderRadius: '4px' }}
                                                 src={imageURL}
                                                 alt="Uploaded"
                                             />
-                                            <button onClick={deleteImage}>Delete Image</button>
+                                            {/* <button onClick={deleteImage}>Delete Image</button> */}
+                                            <CloseIcon
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: '0',
+                                                    right: '1px',
+                                                    width: '14px',
+                                                    height: '14px',
+                                                    color: 'red',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={deleteImage}
+                                            />
                                         </div>
                                     ) : (
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            ref={inputFileRef}
-                                            onChange={handleImageUpload}
-                                        ></input>
+                                        <Button variant="text" onClick={handleOpenFileDialog} startIcon={<AddIcon />}>
+                                            Tải ảnh lên
+                                        </Button>
                                     )
                                 ) : (
                                     <>
@@ -537,6 +550,13 @@ function ProductDetails() {
                                         chưa có hình ảnh
                                     </>
                                 )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    ref={inputFileRef}
+                                    onChange={handleImageUpload}
+                                ></input>
                             </>
                         )}
                     </Box>
@@ -871,7 +891,7 @@ function ProductDetails() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa thuộc tính này?'}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa?'}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         Sau khi xóa sẽ không thể hoàn tác được

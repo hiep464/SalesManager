@@ -54,11 +54,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     List<Object> findTopProductsByQuantity();
 
     @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.status, p.createAt) " +
-            "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code")
+            "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code ORDER BY p.code ASC")
     List<ProductsWithCategory> getProductsWithCategory();
 
     @Query("SELECT new com.sapo.edu.demo.dto.product.ProductsWithCategory(p.image, p.code, p.name, p.brand, c.name, p.status, p.createAt)  " +
             "FROM ProductEntity p LEFT JOIN CategoryEntity c on p.categoryCode = c.code " +
             "WHERE c IN :categories")
     List<ProductsWithCategory> findByCategoryIn(List<CategoryEntity> categories);
+
+    List<ProductEntity> findAllByCategoryCode (String code);
 }

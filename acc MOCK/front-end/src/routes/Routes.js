@@ -18,6 +18,7 @@ import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDe
 import CheckInventory from "../pages/checkInventory/CheckInventory"
 import CreateChecking from "../pages/createChecking/CreateChecking"
 import CreateReportPage from "../pages/CreateReportPage/CreateReportPage"
+import Category from "../pages/caegory/Category"
 
 export const publicRoutes = [
     {path: '/', element : Login},
@@ -29,6 +30,7 @@ export const publicRoutes = [
     {path: '/customers/:id', element : CustomerDetail, layout: ItemDetailLayout},
     {path: '/feedbacks/new', element : CreateFeedback, layout: ItemDetailLayout},
     {path: 'inventory/product', element: Product, layout: DefaultLayout},
+    {path: 'inventory/product/category', element: Category, layout: DefaultLayout},
     {path: 'inventory/product/:code', element: ProductDetails, layout: DefaultLayout},
     {path: 'inventory/booking', element: Booking, layout: DefaultLayout},
     {path: 'inventory/booking/create', element: CreateBooking, layout: DefaultLayout},
