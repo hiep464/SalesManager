@@ -84,8 +84,15 @@ function CreateFeedback(){
     },[code,phone])
 
     const handleCreateFeeback = async ()=>{
-        const res = await APIapp.post(`/admin/care/feedbacks`, feedback)
-        console.log(res)
+        try{
+            const res = await APIapp.post(`/admin/care/feedbacks`, feedback)
+            console.log(res)
+            window.alert("Create success!")
+            navigate('/care/feedbacks')
+        }catch(e){
+            window.alert("Yếu cầu điền đúng thông tin khách hàng tồn tại trên hệ thống")
+        }
+
     }
 
     const handleReturn=()=>{
@@ -135,7 +142,7 @@ function CreateFeedback(){
                     <label>SDT khách hàng<span className='redstar'>*</span></label>
                     <input type="text" value={phone} onChange={(e)=>setPhone(e.target.value)} onMouseEnter={handleSearchByPhone}/>
                     {viewResultByPhone&&<div className='customerbyphone'>
-                        <SearchCustomer data={resultByPhone}/>
+                        <SearchCustomer data={resultByPhone} onChangeCustomer={handleChangeCustomer}/>
                     </div>}
                 </div>
             </div>

@@ -6,6 +6,7 @@ import FilterModal from './filterModal/FilterModal';
 import { useEffect } from 'react';
 import APIapp from '../../components/APIapp/APIapp';
 import CustomerItem from './CustomerItem/CustomerItem';
+import { getCookie } from '../../utils/api';
 
 function ListCustomer(){
     const [pagination,setPagination]=useState({
@@ -34,6 +35,7 @@ function ListCustomer(){
                 const res =await APIapp.get(`admin/care/customers?page=${pagination.page-1}&size=${pagination.limit}`)
                 setPagination({...pagination, total: res.data.totalPages})
                 setCustomers(res.data.content)
+                console.log(getCookie('Authorization'))
             }
             fetchData()
         }

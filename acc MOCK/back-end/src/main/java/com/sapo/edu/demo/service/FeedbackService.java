@@ -35,10 +35,6 @@ public class FeedbackService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateFormat.parse(formattedDate);
         feedback.setFeedbackDate(date);
-        Feedback createFeedback = feedbackRepository.save(feedback);
-        FeedbackResponse response = new FeedbackResponse();
-        response.setFeedback(createFeedback);
-        response.setMessage("Create feedback success");
         Customer customer = customerRepository.findByCode(feedback.getCustomerCode());
         if(!Objects.equals(customer.getCode(), feedback.getCustomerCode())){
             throw new NotFoundException("Customer not found");
@@ -46,6 +42,10 @@ public class FeedbackService {
             if (!Objects.equals(customer.getPhone(), feedback.getPhone())){
                 throw new NotFoundException("Customer not found");
             }else {
+                Feedback createFeedback = feedbackRepository.save(feedback);
+                FeedbackResponse response = new FeedbackResponse();
+                response.setFeedback(createFeedback);
+                response.setMessage("Create feedback success");
                 return response;
             }
         }
