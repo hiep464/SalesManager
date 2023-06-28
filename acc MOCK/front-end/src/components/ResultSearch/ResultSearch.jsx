@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import './ResultSearch.scss';
+import DeleteIcon from '@mui/icons-material/Delete';
 export function ResultSupllierSearch(props) {
     const supllier = props.supllier;
     console.log(supllier);
@@ -35,6 +36,23 @@ export function ResultCustomerSearch(props) {
             <p>{customer?.name}</p>
             <p>{customer?.email}</p>
             <p>{customer?.phone}</p>
+        </div>
+    );
+}
+
+export function Customer(props) {
+    const customer = props.customer;
+    const handleDeleteCustomer = props.handleDeleteCustomer;
+    return (
+        <div className="result-search customer" onClick={props.onClick}>
+            <div>
+                <p>{customer?.name}</p>
+                <p>{customer?.email}</p>
+                <p>{customer?.phone}</p>
+            </div>
+            <div className="delete_icon">
+                <DeleteIcon onClick={handleDeleteCustomer} />
+            </div>
         </div>
     );
 }

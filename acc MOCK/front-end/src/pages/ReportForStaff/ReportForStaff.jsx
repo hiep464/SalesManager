@@ -12,6 +12,7 @@ import { subDays, format } from 'date-fns';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
+import { useNavigate } from 'react-router-dom';
 
 const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
     return (
@@ -51,6 +52,7 @@ function ReportForStaff() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [orders, setOrders] = React.useState([]);
+    const navigate = useNavigate();
     React.useEffect(() => {
         if (filter == 7) {
             axios
@@ -173,8 +175,12 @@ function ReportForStaff() {
             width: 190,
         },
     ];
+    const handleRowClick = (params) => {
+        const code = params.row.code;
+        navigate(`/orders/${code}`); // Điều hướng trang đến trang chi tiết với id của hàng
+    };
     return (
-        <div style={{ width: '1300px' }}>
+        <div style={{ width: '1170px' }}>
             <div style={{ display: 'flex', marginTop: '10px' }}>
                 <BoxItem
                     title={'Doanh thu'}
@@ -194,7 +200,7 @@ function ReportForStaff() {
                 />
                 <BoxItem
                     title={'Đơn đã bán'}
-                    content={data.order_count}
+                    content={data.orderCount}
                     backgroundColor={'#0089FF'}
                     icon={
                         <ShoppingBasketIcon
@@ -210,7 +216,7 @@ function ReportForStaff() {
                 />
                 <BoxItem
                     title={'SP đã bán'}
-                    content={data.product_sold}
+                    content={data.productSold}
                     backgroundColor={'#0FD186'}
                     icon={
                         <CheckroomIcon
@@ -248,7 +254,7 @@ function ReportForStaff() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1300,
+                    width: 1170,
                     height: 300,
                 }}
             >
@@ -262,6 +268,7 @@ function ReportForStaff() {
                             },
                         }}
                         getRowId={(data) => data.code}
+                        onRowClick={handleRowClick}
                     />
                 </div>
             </Paper>

@@ -17,8 +17,9 @@ import SaleInShop from '../pages/salesInShop/SaleInShop';
 import CheckInventoryDetail from '../pages/checkInventoryDetail/CheckInventoryDetail';
 import CheckInventory from '../pages/checkInventory/CheckInventory';
 import CreateChecking from '../pages/createChecking/CreateChecking';
-import CreateReportPage from '../pages/CreateReportPage/CreateReportPage';
 import ReportForStaff from '../pages/ReportForStaff/ReportForStaff';
+import ordersList from '../pages/ordersList/ordersList';
+import orderDetails from '../pages/orderDetails/orderDetails';
 
 export const publicRoutes = [
     { path: '/', element: Login },
@@ -39,6 +40,7 @@ export const publicRoutes = [
     { path: 'inventory/check_inventory/:code', element: CheckInventoryDetail, layout: DefaultLayout },
 
     { path: '/report/staff/:staffCode/:filter', element: ReportForStaff, layout: DefaultLayout },
+    { path: '/orders', element: ordersList, layout: DefaultLayout },
+    { path: '/orders/:code', element: orderDetails, layout: DefaultLayout },
     { path: '/report', element: ReportPage, layout: DefaultLayout },
-    { path: '/create/report', element: CreateReportPage, layout: DefaultLayout },
 ];
