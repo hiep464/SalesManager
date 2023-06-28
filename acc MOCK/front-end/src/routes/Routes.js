@@ -1,6 +1,6 @@
 import DefaultLayout from "../layout/defaultLayout/DefaultLayout"
 import Booking from "../pages/booking/Booking"
-import BookingDetails from "../pages/bookingdetails/BookingDetails"
+import BookingDetail from "../pages/bookingDetail/BookingDetail"
 import CreateBooking from "../pages/createbooking/CreateBooking"
 import DashBoard from "../pages/dashboard/Dashboard"
 import ReportPage from "../pages/ReportPage/ReportPage"
@@ -18,6 +18,8 @@ import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDe
 import CheckInventory from "../pages/checkInventory/CheckInventory"
 import CreateChecking from "../pages/createChecking/CreateChecking"
 import CreateReportPage from "../pages/CreateReportPage/CreateReportPage"
+import ReceiptInventory from "../pages/receiptInventory/ReceiptInventory"
+import ReceiptInventoryDetail from "../pages/receiptInventoryDetail/ReceiptInventoryDetail"
 
 export const publicRoutes = [
     {path: '/', element : Login},
@@ -32,11 +34,12 @@ export const publicRoutes = [
     {path: 'inventory/product/:code', element: ProductDetails, layout: DefaultLayout},
     {path: 'inventory/booking', element: Booking, layout: DefaultLayout},
     {path: 'inventory/booking/create', element: CreateBooking, layout: DefaultLayout},
-    {path: 'inventory/booking/details', element: BookingDetails, layout: DefaultLayout},
+    {path: 'inventory/booking/:code', element: BookingDetail, layout: DefaultLayout},
     {path: 'inventory/check_inventory', element : CheckInventory,layout: DefaultLayout},
     {path: 'inventory/check_inventory/create', element : CreateChecking,layout: DefaultLayout},
     {path: 'inventory/check_inventory/:code', element : CheckInventoryDetail,layout: DefaultLayout},
-
+    {path: 'inventory/receipt_inventory', element : ReceiptInventory, layout: DefaultLayout},
+    {path: 'inventory/receipt_inventory/:code', element: ReceiptInventoryDetail, layout: DefaultLayout},
     {path: '/report', element : ReportPage, layout: DefaultLayout},
     {path: '/create/report', element : CreateReportPage, layout: DefaultLayout},
 ]

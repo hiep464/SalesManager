@@ -29,7 +29,7 @@ public class CheckLineController {
         List<CheckLineDto> response = checkLineService.getCheckLineByCode(checkCode);
         return response;
     }
-    @PostMapping("/check_line/{checkCode}")
+    @PutMapping("/check_line/{checkCode}")
     public ResponseEntity<ResponseObject> updateQuantityProductsByCheckCode(
             @PathVariable("checkCode") String checkCode
     ) {

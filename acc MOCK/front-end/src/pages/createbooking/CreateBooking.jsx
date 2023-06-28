@@ -17,6 +17,7 @@ import TableRow from '@mui/material/TableRow';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -28,9 +29,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Numeral from 'react-numeral';
 import { apiBaseUrl } from '../../constant/constant';
-import { color } from '@mui/system';
+import { color, margin } from '@mui/system';
 import { getCookie } from '../../utils/api';
-
+import Autocomplete from '@mui/material/Autocomplete';
+import { parse } from 'date-fns';
 
 
 
@@ -46,41 +48,109 @@ function CreateBooking() {
     const [supplier, setSupplier] = useState(null);
     const [inventory, setInventory] = useState('');
     const [staffs, setStaffs] = useState([]);
+    const [dataSupplier, setDataSupplier] = useState({})
     const [staff, setStaff] = useState('');
     const [sizes, setSizes] = useState([]);
     const [size, setSize] = useState('');
     const [colors, setColors] = useState([]);
+    const [originalCost, setOriginalCost] = useState(0)
     const [color, setColor] = useState('');
+    const [quantity, setQuantity] = useState(0);
     const [active, setActive] = useState(false)
     const [totalQuantity, setTotalQuantity] = useState(0)
-    console.log(orders)
+    const [total, setTotal] = useState(0)
+    const [price, setPrice] = useState(0)
+    const [dateBook, setDateBook] = useState('')
+    const [bookings, setBookings] = useState([])
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
     
-    React.useEffect(() => {       
+    React.useEffect(() => { 
+        console.log(size,color)
+             
             for(let order of orders) {
                 axios.get(`${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,{headers: {
                     // token: Cookies.get('token'),
                     Authorization: getCookie('Authorization'),
                 }})
                     .then((response) => {               
-                        handleEditProduct(order.productName, "originalCost" , response.data.originalCost)
+                        handleEditProduct(order.productName,order.size,order.color, "originalCost" , response.data.originalCost)
                     })    
                     .then(() => console.log(order.originalCost))
                 
             }       
     },[size,color,inventory])
-    const handleEditTotalQuantity = (quantity) => {
-        setTotalQuantity((prevQuantity) => (prevQuantity + quantity))
-    }
+    React.useEffect(() => { 
+        let count = 0
+        for(let order of orders) {
+            
+            count += order.quantity 
+        }
+        setTotalQuantity(count)
+        
+        
+    }, [quantity])
+    React.useEffect(() => { 
+             console.log(originalCost)
+        for(let order of orders) {
+            handleEditProduct(order.productName,order.size,order.color, "price" , order.originalCost * order.quantity)     
+        } 
+      
+    }, [quantity,originalCost])
+    React.useEffect(() => { 
+        let count = 0
+        for(let order of orders) {
+            let price = 0
+            price = order.quantity * order.originalCodt
+            count += order.price 
+            console.log(count);
+        }
+        setTotal(count)
+        console.log(count)
+        
+    }, [quantity,originalCost])
     
-    const handleEditProduct = (name, field, value) => {
+    
+    const handleEditProduct = (name, size, color, field, value) => {
+        console.log(orders)
         const updatedProducts = orders.map((row) =>
-          row.productName === name ? { ...row, [field]: value } : row
+          (row.productName === name && row.size === size && row.color === color) ? { ...row, [field]: value } : row
         );
         setOrders(updatedProducts);
       };
+
+    const handleSubmitRequest = () => {
+        let count =0
+        for(let order of orders) {
+            count += order.price 
+        }
+        setTotal(count)
+        const dataSubmit = {
+            code: code,
+            inventoryName: inventory,
+            staffName: staff,
+            supplierName : dataSupplier.name,
+            total: total,
+            bookingDate: dateBook,
+            bookinglines: orders
+        }
+        axios.post(`${apiBaseUrl}/inventory/bookings`,dataSubmit,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+            .then(res => {alert("Tạo đơn đặt hàng thành công")})
+            
+            .catch((error) => {
+                if (error.response && error.response.status === 400) {
+                    const errorMessage = error.response.data.message;
+                    alert(`Lỗi: ${errorMessage}`);
+                } else {
+                    console.error(error);
+                }
+            
+            });
+    }
     useEffect(() => {
         axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
             // token: Cookies.get('token'),
@@ -117,6 +187,7 @@ function CreateBooking() {
 
     return (
         <Box>
+            <Grid sx ={{display: "flex", justifyContent: "flex-end", marginBottom : "16px"}}><Button sx = {{padding: "8px", width: "20%"}} size = "large" variant="contained" onClick={handleSubmitRequest}>Đặt hàng</Button></Grid>
             <Box
                 sx={{
                     width: 'calc(82vw - 44px)',
@@ -140,7 +211,7 @@ function CreateBooking() {
                     >
                         {suppliers?.map((item, index) => {
                             return (
-                                <MenuItem key={index} value={item?.code}>
+                                <MenuItem onClick={() => setDataSupplier(item)} key={index} value={item?.code}>
                                     {item?.name}
                                 </MenuItem>
                             );
@@ -152,21 +223,21 @@ function CreateBooking() {
                                 <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                     <ListItemText primary="Điện thoại :" />
                                     {/* <span>{suppliers?.find(item => item.code === supplier)}</span> */}
-                                    <span>093029323</span>
+                                    <span>{dataSupplier.phone}</span>
                                 </Box>
                                 <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                     <ListItemText primary="Email :" />
-                                    <span>demo@gmail.com</span>
+                                    <span>{dataSupplier.email}</span>
                                 </Box>
                             </ListItem>
                             <ListItem sx={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
                                 <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                     <ListItemText primary="Địa chỉ :" />
-                                    <span>hai bà trưng</span>
+                                    <span>{dataSupplier.address}</span>
                                 </Box>
                                 <Box sx={{ width: '48%', display: 'flex', alignItems: 'center' }}>
                                     <ListItemText primary="Tiền nợ :" />
-                                    <Numeral value={1000000} format={'0,0'} />
+                                    <Numeral value={dataSupplier.debtMoney} format={'0,0'} />
                                 </Box>
                             </ListItem>
                         </List>
@@ -211,7 +282,7 @@ function CreateBooking() {
                         <ListItem>
                             <ListItemText primary="Ngày nhập :" />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker sx={{ width: '50%' }} />
+                                <DatePicker minDate={new Date()} onChange={(e) => setDateBook(e)} sx={{ width: '50%' }} />
                             </LocalizationProvider>
                         </ListItem>
                     </List>
@@ -247,13 +318,13 @@ function CreateBooking() {
                             
                             if (searchProduct !== '') {
                                 axios
-                                    .get(`${apiBaseUrl}/inventory/products/searchString?searchString=${searchProduct}&inventoryName=${inventory}`,{headers: {
+                                    .get(`${apiBaseUrl}/inventory/products/search-products?searchString=${searchProduct}`,{headers: {
                                         // token: Cookies.get('token'),
                                         Authorization: getCookie('Authorization'),
                                     }})
                                     .then((response) => {
+                                        
                                         setSearch(response.data);
-                                        console.log(response);
                                     });
                             } else {
                                 setSearch([]);
@@ -263,7 +334,7 @@ function CreateBooking() {
                 </Box>
                 <div className="result_search" style={{ position: 'fixed',backgroundColor : '#fff', border : "1px solid #ccc" }}>
                     
-                    {(active === true && search !== [])? <Box sx ={{background: '#fff', justifyContent: 'flex-start'}}> <Button sx = {{width: '100%'}}>+ Tạo sản phẩm mới</Button></Box> : null}
+                    
                     {search?.map((product, key) => {
                         return (
                             <Box key={key} sx={{ minWidth: '60ch', backgroundColor: 'white' }}>
@@ -274,7 +345,9 @@ function CreateBooking() {
                                     product={product}
                                     onClick={() => {
                                         const productOder = {
+                                            productCode : product.code,
                                             productName: product.name,
+                                            category: product.categoryName,
                                             brand: product.brand,
                                             bookingCode: code,
                                             originalCost: 0,
@@ -302,6 +375,8 @@ function CreateBooking() {
                                     <TableCell width='5%'>STT</TableCell>
                                     <TableCell width='15%' align="center">Tên</TableCell>
                                     <TableCell width='3%' align="center"></TableCell>
+                                    <TableCell width='3%' align="center">Loại sản phẩm</TableCell>
+                                    <TableCell width='3%' align="center">Thương hiệu</TableCell>
                                     <TableCell width='12%' align="center">Kích cỡ </TableCell>
                                     <TableCell width='12%' align="center">Màu sắc </TableCell>
                                     <TableCell width='15%' align="center">Đơn giá</TableCell>
@@ -325,56 +400,66 @@ function CreateBooking() {
                                                 }}
                                             />
                                         </TableCell>
+                                        <TableCell align="center">{row.category}</TableCell>
+                                        <TableCell align="center">{row.brand}</TableCell>
+
                                         <TableCell align="center">
-                                            <Select
-                                                size="small"
-                                                // sx={{ width: '150%' }}
-                                                value={row.size}
-                                                onChange={(e) => {
-                                                    setSize(e.target.value)
-                                                    handleEditProduct(row.productName,"size",e.target.value)}}
-                                            >
-                                                {sizes?.map((item,index) => {
-                                                    return (
-                                                        <MenuItem key={index} value={item}>
-                                                            {item}
-                                                        </MenuItem>
-                                                    );
-                                                })}
-                                            </Select>
+                                        <Autocomplete
+                                                disablePortal
+                                                freeSolo
+                                                id="combo-box-demo"
+                                                options={sizes}
+                                                
+                                                onChange={(event,e) => {
+                                                    setSize(e)
+                                                    handleEditProduct(row.productName, row.size, row.color, "size" , e)}}
+                                                sx={{ width: "100%" }}
+                                                renderInput={(params) => < TextField 
+                                                    onChange={(e) => handleEditProduct(row.productName, row.size, row.color, "size" , e.target.value)}
+                                                    sx={{ width: "100%" }}
+                                                    {...params}  />}
+                                            />
+                                        </TableCell>
+                                        
+                                            
+                                        <TableCell align="center">
+                                            <Autocomplete
+                                                disablePortal
+                                                freeSolo
+                                                id="combo-box-demo"
+                                                options={colors}
+                                                onChange={(event,e) => {
+                                                    setColor(e)
+                                                    handleEditProduct(row.productName, row.size, row.color, "color" , e)}}
+                                                sx={{ width: "100%" }}
+                                                renderInput={(params) => <TextField  onChange={(e) => handleEditProduct(row.productName, row.size, row.color, "color" , e.target.value)} sx={{ width: "100%" }} {...params}  />}
+                                            />
                                         </TableCell>
                                         
                                         <TableCell align="center">
-                                            <Select
-                                                size="small"
-                                                sx={{ width: '100%' }}
-                                                value={row.color}
-                                                onChange={(e) => {
-                                                    setColor(e.target.value)                                       
-                                                    handleEditProduct(row.productName, "color" , e.target.value)}}
-                                            >
-                                                {colors?.map((item,index) => {
-                                                    return (
-                                                        <MenuItem key={index} value={item}>
-                                                            {item}
-                                                        </MenuItem>
-                                                    );
-                                                })}
-                                            </Select>
-                                        </TableCell>
+                                           
+                                            <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost != undefined  ? (row.originalCost).toLocaleString() : 0} onChange={(e) => {
+                                                const valueWithoutCommas = e.target.value.replace(/,/g,''); 
+                                                setOriginalCost(valueWithoutCommas); 
+                                                handleEditProduct(row.productName, row.size, row.color, "originalCost", parseInt(valueWithoutCommas));
+                                            }}></TextField>
                                         
-                                        <TableCell align="center">
-                                            <TextField align="center" type="number" sx={{ width: '100%' }} variant="standard" value={row.originalCost}></TextField>
                                         </TableCell>
                                         <TableCell align="center">
-                                            <TextField type="number" align="center" sx={{ width: '100%', justifyContent: 'center' }} variant="standard" onChange={(e) => {
-                                                handleEditTotalQuantity(e.target.value)
-                                                handleEditProduct(row.productName, "quantity" , e.target.value)
-                                            }} />
+                                        <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.quantity != 0 ? (row.quantity).toLocaleString() : ''} onChange={(e) => {
+                                                const valueWithoutCommas = e.target.value.replace(/,/g,''); 
+                                                setQuantity(valueWithoutCommas); 
+                                                handleEditProduct(row.productName, row.size, row.color, "quantity", parseInt(valueWithoutCommas));
+                                        }}></TextField>
                                             
                                            
                                         </TableCell>
-                                        <TableCell align="center">{row?.quantity * row?.originalCost || 0}</TableCell>
+                                        <TableCell align="center">
+                                            <TextField align="center" type="text" sx={{ width: '100%' }} value={row.price != 0 ? (row.price).toLocaleString() : ''} onChange={(e) => {
+                                                const valueWithoutCommas = e.value.replace(/,/g,''); 
+                                                setQuantity(valueWithoutCommas); 
+                                                handleEditProduct(row.productName,row.size,row.color, "price" , parseInt(valueWithoutCommas))
+                                        }}></TextField></TableCell>
 
                                     </TableRow>
                                 ))}
@@ -405,18 +490,10 @@ function CreateBooking() {
             <Box backgroundColor={'white'} marginTop={'20px'}>
                 <Box sx={{ float: 'right', width: '500px', backgroundColor: 'white', borderRadius: '4px' }}>
                     <div style={{ marginLeft: '10px', paddingTop: '6px' }}>
-                        <div style={{ margin: '6px' }}>Số lượng: {totalQuantity}</div> <br />
-                        <div style={{ margin: '6px' }}>Thành tiền: </div> <br />
-                        <div style={{ margin: '6px' }}>Số tiền cần trả: </div> <br />
+                        <div style={{ margin: '6px' }}>Số lượng: {totalQuantity ? totalQuantity.toLocaleString() : 0}</div> <br />
+                        <div style={{ margin: '6px' }}>Thành tiền: {total ? total.toLocaleString() : 0}</div> <br />
                     </div>
-                    <Box sx={{ float: 'right' }}>
-                        <Button sx={{ margin: '10px' }} variant="contained">
-                            Tạo đơn
-                        </Button>
-                        <Button sx={{ margin: '10px' }} variant="outlined">
-                            Hủy
-                        </Button>
-                    </Box>
+                    
                 </Box>
             </Box>
         </Box>

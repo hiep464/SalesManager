@@ -15,82 +15,92 @@ import SearchIcon from '@mui/icons-material/Search';
 import Card from '@mui/material/Card';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import "./CheckInventoryDetail.scss"
-import CheckInventoryRequestDetail from '../../components/requestCheckInventoryDetail/CheckInventoryRequestDetail';
+
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
-const CheckInventoryDetail = () => {
+import BookingBodyDetail from '../../components/bookingBodyDetail/BookingBodyDetail';
+
+const BookingDetail = () => {
     const navigate = useNavigate()
     const {code} = useParams()
-    const [checkLines, setCheckLines] = React.useState([])
-    const [checkInvetoryRequest, setCheckInvetoryRequest] = React.useState({})
+    const [bookingLines, setBookingLines] = React.useState([])
+    const [bookingRequest, BookingRequest] = React.useState({})
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/check_line?checkCode=${code}`,{headers: {
+        axios.get(`${apiBaseUrl}/inventory/booking-line?code=${code}`,{headers: {
             // token: Cookies.get('token'),
             Authorization: getCookie('Authorization'),
         }})
                 .then(res => { 
-                            setCheckLines(res.data)
+                            setBookingLines(res.data)
                 })
-        axios.get(`${apiBaseUrl}/inventory/check_inventory/code?code=${code}`,{headers: {
+        axios.get(`${apiBaseUrl}/inventory/booking?code=${code}`,{headers: {
             // token: Cookies.get('token'),
             Authorization: getCookie('Authorization'),
         }})
                 .then (res =>  res.data)
-                .then(res => res[0])
+                // .then(res => res[0])
                 .then(res => {
-                    setCheckInvetoryRequest(res)
+                    console.log(res)
+                    BookingRequest(res)
                     
                 })
     },[])
     const handleDeleteRequest = () => {
-        axios.delete(`${apiBaseUrl}/inventory/check_inventory/${code}`,{headers: {
+        axios.delete(`${apiBaseUrl}/inventory/bookings/${code}`,{headers: {
             // token: Cookies.get('token'),
             Authorization: getCookie('Authorization'),
         }})
             .then(res => {
-                navigate(`/inventory/check_inventory`)
+                navigate(`/inventory/booking`)
             })
         
     }
-    const handleUpdateProductQuantity = () => {
-        axios.put(`${apiBaseUrl}/inventory/check_line/${code}`,"",{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-            .then(res => {
-                alert("Đã cập nhập số lượng trong kho")
-                window.location.reload()
-            })
-            .catch((e) => {
-                alert(e)
-            })
+    // const handleUpdateProductQuantity = () => {
+    //     axios.put(`${apiBaseUrl}/inventory/check_line/${code}`,"",{headers: {
+    //         // token: Cookies.get('token'),
+    //         Authorization: getCookie('Authorization'),
+    //     }})
+    //         .then(res => {
+    //             alert("Đã nhập kho")
+    //             window.location.reload()
+    //         })
+    //         .catch((e) => {
+    //             alert(e)
+    //         })
                 
+    // }
+    const handleReceiptInventory = () => {
+
     }
 
     return (
         <Box>
+            
             <Box sx={{width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between', alignItems : "center", borderRadius: '10px'}}>
                 <Grid container spacing={3} display="flex" alignItems="center">
-                  
+                        
                         <Grid >
                             <h2>{code}</h2>
                         </Grid>
-                        <Grid backgroundColor = {checkInvetoryRequest.status === "Đã cập nhập số lượng"?"aqua":"#e49c06"} borderRadius="25px">
-                            {checkInvetoryRequest.status}
+                        <Grid backgroundColor = {bookingRequest.bookingStatus === "Đã nhập"?"aqua":"#e49c06"} borderRadius="25px">
+                            {bookingRequest.bookingStatus}
                         </Grid>
+                        
+                        
+                       
                          
                 </Grid>
-                { checkInvetoryRequest.status ==="Đang kiểm hàng"?
+                
+                { bookingRequest.bookingStatus ==="Chưa nhập"?
                 <Grid container spacing={3} display="flex" justifyItems="flex-end" alignItems = "center">
                     <Grid>
 
                         <Button size = "large" variant="contained" onClick={handleDeleteRequest}>Xóa</Button>
                     </Grid>
-                    <Grid>
+                    {/* <Grid>
 
-                        <Button size = "large" variant="contained" onClick ={handleUpdateProductQuantity}>Cân Bằng kho</Button>
-                    </Grid>
+                        <Button size = "large" variant="contained" onClick ={handleUpdateProductQuantity}>Tạo đơn nhập kho</Button>
+                    </Grid> */}
                     
                     
                 </Grid> : null}
@@ -101,11 +111,11 @@ const CheckInventoryDetail = () => {
                     
                     <Stack  p ="12px" pb = "50px" direction="row" spacing={60}>
                         <Stack spacing={2}>
-                            <p>Chi nhánh kiểm : {checkInvetoryRequest.inventoryName}</p>
-                            <p>Nhân viên kiểm : {checkInvetoryRequest.staffName}</p>
+                            <p>Chi nhánh kiểm : {bookingRequest.inventoryName}</p>
+                            <p>Nhân viên kiểm : {bookingRequest.staffName}</p>
                         </Stack>
                         <Stack spacing={20}>
-                            <p>Ngày tạo :{checkInvetoryRequest.createAt}</p>
+                            <p>Ngày tạo :{bookingRequest.bookingDate}</p>
                             
                         </Stack>
                         
@@ -113,12 +123,11 @@ const CheckInventoryDetail = () => {
                 </Box>
             </Box>
             <Box mt = {4}>
-                <CheckInventoryRequestDetail
-                    rows = {checkLines}
+                <BookingBodyDetail
+                    rows = {bookingLines}
                  />
             </Box>
         </Box>
     )
 }
-
-export default CheckInventoryDetail;
+export default BookingDetail;

@@ -6,10 +6,10 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/system';
@@ -18,6 +18,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
+import './ReceiptInventory.scss'
 const StyledMenu = styled((props) => (
     <Menu
         elevation={0}
@@ -57,38 +58,40 @@ const StyledMenu = styled((props) => (
 
 const columns = [
     { field: 'code', headerName: 'Mã đơn', width: 100 },
-    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
+    { field: 'status', headerName: 'Trạng thái', width: 200 },
     { field: 'staffName', headerName: 'Nhân viên tạo', width: 200 },
     { field: 'supplierName', headerName: 'Nhà cung cấp', width: 150 },
     { field: 'inventoryName', headerName: 'Kho', width: 150 },
+    { field: 'payStatus', headerName: 'Trạng thái thanh toán', width: 150 },
+    { field: 'bookingStatus', headerName: 'Trạng thái nhập kho', width: 150 },
     { field: 'total', headerName: 'Giá trị đơn', width: 200 },
-    { field: 'bookingDate', headerName: 'Ngày đặt', width: 200 },
-
+    { field: 'bookingDate', headerName: 'Ngày nhập kho', width: 200 },
 ];
-const bookingsStatus = ["Đã nhập", "Chưa nhập"]
 
-function Booking() {
+const status = ["Hoàn thành", "Đang giao dịch"]
+const bookingStatus = ["Đã nhập" ,"Chưa nhập"]
+const payStatus = ["Đã thanh toán", "Chưa thanh toán"]
+
+function ReceiptInventory() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [booking, setBooking] = React.useState([])
-    const [searchBooking, setSearchBooking] = React.useState('')
-    
-    const [bookingStatus,setBookingStatus] = React.useState('')
-    const [suppliers,setSuppliers] = React.useState([])
-    const [supplierName,setSupplierName] = React.useState('')
-
+    const getRowId = (row) => row.code
+    const open = Boolean(anchorEl);
+    const [searchBooking,setSearchBooking] = React.useState('')
     const [inventories, setInventories] = React.useState([])
     const [inventoryName, setInventoryName] = React.useState('')
+    const [filterStatus,setFilterStatus] = React.useState('')
+    const [filterBookingStatus,setFilterBookingStatus] = React.useState('')
+
+    const [filterPayStatus,setFilterPayStatus] = React.useState('')
 
     const [staffs, setStaffs] = React.useState([])
     const [staffName, setStaffName] = React.useState('')
-
-    const getRowId = (row) => row.code
-    const open = Boolean(anchorEl);
-
     const navigate = useNavigate();
     
+    
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/bookings`,{headers: {
+        axios.get(`${apiBaseUrl}/inventory/receipts_inventory`,{headers: {
             // token: Cookies.get('token'),
             Authorization: getCookie('Authorization'),
         }})
@@ -99,54 +102,51 @@ function Booking() {
             });
         axios.get(`${apiBaseUrl}/staffs/inventory`,{headers: {
             Authorization: getCookie('Authorization'),
-        }})
+            }})
             .then((res) => {
                 setStaffs(res.data)
             })
         axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
-            Authorization: getCookie('Authorization'),
-        }})
+                Authorization: getCookie('Authorization'),
+            }})
             .then((res) => {
-                setInventories(res.data)
-            })
-        axios.get(`${apiBaseUrl}/inventory/suppliers`,{headers: {
-            Authorization: getCookie('Authorization'),
-        }})
-            .then((res) => {
-             
-                setSuppliers(res.data)
-            })
+                    setInventories(res.data)
+            })    
     },[])
     console.log(booking)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
-        setStaffName('')
         setInventoryName('')
-        setBookingStatus('')
-        setSupplierName('')
+        setFilterStatus('')
+        setFilterBookingStatus('')
+        setFilterPayStatus('')
+        setStaffName('')
         setAnchorEl(null);
     };
     const handleOpenDetail = (params) => {
         const code = params.row.code
-        navigate(`${code}`)
+        navigate(`/inventory/receipt_inventory/${code}`)
     }
+    
     const handleFilter = () => {
-        axios.get(`${apiBaseUrl}/inventory/bookings/filters`,{
-            params : {
-                bookingStatus : bookingStatus,
-                supplierName : supplierName,
-                inventoryName :inventoryName,
-                staffName: staffName
-            },
+        axios.get(`${apiBaseUrl}/inventory/receipts/filters`,{
             headers: {
-            Authorization: getCookie('Authorization'),
-        }})
+            Authorization: getCookie('Authorization')},
+            params : {
+                status : filterStatus,
+                bookingStatus : filterBookingStatus,
+                payStatus: filterPayStatus,
+                staffName: staffName,
+                inventoryName :inventoryName
+                
+            },
+            
+        })
         .then((res) => {setBooking(res.data)})
     }
- 
-    
+
     return ( 
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Paper
@@ -163,7 +163,7 @@ function Booking() {
                     onMouseEnter = {React.useEffect(() => {
                         if(searchBooking !== '') {
                             axios
-                                .get(`${apiBaseUrl}/inventory/bookings/code?code=${searchBooking}`,{headers: {
+                                .get(`${apiBaseUrl}/inventory/bookings/receipts_inventory?code=${searchBooking}`,{headers: {
                                                             // token: Cookies.get('token'),
                                         Authorization: getCookie('Authorization'),
                                     }})
@@ -175,7 +175,7 @@ function Booking() {
                         }
                     })}
                 />
-                <Divider sx={{ height: 28, margin: '4px 20px', padding: "4px 8px", width: "20%"}} orientation="vertical" />
+                <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
                 <Button
                     id="demo-customized-button"
                     aria-controls={open ? 'demo-customized-menu' : undefined}
@@ -185,14 +185,13 @@ function Booking() {
                     disableElevation
                     onClick={handleClick}
                     endIcon={<FilterAltIcon />}
-                    width = {20}
                 >
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                {/* <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
                     Tạo đơn đặt
-                </Button>
+                </Button> */}
                 <StyledMenu
                     id="demo-customized-menu"
                     MenuListProps={{
@@ -202,64 +201,66 @@ function Booking() {
                     open={open}
                     onClose={handleClose}
                 >
-                    <Box p = {"4px 16px"} >
-                        <div>
-                            <span>Trang thái</span>
+                    <Box sx ={{margin: "12px"}}>
+                        <Box p = {'8px 0'}>
+                            <span>Trạng thái</span>
                             <br />
                             <Select
                                 size="small"
                                 sx={{ width: '100%'}}
-                                value={bookingStatus}
+                                value={filterStatus}
                                 onChange={(e) => {
-                                    setBookingStatus(e.target.value);
+                                    setFilterStatus(e.target.value);
                                 }}
                             >
-                                {bookingsStatus?.map((item, index) => (
+                                {status?.map((item, index) => (
                                         <MenuItem key={index} value={item}>
                                             {item}
                                         </MenuItem>
                                     )
                                 )}
                             </Select>
-                        </div>
-                        <div>
-                            <span>Nhà cung cấp</span> <br />
+                        </Box>
+                        <Box p = {'8px 0'}>
+                            <span>Trạng thái thanh toán</span> <br />
                             <Select
                                 size="small"
                                 sx={{ width: '100%'}}
-                                value={supplierName}
+                                value={filterPayStatus}
                                 onChange={(e) => {
-                                    setSupplierName(e.target.value);
+                                    setFilterPayStatus(e.target.value);
                                 }}
                             >
-                                {suppliers?.map((item, index) => (
-                                        <MenuItem key={index} value={item?.name}>
-                                            {item?.name}
+                                {payStatus?.map((item, index) => (
+                                        <MenuItem key={index} value={item}>
+                                            {item}
                                         </MenuItem>
                                     )
                                 )}
                             </Select>
-                        </div>
-                        <div>
-                            <span>Kho</span> <br />
+                        </Box>
+                        <Box p = {'8px 0'}>
+                            <span>Trạng thái nhập kho</span> <br />
                             <Select
                                 size="small"
                                 sx={{ width: '100%'}}
-                                value={inventoryName}
+                                value={filterBookingStatus}
                                 onChange={(e) => {
-                                    setInventoryName(e.target.value);
+                                    setFilterBookingStatus(e.target.value);
                                 }}
                             >
-                                {inventories?.map((item, index) => (
-                                        <MenuItem key={index} value={item?.name}>
-                                            {item?.name}
+                                {bookingStatus?.map((item, index) => (
+                                        <MenuItem key={index} value={item}>
+                                            {item}
                                         </MenuItem>
                                     )
                                 )}
                             </Select>
-                        </div>
-                        <div>
+                            
+                        </Box>
+                        <Box p = {'8px 0'}>
                             <span>Nhân viên</span> <br />
+                            
                             <Select
                                 size="small"
                                 sx={{ width: '100%'}}
@@ -275,8 +276,29 @@ function Booking() {
                                     )
                                 )}
                             </Select>
-                        </div>
-                        <Button variant="contained" onClick={handleFilter} disableElevation>
+                            
+                        </Box>
+                        <Box p = {'8px 0'}>
+                            <span>Kho</span> <br />
+                            
+                            <Select
+                                size="small"
+                                sx={{ width: '100%'}}
+                                value={inventoryName}
+                                onChange={(e) => {
+                                    setInventoryName(e.target.value);
+                                }}
+                            >
+                                {inventories?.map((item, index) => (
+                                        <MenuItem key={index} value={item?.name}>
+                                            {item?.name}
+                                        </MenuItem>
+                                    )
+                                )}
+                            </Select>
+                        </Box>
+                        
+                        <Button variant="contained" onClick = {handleFilter} disableElevation>
                             Lọc
                         </Button>
                     </Box>
@@ -300,6 +322,17 @@ function Booking() {
                         labelRowsPerPage: 'Hiển thị',
                     },
                 }}
+                getCellClassName={(params) => {
+                    if(params.field === 'status') {
+                        return params.value === 'Hoàn thành' ? 'green-row'  : 'yellow-row'
+                    }
+                    if(params.field === 'payStatus') {
+                        return params.value === 'Đã thanh toán' ? 'green-row'  : 'yellow-row'
+                    }
+                    if(params.field === 'bookingStatus') {
+                        return params.value === 'Đã nhập' ? 'green-row'  : 'yellow-row'
+                    }
+                }}
                 getRowId={(row) => row.code}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
@@ -307,4 +340,4 @@ function Booking() {
      );
 }
 
-export default Booking;
+export default ReceiptInventory;

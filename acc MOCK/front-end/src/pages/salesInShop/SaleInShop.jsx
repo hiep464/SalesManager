@@ -198,7 +198,7 @@ function SalesInShop() {
                                     onMouseEnter={useEffect(() => {
                                         if (searchProduct !== '') {
                                             axios
-                                                .get(`${apiBaseUrl}/products?code=` + searchProduct)
+                                                .get(`${apiBaseUrl}/inventory/products/searchString?text=` + searchProduct)
                                                 .then((Response) => {
                                                     setProducts(Response.data);
                                                     console.log('res:', Response);

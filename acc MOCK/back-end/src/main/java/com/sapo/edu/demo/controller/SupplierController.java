@@ -34,4 +34,9 @@ public class SupplierController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", response));
 
     }
+    @GetMapping("/suppliers/name")
+    public SupplierDto getByName(@RequestParam("name") String name) {
+        SupplierDto supplierDto = supplierService.getByName(name);
+        return supplierDto;
+    }
 }

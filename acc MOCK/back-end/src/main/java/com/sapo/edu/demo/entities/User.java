@@ -23,6 +23,8 @@ public class User{
 
     @Column(nullable = false)
     private String role;
+    @Column
+    private String staffCode;
 
     public Integer getId() {
         return id;

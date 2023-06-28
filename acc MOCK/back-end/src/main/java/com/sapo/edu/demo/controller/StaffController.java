@@ -23,4 +23,8 @@ public class StaffController {
     public List<Staff> getAllStaff(){
         return staffServicce.getAll();
     }
+    @GetMapping("/staffs/inventory")
+    public List<Staff> getInventoryStaff(){
+        return staffServicce.getInventoryStaff();
+    }
 }

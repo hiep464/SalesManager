@@ -29,10 +29,11 @@ import { ResultProductSearch } from '../../components/ResultSearch/ResultSearch'
 import axios from 'axios';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
-
+import { Navigate, useNavigate } from 'react-router-dom';
     
 
 const CreateChecking = () => {
+    const navigate = useNavigate()
     const [code,setCode] = React.useState('')
     const [searchProduct,setSearchProduct] = React.useState('')
     const [products,setProducts] = React.useState([])
@@ -66,17 +67,13 @@ const CreateChecking = () => {
         });
     }, []);
     const theme = useTheme();
- console.log(products)
+
    
     const handleDelete = (productCode)=>{
         const updatedCheckInventoryItems = checkInventoryBody.filter(item => item.productCode !== productCode);
         setCheckInventoryBody(updatedCheckInventoryItems) 
     }
-    const currentTime = () => {
-        const currentTime = new Date().getDate()  + '-' + (new Date().getMonth() + 1) + '-' + new Date().getFullYear();
-        
-        return currentTime;
-    }
+    
    
     
     // React.useEffect(() =>{
@@ -96,8 +93,11 @@ const CreateChecking = () => {
             Authorization: getCookie('Authorization'),
         }})
             .then(res => {
-                alert("saved")
+                alert("Tạo phiếu kiểm hàng thành công")
                 // console.log(res)
+            })
+            .then(res => {
+                navigate(`inventory/check_inventory/${code}`)
             })
             .catch(err => {
                 alert(err)
