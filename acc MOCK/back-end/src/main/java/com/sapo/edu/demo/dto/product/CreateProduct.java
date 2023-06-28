@@ -5,15 +5,13 @@ import lombok.Data;
 @Data
 public class CreateProduct {
 
-    String categoryCode;
+    Integer categoryId;
     String name;
     String image;
     String brand;
     String description;
 
-    public String getCategoryCode() {
-        return categoryCode;
-    }
+
 
     public String getName() {
         return name;

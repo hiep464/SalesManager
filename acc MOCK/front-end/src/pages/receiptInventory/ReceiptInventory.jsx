@@ -57,15 +57,15 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'code', headerName: 'Mã đơn', width: 100 },
-    { field: 'status', headerName: 'Trạng thái', width: 200 },
-    { field: 'staffName', headerName: 'Nhân viên tạo', width: 200 },
-    { field: 'supplierName', headerName: 'Nhà cung cấp', width: 150 },
-    { field: 'inventoryName', headerName: 'Kho', width: 150 },
-    { field: 'payStatus', headerName: 'Trạng thái thanh toán', width: 150 },
-    { field: 'bookingStatus', headerName: 'Trạng thái nhập kho', width: 150 },
-    { field: 'total', headerName: 'Giá trị đơn', width: 200 },
-    { field: 'bookingDate', headerName: 'Ngày nhập kho', width: 200 },
+    { field: 'code',headerClassName: 'header-table', headerName: 'Mã đơn', width: 100 },
+    { field: 'status',headerClassName: 'header-table', headerName: 'Trạng thái', width: 200 },
+    { field: 'staffName',headerClassName: 'header-table', headerName: 'Nhân viên tạo', width: 200 },
+    { field: 'supplierName',headerClassName: 'header-table', headerName: 'Nhà cung cấp', width: 150 },
+    { field: 'inventoryName',headerClassName: 'header-table', headerName: 'Kho', width: 150 },
+    { field: 'payStatus',headerClassName: 'header-table', headerName: 'Trạng thái thanh toán', width: 150 },
+    { field: 'bookingStatus',headerClassName: 'header-table', headerName: 'Trạng thái nhập kho', width: 150 },
+    { field: 'total',headerClassName: 'header-table', headerName: 'Giá trị đơn', width: 200 },
+    { field: 'bookingDate',headerClassName: 'header-table', headerName: 'Ngày nhập kho', width: 200 },
 ];
 
 const status = ["Hoàn thành", "Đang giao dịch"]

@@ -1,4 +1,4 @@
-export const apiBaseUrl = 'http://localhost:8080/admin';
+export const apiBaseUrl = 'http://localhost:8088/admin';
 
 export const getApiResponseData = (result) => {
     const { isError, isIdle, error } = result;
