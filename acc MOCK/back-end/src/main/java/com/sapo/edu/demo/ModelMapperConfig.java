@@ -22,27 +22,9 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT).setAmbiguityIgnored(true);
 
-        Converter<ProductEntity, ProductDto> entityToDtoConverter = context -> {
-            ProductEntity entity = context.getSource();
-            ProductDto dto = new ProductDto();
-
-            dto.setCategoryName(getCategoryNameByCode(entity.getCategoryCode()));
-
-            return dto;
-        };
-        modelMapper.addConverter(entityToDtoConverter);
         return modelMapper;
     }
-    private String getCategoryNameByCode(String categoryCode) {
-        // Thực hiện truy vấn đến category repository để lấy category name theo category code
-        CategoryEntity category = categoryRepository.findByCode(categoryCode).get();
-        System.out.println(category.getName());
-        if (category != null) {
-            return category.getName();
-        }
-        return null;
-    }
+
 
 }

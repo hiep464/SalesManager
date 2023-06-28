@@ -102,9 +102,8 @@ function CreateBooking() {
         let count = 0
         for(let order of orders) {
             let price = 0
-            price = order.quantity * order.originalCodt
-            count += order.price 
-            console.log(count);
+            price = order.quantity * order.originalCost
+            count += price
         }
         setTotal(count)
         console.log(count)
@@ -282,7 +281,7 @@ function CreateBooking() {
                         <ListItem>
                             <ListItemText primary="Ngày nhập :" />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker minDate={new Date()} onChange={(e) => setDateBook(e)} sx={{ width: '50%' }} />
+                                <DatePicker onChange={(e) => setDateBook(e)} sx={{ width: '50%' }} />
                             </LocalizationProvider>
                         </ListItem>
                     </List>

@@ -11,11 +11,14 @@ import javax.persistence.*;
 @Table(name = "category")
 public class CategoryEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
+    private Integer id;
+    @Column
     private String code;
     @Column
     @NotNull
     private String name;
     @Column
-    @NotNull
     private String description;
 }

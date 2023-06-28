@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryEntity, String> {
+public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
     List<CategoryEntity> findByCodeContaining(String code);
     Optional<CategoryEntity> findByCode(String code);
     CategoryEntity findByName(String name);
