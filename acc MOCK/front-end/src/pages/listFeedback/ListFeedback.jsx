@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 function ListFeedback(){
     const [pagination,setPagination]=useState({
         page:1,
-        limit:20,
+        limit:10,
         total:1
     })
     const [feedbacks, setFeedbacks] = useState([])

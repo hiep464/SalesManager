@@ -62,15 +62,16 @@
         tr{
             height: 50px;
             th{
-                background-color: #F3F3F3;
+                // background-color: #F3F3F3;
                 border: none;
-                border-bottom: 2px solid #CAC3C3;
+                border-bottom: 1px solid #CAC3C3;
+                border-top: 1px solid #CAC3C3 ;
                 text-align: start;
                 padding-left: 30px;
             }
             td{
                 border: none;
-                border-bottom: 2px solid #CAC3C3;
+                border-bottom: 1px solid #CAC3C3;
                 text-align: start;
                 padding-left: 30px;
             }
