@@ -51,7 +51,7 @@ public class ProductService {
         List<ProductDto> productDtos = new ArrayList<ProductDto>();
         productDtos = Arrays.asList(modelMapperProduct.map(products, ProductDto[].class));
         for(ProductDto product : productDtos) {
-            CategoryEntity category = categoryRepository.findById(product.getCategoryCode()).get();
+            CategoryEntity category = categoryRepository.findByCode(product.getCategoryCode()).get();
             product.setCategoryName(category.getName());
         }
         return productDtos;

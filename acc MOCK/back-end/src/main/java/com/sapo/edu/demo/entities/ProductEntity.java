@@ -17,8 +17,8 @@ import java.time.LocalDate;
 public class ProductEntity {
     @Id
     private String code;
+
     @Column
-    @NotNull
     private String categoryCode;
 
     @Column

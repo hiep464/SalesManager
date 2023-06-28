@@ -2,12 +2,14 @@ package com.sapo.edu.demo.dto.product.attribute;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class CreateProductAttribute {
 
     String productCode;
-    Integer quantity;
-    Integer sold;
+    BigDecimal price;
+    BigDecimal originalCost;
     String size;
     String color;
 
@@ -15,12 +17,12 @@ public class CreateProductAttribute {
         return productCode;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public Integer getSold() {
-        return sold;
+    public BigDecimal getOriginalCost() {
+        return originalCost;
     }
 
     public String getSize() {

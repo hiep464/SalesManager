@@ -28,8 +28,8 @@ import { apiBaseUrl } from '../../constant/constant';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import app from '../../firebase/app';
 import { getCookie } from '../../utils/api';
-import Avatar from '@mui/material/Avatar';
 import Checkbox from '@mui/material/Checkbox';
+import CloseIcon from '@mui/icons-material/Close';
 
 const uploadImage = async (file) => {
     const storage = getStorage(app);
@@ -129,6 +129,7 @@ export default function Product() {
     const [search, setSearch] = React.useState('');
     const [anchorEl1, setAnchorEl1] = React.useState(null);
     const [selectedItems, setSelectedItems] = React.useState([]);
+    const [description, setDescription] = React.useState(null);
     const open1 = Boolean(anchorEl1);
     const inputFileRef = React.useRef(null);
 
@@ -278,11 +279,21 @@ export default function Product() {
                     setRows(response.data);
                     setAnchorEl1(null);
                 });
+        } else {
+            setRefesh(refesh + 1);
+            setAnchorEl1(null);
         }
+    };
+
+    const handleOpenFileDialog = () => {
+        inputFileRef.current.click();
     };
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
+            <Box marginBottom={'14px'}>
+                <Button onClick={() => {navigate("category")}} sx={{textTransform: 'none'}} variant="text" size='small'>Loại sản phẩm</Button>
+            </Box>
             <Box
                 zIndex={1000}
                 display={add ? 'flex' : 'none'}
@@ -344,15 +355,68 @@ export default function Product() {
                                 </Select>
                             </Box>
                         </Box>
+                        <Box>
+                            <ListItemText primary="Mô tả" />
+                            <TextField
+                                onChange={(e) => {
+                                    setDescription(e.target.value);
+                                }}
+                                value={description}
+                                size="small"
+                                variant="outlined"
+                            />
+                        </Box>
                     </ListItem>
                     <ListItem>
-                        <input type="file" accept="image/*" ref={inputFileRef} onChange={handleImageUpload} />
-                        {imageURL && (
+                        <ListItemText primary="Ảnh sản phẩm" />
+                    </ListItem>
+                    <ListItem>
+                        <input type="file" hidden accept="image/*" ref={inputFileRef} onChange={handleImageUpload} />
+                        {/* <Button onClick={handleOpenFileDialog}>upload</Button> */}
+
+                        {imageURL ? (
+                            <div style={{ position: 'relative', marginLeft: '10px' }}>
+                                <img
+                                    style={{ width: '68px', height: '68px', borderRadius: '4px' }}
+                                    src={imageURL}
+                                    alt="Uploaded"
+                                />
+                                {/* <button onClick={deleteImage}>Delete Image</button> */}
+                                <CloseIcon
+                                    sx={{
+                                        position: 'absolute',
+                                        top: '0',
+                                        right: '1px',
+                                        width: '14px',
+                                        height: '14px',
+                                        color: 'red',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={deleteImage}
+                                />
+                            </div>
+                        ) : (
+                            <Box
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="center"
+                                justifyContent="center"
+                                border="2px dashed #ccc"
+                                width={'100%'}
+                                borderRadius={'4px'}
+                                padding={4}
+                            >
+                                <Button variant="text" onClick={handleOpenFileDialog} startIcon={<AddIcon />}>
+                                    Tải ảnh lên
+                                </Button>
+                            </Box>
+                        )}
+                        {/* {imageURL && (
                             <div>
                                 <img style={{ width: '48px', height: '48px' }} src={imageURL} alt="Uploaded" />
                                 <button onClick={deleteImage}>Delete Image</button>
                             </div>
-                        )}
+                        )} */}
                     </ListItem>
 
                     <ListItem sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -444,6 +508,8 @@ export default function Product() {
                         variant="outlined"
                         onClick={() => {
                             setSelectedItems([]);
+                            setAnchorEl1(null);
+                            setRefesh(refesh + 1);
                         }}
                         sx={{ float: 'right', marginRight: '10px', marginBottom: '10px' }}
                     >
