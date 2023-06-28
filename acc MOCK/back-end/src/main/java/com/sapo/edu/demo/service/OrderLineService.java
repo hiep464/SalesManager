@@ -5,6 +5,7 @@ import com.sapo.edu.demo.repository.OrderLineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderLineService {
@@ -17,5 +18,9 @@ public class OrderLineService {
 
     public List<OrderLine> createOrderLine(List<OrderLine> orderLines){
         return orderLineRepository.saveAll(orderLines);
+    }
+
+    public List<Map<String , Object>> getOrderLineByCode(String code){
+        return orderLineRepository.getOrderLineByCode(code);
     }
 }

@@ -7,16 +7,9 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { subDays, format } from 'date-fns';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
 import CreateReportPage from '../CreateReportPage/CreateReportPage';
-// import dayjs from 'dayjs';
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getCookie } from '../../utils/api';
-import { read, writeFileXLSX } from 'xlsx';
 
 var XLSX = require('xlsx');
 function exportToExcel(data) {
@@ -91,7 +84,7 @@ const generateLabels = (count) => {
     return days;
 };
 
-const labelsInit = generateLabels();
+const labelsInit = generateLabels(7);
 
 function ReportPage() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
@@ -173,7 +166,7 @@ function ReportPage() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         margin: '20px 0',
-                        width: '1300px',
+                        width: '1170px',
                         alignItems: 'center',
                     }}
                 >

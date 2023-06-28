@@ -108,6 +108,12 @@
         font-weight: bold;
     }
   }
+  .order_info_line{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    padding-right: 60px;
+  }
 }
 
 .name {

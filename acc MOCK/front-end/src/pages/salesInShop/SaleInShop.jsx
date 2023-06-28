@@ -29,7 +29,12 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 import axios from 'axios';
-import { ResultCustomerSearch, RetailCustomers, ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
+import {
+    ResultCustomerSearch,
+    RetailCustomers,
+    ResultProductSearch,
+    Customer,
+} from '../../components/ResultSearch/ResultSearch';
 import AddCustomer from '../../components/AddCustomer/AddCustomer';
 import { apiBaseUrl } from '../../constant/constant';
 
@@ -119,43 +124,39 @@ function SalesInShop() {
             0,
         );
         let orderLines = orders[value].products;
-        orderLines.forEach((line) => {
-            line.productCode = line.code;
-            delete line.code;
-        });
-        axios
-            .post(
-                `${apiBaseUrl}/sales/orders`,
-                {
-                    orderLines: orderLines,
-                    orderTable: {
-                        customerCode: orders[value].customer.code,
-                        staffCode: userInfo.code,
-                        quantity: totalQuantity,
-                        status: 'success',
-                        total: total,
+        if (orders[value].customer == null) {
+            alert('Xin hãy thêm khách hàng!');
+        } else {
+            axios
+                .post(
+                    `${apiBaseUrl}/sales/orders`,
+                    {
+                        orderLines: orderLines,
+                        orderTable: {
+                            customerCode: orders[value].customer.code,
+                            staffCode: userInfo.code,
+                            quantity: totalQuantity,
+                            status: 'success',
+                            total: total,
+                        },
                     },
-                },
-                {
-                    headers: {
-                        // token: Cookies.get('token'),
-                        Authorization: getCookie('Authorization'),
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
                     },
-                },
-            )
-            .then((response) => {
-                console.log(response);
-                handleDeleteOrderAfterCreate(value);
-            });
-        setMoney(0);
+                )
+                .then((response) => {
+                    console.log(response);
+                    handleDeleteOrderAfterCreate(value);
+                });
+            setMoney(0);
+        }
     };
 
     const handleAddCustomer = (event) => {
         setAddCustomer(true);
-    };
-
-    const handleAttribute = (id, attributeID) => {
-        orders[value].products[id].attributeID = attributeID;
     };
 
     const handleCloseAddCustomer = (event) => {
@@ -175,6 +176,13 @@ function SalesInShop() {
             setMoney(
                 newState[value]?.products.reduce((total, current) => (total += current.quantity * current.price), 0),
             );
+            return newState;
+        });
+    };
+    const handleDeleteCustomer = () => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            newState[value].customer = null;
             return newState;
         });
     };
@@ -278,23 +286,28 @@ function SalesInShop() {
     };
 
     const handleConfirmDelete = () => {
-        if (orders.length === 1) {
-            const newState = orders;
-            const updatedOrderItems = newState.filter((item, index) => index !== deleteId);
-            let newOrder = {
+        const updatedOrderItems = orders.filter((item, index) => index !== deleteId);
+        let updatedOrders = [];
+
+        if (updatedOrderItems.length === 0) {
+            const newOrder = {
                 order: 1,
                 products: [],
                 customer: null,
             };
-            updatedOrderItems.push(newOrder);
-            setOrders(updatedOrderItems);
+            updatedOrders = [newOrder];
+            setValue(1);
         } else {
-            const newState = orders;
-            const updatedOrderItems = newState.filter((item, index) => index !== deleteId);
-            setOrders(updatedOrderItems);
+            updatedOrders = [...updatedOrderItems];
         }
+
+        setOrders(updatedOrders);
         setMoney(0);
-        setValue((prevValue) => (prevValue === deleteId ? prevValue - 1 : prevValue));
+
+        if (deleteId <= value) {
+            setValue((prevValue) => prevValue - 1);
+        }
+
         setOpen(false);
     };
 
@@ -389,7 +402,7 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         const product1 = {
-                                                            code: product.code,
+                                                            productCode: product.code,
                                                             name: product.name,
                                                             inventory_quantity: product.quantity,
                                                             quantity: 1,
@@ -616,22 +629,22 @@ function SalesInShop() {
                                 </div>
                             </div>
                         ) : (
-                            <ResultCustomerSearch customer={orders[value]?.customer} />
+                            <Customer customer={orders[value]?.customer} handleDeleteCustomer={handleDeleteCustomer} />
                         )}
                         <div className="order_info">
-                            <p>
+                            <p className="order_info_line">
                                 <span>Số lượng sản phẩm:</span>
                                 {parseInt(
                                     orders[value]?.products.reduce((total, current) => (total += current.quantity), 0),
                                 )}
                             </p>
-                            <p>
+                            <p className="order_info_line">
                                 <span>Thành tiền:</span>
                                 {orders[value]?.products
                                     .reduce((total, current) => (total += current.quantity * current.price), 0)
                                     .toLocaleString('en-US')}
                             </p>
-                            <p>
+                            <p className="order_info_line">
                                 <span>Số tiền khách đưa:</span>
                                 <NumericFormat
                                     thousandSeparator={true}
@@ -643,8 +656,13 @@ function SalesInShop() {
                                         (total, current) => (total += current.quantity * current.price),
                                         0,
                                     )}
+                                    inputProps={{
+                                        style: {
+                                            textAlign: 'right', // Căn phải
+                                        },
+                                    }}
                                     value={money}
-                                    sx={{ width: '50%' }}
+                                    sx={{ width: '20%', marginLeft: 'auto' }}
                                     size="small"
                                     variant="standard"
                                     onChange={(e) => {
@@ -652,7 +670,7 @@ function SalesInShop() {
                                     }}
                                 />
                             </p>
-                            <p>
+                            <p className="order_info_line">
                                 <span>Số tiền phải trả:</span>
                                 {(
                                     money -

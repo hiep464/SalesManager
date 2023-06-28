@@ -27,13 +27,13 @@ function CreateReportPage(props) {
             valueFormatter: (params) => params.value.toLocaleString(),
         },
         {
-            field: 'order_count',
+            field: 'orderCount',
             headerName: 'Số đơn đã bán',
             type: 'number',
             width: 190,
         },
         {
-            field: 'product_sold',
+            field: 'productSold',
             headerName: 'Số SP đã bán',
             type: 'number',
             width: 190,
@@ -48,11 +48,10 @@ function CreateReportPage(props) {
     for (let i = 0; i++; i < rows.length) {}
     const handleRowClick = (params) => {
         const code = params.row.code;
-        console.log(`/report/staff/${code}/${filter}`);
         navigate(`/report/staff/${code}/${filter}`); // Điều hướng trang đến trang chi tiết với id của hàng
     };
     return (
-        <div className="createReport" style={{ width: '1300px' }}>
+        <div className="createReport" style={{ width: '1100px' }}>
             {/*  */}
             <Paper
                 style={{
@@ -60,7 +59,7 @@ function CreateReportPage(props) {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1300,
+                    width: 1170,
                     height: 300,
                 }}
             >

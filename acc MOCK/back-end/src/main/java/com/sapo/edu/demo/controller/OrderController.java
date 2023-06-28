@@ -29,6 +29,10 @@ public class OrderController {
         this.productAttributeService = productAttributeService;
     }
 
+    @GetMapping("/orders")
+    public List<Map<String , Object>> getAllOrders(){
+        return orderService.getAllOrders();
+    }
     @PostMapping("/orders")
     @Transactional
     public Order CreateNewOrder(@RequestBody OrderDTO newOrder){
@@ -53,5 +57,15 @@ public class OrderController {
         orderService.createOrder(newOrder.getOrderTable());
         orderLineService.createOrderLine(orderLines);
         return newOrder.getOrderTable();
+    }
+
+    @GetMapping("/order/details")
+    public Map<String , Object> getOrderByCode(@RequestParam(name = "code") String code){
+        return orderService.getOrderByCode(code);
+    }
+
+    @GetMapping("/orders/code")
+    public List<Map<String , Object>> searchAllOrdersByCode(@RequestParam(name = "code") String code){
+        return orderService.SearchAllOrdersByCode(code);
     }
 }
