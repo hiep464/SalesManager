@@ -1,7 +1,7 @@
 package com.sapo.edu.demo.controller;
 
-import com.sapo.edu.demo.dto.CategoryDto;
 import com.sapo.edu.demo.dto.ResponseObject;
+import com.sapo.edu.demo.dto.category.CategoryDto;
 import com.sapo.edu.demo.entities.CategoryEntity;
 import com.sapo.edu.demo.service.CategoryService;
 import jakarta.validation.Valid;
@@ -20,11 +20,11 @@ import java.util.Map;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
-    @PostMapping("/categories")
-    public ResponseEntity<ResponseObject> save(@RequestBody CategoryDto category) {
-        categoryService.save(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", category));
-    }
+//    @PostMapping("/categories")
+//    public ResponseEntity<ResponseObject> save(@RequestBody CategoryDto category) {
+//        categoryService.save(category);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject("success", "", category));
+//    }
     @GetMapping("/categories")
     public List<CategoryEntity> getAllCategories() {
 //        Map<String, Object> response = categoryService.getAllCategories();
@@ -43,4 +43,18 @@ public class CategoryController {
         return categoryService.getByCode(code);
     }
 
+    @PostMapping("/categories")
+    public CategoryEntity saveCategory(@RequestBody CategoryDto categoryDto){
+        return categoryService.saveCategory(categoryDto);
+    }
+
+    @PutMapping("/categories")
+    public CategoryEntity updateCategory(@RequestBody CategoryEntity categoryEntity){
+        return categoryService.updateCategory(categoryEntity);
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public void deleteCategory(@PathVariable("id") Integer id){
+        categoryService.deleteCategory(id);
+    }
 }

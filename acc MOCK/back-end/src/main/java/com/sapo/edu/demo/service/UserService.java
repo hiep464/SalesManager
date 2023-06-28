@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,10 @@ public class UserService implements UserDetailsService {
         );
 
         return new CustomUserDetails(user);
+    }
+
+    public Map<String , Object> getUserInfo(Integer id){
+        return userRepository.getUserInfoById(id);
     }
 
 //    private Collection<? extends GrantedAuthority> getAuthorities(String role) {

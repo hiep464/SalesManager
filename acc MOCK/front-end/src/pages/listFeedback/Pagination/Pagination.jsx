@@ -22,8 +22,8 @@ const Paginations = (props) => {
         <div className="pagination">
             <span>Hiển thị</span>
             <select name="pagelimit" id="pagelimit" onChange={(e)=>{handleLimitChange(e.target.value)}}>
+                <option value="10">10</option>
                 <option value="20">20</option>
-                <option value="50">50</option>
             </select>
             <span>Kết quả</span>
             <Pagination count={total} page={page} onChange={handlePageChange} color="primary" />

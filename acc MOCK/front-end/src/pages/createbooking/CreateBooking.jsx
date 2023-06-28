@@ -37,9 +37,8 @@ import { parse } from 'date-fns';
 
 
 function CreateBooking() {
-    
-    const [searchProduct,setSearchProduct] = React.useState('')
-    const [products,setProducts] = React.useState([])
+    const [searchProduct, setSearchProduct] = React.useState('');
+    const [products, setProducts] = React.useState([]);
     const [search, setSearch] = useState([]);
     const [orders, setOrders] = useState([]);
     const [code, setCode] = useState();
@@ -197,7 +196,11 @@ function CreateBooking() {
             >
                 <Box borderRadius={'6px'} width={'58%'} backgroundColor={'white'}>
                     <h3 style={{ marginLeft: '20px' }}>Nhập mã đặt hàng</h3>
-                    <TextField sx = {{marginLeft: '20px'}} type='text' onChange={(e) => setCode(e.target.value)}></TextField>
+                    <TextField
+                        sx={{ marginLeft: '20px' }}
+                        type="text"
+                        onChange={(e) => setCode(e.target.value)}
+                    ></TextField>
 
                     <h3 style={{ marginLeft: '20px' }}>Chọn nhà cung cấp</h3>
                     <Select
@@ -299,7 +302,13 @@ function CreateBooking() {
                 <Box
                     borderRadius={'6px'}
                     component="form"
-                    sx={{ p: '2px 0', display: 'absolute', alignItems: 'center', width: '100%', backgroundColor: 'white' }}
+                    sx={{
+                        p: '2px 0',
+                        display: 'absolute',
+                        alignItems: 'center',
+                        width: '100%',
+                        backgroundColor: 'white',
+                    }}
                 >
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon />
@@ -314,7 +323,6 @@ function CreateBooking() {
                         }}
                         onClick={() => setActive(true)}
                         onMouseEnter={useEffect(() => {
-                            
                             if (searchProduct !== '') {
                                 axios
                                     .get(`${apiBaseUrl}/inventory/products/search-products?searchString=${searchProduct}`,{headers: {
@@ -337,8 +345,6 @@ function CreateBooking() {
                     {search?.map((product, key) => {
                         return (
                             <Box key={key} sx={{ minWidth: '60ch', backgroundColor: 'white' }}>
-                                
-
                                 <ResultProductSearch
                                     key={key}
                                     product={product}
@@ -353,9 +359,9 @@ function CreateBooking() {
                                             size: '',
                                             color: '',
                                             price: 0,
-                                            quantity : 0
-                                        }
-                                        setActive(false)
+                                            quantity: 0,
+                                        };
+                                        setActive(false);
                                         setOrders((prevState) => [...prevState, productOder]);
                                         setSearch([]);
                                         setSearchProduct('');
@@ -365,7 +371,8 @@ function CreateBooking() {
                         );
                     })}
                 </div>
-                    </Box> <Box>
+            </Box>{' '}
+            <Box>
                 <Box>
                     <TableContainer component={Box}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -381,21 +388,19 @@ function CreateBooking() {
                                     <TableCell width='15%' align="center">Đơn giá</TableCell>
                                     <TableCell width='12%' align="center">Số lượng</TableCell>
                                     <TableCell align="center">Thành tiền</TableCell>
-                                    
                                 </TableRow>
                             </TableHead>
                             <TableBody sx={{ backgroundColor: '#fff' }}>
                                 {orders?.map((row, key) => (
-                                    <TableRow key={key} sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+                                    <TableRow key={key} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                         <TableCell component="th">{key + 1}</TableCell>
                                         <TableCell align="center">{row.productName}</TableCell>
                                         <TableCell align="center">
                                             <DeleteIcon
                                                 onClick={() => {
                                                     // setOrders(() => orders.splice(orders.indexOf(row), 1));
-                                                    
+
                                                     setOrders((prevState) => prevState.filter((_, i) => i !== key));
-                                                    
                                                 }}
                                             />
                                         </TableCell>
@@ -434,7 +439,7 @@ function CreateBooking() {
                                                 renderInput={(params) => <TextField  onChange={(e) => handleEditProduct(row.productName, row.size, row.color, "color" , e.target.value)} sx={{ width: "100%" }} {...params}  />}
                                             />
                                         </TableCell>
-                                        
+
                                         <TableCell align="center">
                                            
                                             <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost != undefined  ? (row.originalCost).toLocaleString() : 0} onChange={(e) => {

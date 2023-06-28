@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,14 +10,31 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import OrderBody from '../../components/OrderBody/OrderBody';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getCookie } from '../../utils/api';
+import { NumericFormat } from 'react-number-format';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 import axios from 'axios';
-import { ResultCustomerSearch, RetailCustomers, ResultProductSearch } from '../../components/ResultSearch/ResultSearch';
+import {
+    ResultCustomerSearch,
+    RetailCustomers,
+    ResultProductSearch,
+    Customer,
+} from '../../components/ResultSearch/ResultSearch';
 import AddCustomer from '../../components/AddCustomer/AddCustomer';
 import { apiBaseUrl } from '../../constant/constant';
 
@@ -28,6 +46,8 @@ const orders1 = [
     },
 ];
 
+// const user = JSON.parse(localStorage.getItem('sapo'));
+
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
@@ -38,25 +58,63 @@ function a11yProps(index) {
 function SalesInShop() {
     const [value, setValue] = React.useState(0);
     const [addCustomer, setAddCustomer] = React.useState(false);
+    // const [chooseInventory, setChooseInventory] = React.useState(false);
     const [search, setSearch] = React.useState('');
     const [searchProduct, setSearchProduct] = React.useState('');
     const [customers, setCustomers] = React.useState([]);
     const [products, setProducts] = React.useState([]);
+    const [inventory, setInventory] = React.useState([]);
+    const [inventoryData, setInventoryData] = React.useState('chi nhánh 1');
     const [orders, setOrders] = React.useState(orders1);
     const [money, setMoney] = React.useState(0);
-
+    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const [warning, setWarning] = React.useState('');
+    const [deleteId, setDeleteId] = React.useState();
+    const [userInfo, setUserInfo] = React.useState();
     useEffect(() => {
         if (search !== '') {
-            axios.get(`${apiBaseUrl}/customers?phone=` + search).then((Response) => {
-                setCustomers(Response.data.content);
-            });
+            axios
+                .get(`${apiBaseUrl}/care/customers?phone=` + search, {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                })
+                .then((Response) => {
+                    setCustomers(Response.data.content);
+                });
         } else {
             setCustomers([]);
         }
     }, [search]);
 
+    useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((Response) => {
+                setInventory(Response.data);
+            })
+            .catch((err) => {
+                alert(err.message);
+            });
+    }, []);
+
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('sapo'));
+        axios.get(`${apiBaseUrl}/auth/user/info?id=${user?.userId}`).then((response) => {
+            setUserInfo(response.data);
+        });
+    }, []);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        setMoney(orders[newValue]?.products.reduce((total, current) => (total += current.quantity * current.price), 0));
     };
 
     const createOrder = () => {
@@ -66,37 +124,48 @@ function SalesInShop() {
             0,
         );
         let orderLines = orders[value].products;
-        orderLines.forEach((line) => {
-            line.productCode = line.code;
-            delete line.code;
-        });
-        axios
-            .post(`${apiBaseUrl}/orders`, {
-                orderLines: orderLines,
-                orderTable: {
-                    customerCode: orders[value].customer.code,
-                    staffCode: 'S002',
-                    quantity: totalQuantity,
-                    status: 'success',
-                    total: total,
-                },
-            })
-            .then((response) => {
-                console.log(response);
-                handleDeleteOrder(value);
-            });
+        if (orders[value].customer == null) {
+            alert('Xin hãy thêm khách hàng!');
+        } else {
+            axios
+                .post(
+                    `${apiBaseUrl}/sales/orders`,
+                    {
+                        orderLines: orderLines,
+                        orderTable: {
+                            customerCode: orders[value].customer.code,
+                            staffCode: userInfo.code,
+                            quantity: totalQuantity,
+                            status: 'success',
+                            total: total,
+                        },
+                    },
+                    {
+                        headers: {
+                            // token: Cookies.get('token'),
+                            Authorization: getCookie('Authorization'),
+                        },
+                    },
+                )
+                .then((response) => {
+                    console.log(response);
+                    handleDeleteOrderAfterCreate(value);
+                });
+            setMoney(0);
+        }
     };
 
     const handleAddCustomer = (event) => {
         setAddCustomer(true);
     };
 
-    const handleAttribute = (id, attributeID) => {
-        orders[value].products[id].attributeID = attributeID;
-    };
-
     const handleCloseAddCustomer = (event) => {
         setAddCustomer(false);
+    };
+    // handle ChooseInventory
+
+    const handleChangeInventoryData = (event) => {
+        setInventoryData(event.target.value);
     };
 
     const handleDelete = (productId) => {
@@ -104,20 +173,30 @@ function SalesInShop() {
             const newState = [...currentState];
             const updatedOrderItems = newState[value].products.filter((item) => item.attributeID !== productId);
             newState[value].products = updatedOrderItems;
-
+            setMoney(
+                newState[value]?.products.reduce((total, current) => (total += current.quantity * current.price), 0),
+            );
+            return newState;
+        });
+    };
+    const handleDeleteCustomer = () => {
+        setOrders((currentState) => {
+            const newState = [...currentState];
+            newState[value].customer = null;
             return newState;
         });
     };
 
     const handleUp = (productId) => {
         setOrders((currentState) => {
-            const newState = [...currentState];
+            const newState = JSON.parse(JSON.stringify(currentState));
             const updatedOrderItems = newState[value];
 
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
-                    if (product.quantity + 1 <= 0) {
-                        handleDelete(productId);
+                    if (product.quantity + 1 > product.inventory_quantity) {
+                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        return product;
                     } else {
                         return { ...product, quantity: product.quantity + 1 };
                     }
@@ -125,21 +204,22 @@ function SalesInShop() {
                 return product;
             });
 
-            newState[value].products = updatedProducts;
+            updatedOrderItems.products = updatedProducts;
 
+            setMoney(updatedProducts?.reduce((total, current) => (total += current.quantity * current.price), 0));
             return newState;
         });
     };
 
     const handleDown = (productId) => {
         setOrders((currentState) => {
-            const newState = [...currentState];
+            const newState = JSON.parse(JSON.stringify(currentState));
             const updatedOrderItems = newState[value];
 
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
                     if (product.quantity - 1 <= 0) {
-                        handleDelete(productId);
+                        return null; // Trả về null để đánh dấu sản phẩm cần bị xóa
                     } else {
                         return { ...product, quantity: product.quantity - 1 };
                     }
@@ -147,26 +227,92 @@ function SalesInShop() {
                 return product;
             });
 
-            newState[value].products = updatedProducts;
+            // Loại bỏ sản phẩm có giá trị là null
+            updatedOrderItems.products = updatedProducts.filter((product) => product !== null);
 
+            setMoney(
+                updatedProducts?.reduce(
+                    (total, current) => (total += (current?.quantity || 0) * (current?.price || 0)),
+                    0,
+                ),
+            );
+            return newState;
+        });
+    };
+
+    const handleChangeQuantity = (productId, quantity) => {
+        setOrders((currentState) => {
+            const newState = JSON.parse(JSON.stringify(currentState));
+            const updatedOrderItems = newState[value];
+
+            const updatedProducts = updatedOrderItems.products.map((product) => {
+                if (product.attributeID === productId) {
+                    if (quantity > product.inventory_quantity) {
+                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        return { ...product, quantity: product.inventory_quantity };
+                    } else if (quantity <= 0) {
+                        return null;
+                    } else {
+                        return { ...product, quantity: quantity };
+                    }
+                }
+                return product;
+            });
+
+            // Loại bỏ sản phẩm có giá trị là null
+            updatedOrderItems.products = updatedProducts.filter((product) => product !== null);
+
+            setMoney(
+                updatedProducts?.reduce(
+                    (total, current) => (total += (current?.quantity || 0) * (current?.price || 0)),
+                    0,
+                ),
+            );
             return newState;
         });
     };
 
     const handleDeleteOrder = (orderID) => {
-        const newState = orders;
-        const updatedOrderItems = newState.filter((item, index) => index !== orderID);
-        if (newState.length > 0 && newState.includes(value)) {
-            // Nếu tab hiện tại vẫn còn trong danh sách tabs được chọn,
-            // chuyển sang tab trước đó.
-            const prevIndex = newState[newState.length - 2];
-            setValue(prevIndex);
+        setDeleteId(orderID);
+        setMessage('Bạn có chắc chắn muốn xóa đơn hàng này?');
+        setWarning('Sau khi xóa sẽ không thể hoàn tác được');
+        setOpen(true);
+    };
+    const handleDeleteOrderAfterCreate = (orderID) => {
+        setDeleteId(orderID);
+        setMessage('Bạn có chắc chắn muốn tạo đơn hàng này?');
+        setWarning('Sau khi tạo sẽ không thể hoàn tác được');
+        setOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        const updatedOrderItems = orders.filter((item, index) => index !== deleteId);
+        let updatedOrders = [];
+
+        if (updatedOrderItems.length === 0) {
+            const newOrder = {
+                order: 1,
+                products: [],
+                customer: null,
+            };
+            updatedOrders = [newOrder];
+            setValue(1);
         } else {
-            // Nếu tab hiện tại không còn trong danh sách tabs được chọn,
-            // chuyển sang tab đầu tiên trong danh sách.
-            setValue(newState[0]);
+            updatedOrders = [...updatedOrderItems];
         }
-        setOrders(updatedOrderItems);
+
+        setOrders(updatedOrders);
+        setMoney(0);
+
+        if (deleteId <= value) {
+            setValue((prevValue) => prevValue - 1);
+        }
+
+        setOpen(false);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
     return (
         <div className="body1">
@@ -175,21 +321,41 @@ function SalesInShop() {
                     <AddCustomer handleCloseAddCustomer={handleCloseAddCustomer} />
                 </div>
             )}
+            {/* dialog */}
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">{warning}</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Hủy</Button>
+                    <Button onClick={handleConfirmDelete} autoFocus>
+                        Đồng ý
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Box sx={{ width: '100%' }}>
                 <Grid container spacing={2}>
                     <Grid xs={12}>
                         <div className="logo">
                             <div className="image">
-                                <img
-                                    src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
-                                    alt=""
-                                />
+                                <Link to="/dashboard">
+                                    <img
+                                        src="https://th.bing.com/th/id/OIP.SN5g8vx2XD2rKNq1QrcEhQHaCu?pid=ImgDet&rs=1"
+                                        alt=""
+                                    />
+                                </Link>
                             </div>
                         </div>
                         <div className="Nav">
                             <div className="addProduct">
                                 <TextField
-                                    label="Add Product"
+                                    label="Thêm sản phẩm"
                                     id="outlined-start-adornment"
                                     value={searchProduct}
                                     onChange={(event) => {
@@ -198,10 +364,20 @@ function SalesInShop() {
                                     onMouseEnter={useEffect(() => {
                                         if (searchProduct !== '') {
                                             axios
-                                                .get(`${apiBaseUrl}/inventory/products/searchString?text=` + searchProduct)
+                                                .get(
+                                                    `${apiBaseUrl}/sales/products?code=` +
+                                                        searchProduct +
+                                                        `&inventory=` +
+                                                        inventoryData,
+                                                    {
+                                                        headers: {
+                                                            // token: Cookies.get('token'),
+                                                            Authorization: getCookie('Authorization'),
+                                                        },
+                                                    },
+                                                )
                                                 .then((Response) => {
                                                     setProducts(Response.data);
-                                                    console.log('res:', Response);
                                                 });
                                         } else {
                                             setProducts([]);
@@ -226,19 +402,19 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         const product1 = {
-                                                            code: product.code,
+                                                            productCode: product.code,
                                                             name: product.name,
+                                                            inventory_quantity: product.quantity,
                                                             quantity: 1,
                                                             price: product.price,
                                                             attributeID: product.id,
+                                                            size: product.size,
+                                                            color: product.color,
                                                         };
                                                         var duplicate = false;
 
                                                         for (var i = 0; i < orders[value].products.length; i++) {
-                                                            if (
-                                                                orders[value].products[i].attributeID ===
-                                                                product.attributeID
-                                                            ) {
+                                                            if (orders[value].products[i].attributeID === product.id) {
                                                                 orders[value].products[i].quantity += 1;
                                                                 duplicate = true;
                                                             }
@@ -247,6 +423,13 @@ function SalesInShop() {
                                                         if (duplicate === false) {
                                                             orders[value].products.push(product1);
                                                         }
+                                                        setMoney(
+                                                            orders[value]?.products.reduce(
+                                                                (total, current) =>
+                                                                    (total += current.quantity * current.price),
+                                                                0,
+                                                            ),
+                                                        );
                                                         setSearchProduct('');
                                                     }}
                                                 />
@@ -272,16 +455,38 @@ function SalesInShop() {
                                                     let labell = 'Đơn ' + (index + 1);
                                                     return (
                                                         <Tab
-                                                            label={labell}
+                                                            label={
+                                                                <div>
+                                                                    {labell}
+                                                                    <IconButton
+                                                                        aria-label="close"
+                                                                        size="small"
+                                                                        onClick={() => {
+                                                                            handleDeleteOrder(index);
+                                                                        }}
+                                                                        sx={{
+                                                                            marginLeft: '4px',
+                                                                            opacity: 0,
+                                                                            color: 'white',
+                                                                            transition:
+                                                                                'visibility 0s linear 0.2s, opacity 0.2s linear',
+                                                                            '&:hover': {
+                                                                                visibility: 'visible',
+                                                                                opacity: 1,
+                                                                                color: 'white',
+                                                                                transition: 'opacity 0.2s linear',
+                                                                            },
+                                                                        }}
+                                                                    >
+                                                                        <DeleteIcon fontSize="small" />
+                                                                    </IconButton>
+                                                                </div>
+                                                            }
                                                             {...a11yProps(index)}
                                                             className="tabs"
-                                                            icon={
-                                                                <CloseIcon
-                                                                    onClick={() => {
-                                                                        handleDeleteOrder(index);
-                                                                    }}
-                                                                />
-                                                            }
+                                                            // icon={
+
+                                                            // }
                                                             iconPosition="end"
                                                         ></Tab>
                                                     );
@@ -294,12 +499,14 @@ function SalesInShop() {
                                     <div
                                         className="addOrder"
                                         onClick={(event) => {
-                                            let newOrder = {
-                                                order: orders.length + 1,
-                                                products: [],
-                                                customer: null,
-                                            };
-                                            setOrders([...orders, newOrder]);
+                                            if (orders.length < 10) {
+                                                let newOrder = {
+                                                    order: orders.length + 1,
+                                                    products: [],
+                                                    customer: null,
+                                                };
+                                                setOrders([...orders, newOrder]);
+                                            }
                                         }}
                                     >
                                         <AddIcon fontSize="large" />
@@ -309,11 +516,53 @@ function SalesInShop() {
                             <div className="user">
                                 <div>
                                     <LocationOnIcon />
-                                    Chi nhánh 1
+                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                        <Select
+                                            labelId="demo-simple-select-standard-label"
+                                            id="demo-simple-select-standard"
+                                            value={inventoryData}
+                                            onChange={handleChangeInventoryData}
+                                            label="Chi nhánh"
+                                            sx={{
+                                                color: 'white', // Màu chữ
+                                                '&:before': {
+                                                    borderColor: 'white', // Màu đường viền trước khi chọn
+                                                },
+                                                '&:after': {
+                                                    borderColor: 'white', // Màu đường viền sau khi chọn
+                                                },
+                                                '& .MuiSvgIcon-root': {
+                                                    color: 'white', // Màu biểu tượng mũi tên
+                                                },
+                                                '& .MuiListItem-root': {
+                                                    color: 'black', // Màu chữ trong lựa chọn
+                                                    backgroundColor: 'white', // Màu nền lựa chọn
+                                                },
+                                            }}
+                                        >
+                                            {inventory ? (
+                                                inventory.map((item, index) => {
+                                                    return (
+                                                        <MenuItem color="white" key={index} value={item.name}>
+                                                            {item.name}
+                                                        </MenuItem>
+                                                    );
+                                                })
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </Select>
+                                    </FormControl>
                                 </div>
-                                <div>
+                                <div
+                                    sx={{
+                                        '&hover': {
+                                            cursor: 'pointer',
+                                        },
+                                    }}
+                                >
                                     <AccountCircleIcon />
-                                    Nguyễn Duẩn
+                                    <span className="name">{userInfo?.name}</span>
                                 </div>
                             </div>
                         </div>
@@ -327,9 +576,9 @@ function SalesInShop() {
                                         value={value}
                                         index={index}
                                         onDeleteProduct={handleDelete}
-                                        onUpdateAttribute={handleAttribute}
                                         onDown={handleDown}
                                         onUp={handleUp}
+                                        onChangeQuantity={handleChangeQuantity}
                                     />
                                 );
                             })
@@ -341,7 +590,7 @@ function SalesInShop() {
                         {orders[value]?.customer === null ? (
                             <div className="addCustomer">
                                 <TextField
-                                    label="Add Customer"
+                                    label="Thêm khách hàng"
                                     id="outlined-start-adornment"
                                     sx={{ m: 1, width: '53ch' }}
                                     value={search}
@@ -380,30 +629,49 @@ function SalesInShop() {
                                 </div>
                             </div>
                         ) : (
-                            <ResultCustomerSearch customer={orders[value]?.customer} />
+                            <Customer customer={orders[value]?.customer} handleDeleteCustomer={handleDeleteCustomer} />
                         )}
                         <div className="order_info">
-                            <p>
-                                Số lượng sản phẩm:
-                                {orders[value]?.products.reduce((total, current) => (total += current.quantity), 0)}
+                            <p className="order_info_line">
+                                <span>Số lượng sản phẩm:</span>
+                                {parseInt(
+                                    orders[value]?.products.reduce((total, current) => (total += current.quantity), 0),
+                                )}
                             </p>
-                            <p>
-                                Thành tiền:
+                            <p className="order_info_line">
+                                <span>Thành tiền:</span>
                                 {orders[value]?.products
                                     .reduce((total, current) => (total += current.quantity * current.price), 0)
                                     .toLocaleString('en-US')}
                             </p>
-                            <TextField
-                                label="Số tiền khách đưa"
-                                id="outlined-start-adornment"
-                                sx={{ m: 1, width: '53ch' }}
-                                value={money.toLocaleString('en-US')}
-                                onChange={(event) => {
-                                    setMoney(event.target.value);
-                                }}
-                            />
-                            <p>
-                                Số tiền phải trả:
+                            <p className="order_info_line">
+                                <span>Số tiền khách đưa:</span>
+                                <NumericFormat
+                                    thousandSeparator={true}
+                                    prefix={''}
+                                    customInput={TextField}
+                                    type="text"
+                                    // Các thuộc tính khác của TextField
+                                    defaultValue={orders[value]?.products.reduce(
+                                        (total, current) => (total += current.quantity * current.price),
+                                        0,
+                                    )}
+                                    inputProps={{
+                                        style: {
+                                            textAlign: 'right', // Căn phải
+                                        },
+                                    }}
+                                    value={money}
+                                    sx={{ width: '20%', marginLeft: 'auto' }}
+                                    size="small"
+                                    variant="standard"
+                                    onChange={(e) => {
+                                        setMoney(parseFloat(e.target.value.replace(/,/g, '')));
+                                    }}
+                                />
+                            </p>
+                            <p className="order_info_line">
+                                <span>Số tiền phải trả:</span>
                                 {(
                                     money -
                                     orders[value]?.products.reduce(

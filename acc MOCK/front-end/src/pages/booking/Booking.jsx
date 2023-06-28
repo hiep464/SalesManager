@@ -93,9 +93,9 @@ function Booking() {
             Authorization: getCookie('Authorization'),
         }})
             .then((response) => {
-            // setBooking(Response.products);
-            console.log(response.data)
-            setBooking(response.data)
+                // setBooking(Response.products);
+                console.log(response.data);
+                setBooking(response.data);
             });
         axios.get(`${apiBaseUrl}/staffs/inventory`,{headers: {
             Authorization: getCookie('Authorization'),
@@ -190,7 +190,14 @@ function Booking() {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                        navigate('create');
+                    }}
+                    variant="contained"
+                    sx={{ marginRight: '10px' }}
+                >
                     Tạo đơn đặt
                 </Button>
                 <StyledMenu
@@ -304,7 +311,7 @@ function Booking() {
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
         </div>
-     );
+    );
 }
 
 export default Booking;

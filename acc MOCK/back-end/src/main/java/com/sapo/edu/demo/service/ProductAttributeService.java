@@ -63,10 +63,12 @@ public class ProductAttributeService {
             productAttribute.setUpdateAt(null);
             productAttribute.setColor(createProductAttribute.getColor());
             productAttribute.setSize(createProductAttribute.getSize());
-            productAttribute.setQuantity(createProductAttribute.getQuantity());
-            productAttribute.setSold(createProductAttribute.getSold());
+            productAttribute.setQuantity(0);
+            productAttribute.setSold(0);
+            productAttribute.setPrice(createProductAttribute.getPrice());
+            productAttribute.setOriginalCost(createProductAttribute.getOriginalCost());
             productAttribute.setProductCode(createProductAttribute.getProductCode());
-            System.out.println(productAttribute);
+
             productAttributeRepository.save(productAttribute);
         }
         return createProductAttributes;
@@ -77,5 +79,14 @@ public class ProductAttributeService {
             productAttributeRepository.save(productAttribute);
         }
         return productAttributes;
+    }
+
+    public ProductAttribute updateQuantity(Integer ID,Integer sold){
+        ProductAttribute updateProductAttribute = productAttributeRepository.findById(ID).get();
+        Integer quantity = updateProductAttribute.getQuantity() - sold;
+        updateProductAttribute.setQuantity(quantity);
+        updateProductAttribute.setSold(updateProductAttribute.getSold() + sold);
+        productAttributeRepository.save(updateProductAttribute);
+        return updateProductAttribute;
     }
 }

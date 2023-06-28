@@ -6,9 +6,9 @@ const storageKey = 'sapo';
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    var expires = 'expires=' + d.toUTCString();
+    document.cookie = cname + '=' + cvalue + '; ' + expires;
 }
 /**
  * This is a provider for AuthContext.
@@ -31,7 +31,7 @@ export const AuthContextProvider = ({ children }) => {
         setToken(token);
         setUsername(username);
         setIsLogin(true);
-        setCookie("Authorization", `Bearer ${token}`, 1);
+        setCookie('Authorization', `Bearer ${token}`, 1);
         localStorage.setItem(storageKey, JSON.stringify({ userId, token, username }));
     }, []);
 
@@ -41,24 +41,23 @@ export const AuthContextProvider = ({ children }) => {
         setUsername(null);
         setIsLogin(false);
         localStorage.removeItem(storageKey);
-        document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+        document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
     }, []);
-
 
     return (
         <AuthContext.Provider
-        value={{
-            state: {
-                userId,
-                token,
-                username,
-                isLogin,
-                remove
-            },
-            login,
-            logout,
-            setRemove
-        }}
+            value={{
+                state: {
+                    userId,
+                    token,
+                    username,
+                    isLogin,
+                    remove,
+                },
+                login,
+                logout,
+                setRemove,
+            }}
         >
             {children}
         </AuthContext.Provider>
