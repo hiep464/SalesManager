@@ -19,7 +19,8 @@ public class ProductEntity {
     private String code;
 
     @Column
-    private String categoryCode;
+    @NotNull
+    private Integer categoryId;
 
     @Column
     @NotNull
@@ -43,9 +44,7 @@ public class ProductEntity {
     private LocalDate updateAt;
 
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-    }
+
 
     public void setName(String name) {
         this.name = name;

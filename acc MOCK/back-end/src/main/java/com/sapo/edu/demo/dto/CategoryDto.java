@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Data
 public class CategoryDto {
-    @Id
+    private Integer id;
     private String code;
 
     @NotEmpty

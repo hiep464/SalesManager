@@ -35,5 +35,5 @@ public class ProductDto {
     @NotEmpty
     private String image;
     @NotEmpty
-    private String categoryCode;
+    private Integer categoryId;
 }

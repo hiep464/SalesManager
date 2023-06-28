@@ -51,7 +51,7 @@ public class ProductService {
         List<ProductDto> productDtos = new ArrayList<ProductDto>();
         productDtos = Arrays.asList(modelMapperProduct.map(products, ProductDto[].class));
         for(ProductDto product : productDtos) {
-            CategoryEntity category = categoryRepository.findByCode(product.getCategoryCode()).get();
+            CategoryEntity category = categoryRepository.findById(product.getCategoryId()).get();
             product.setCategoryName(category.getName());
         }
         return productDtos;
@@ -66,7 +66,7 @@ public class ProductService {
         productEntity.setName(p.getName());
         productEntity.setBrand(p.getBrand());
         productEntity.setImage(p.getImage());
-        productEntity.setCategoryCode(p.getCategoryCode());
+        productEntity.setCategoryId(p.getCategoryId());
         productEntity.setDescription(p.getDescription());
         productEntity.setCreateAt(LocalDate.now());
         return productRepository.save(productEntity);
