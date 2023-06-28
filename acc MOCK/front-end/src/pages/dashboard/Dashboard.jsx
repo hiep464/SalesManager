@@ -103,11 +103,11 @@ const options = {
     },
 };
 
-const generateLabels = () => {
+const generateLabels = (num) => {
     const now = new Date(); // Lấy thời điểm hiện tại
     const days = []; // Mảng lưu trữ các ngày trong khoảng 7 ngày
 
-    for (let i = 6; i >= 0; i--) {
+    for (let i = num - 1; i >= 0; i--) {
         const date = subDays(now, i); // Tính toán ngày trong khoảng 7 ngày
         const formattedDate = format(date, 'dd/MM'); // Chuyển đổi ngày thành chuỗi định dạng dd/MM/yyyy
         days.push(formattedDate); // Thêm ngày vào mảng
@@ -116,7 +116,7 @@ const generateLabels = () => {
     return days;
 };
 
-const labelsInit = generateLabels();
+const labelsInit = generateLabels(7);
 
 function DashBoard() {
     const [filter, setFilter] = React.useState(7);
@@ -134,19 +134,21 @@ function DashBoard() {
     const handleChange = (event) => {
         setFilter(event.target.value);
         if (event.target.value === 7) {
-            const labelsInit = generateLabels();
+            const labelsInit = generateLabels(7);
             setLabels(labelsInit);
             setStart(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
             setEnd(format(new Date(), 'dd/MM/yyyy'));
-        } else if (event.target.value === 1) {
-            setLabels([format(subDays(new Date(), 1), 'dd/MM')]);
-            setStart(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
-            setEnd(format(subDays(new Date(), 1), 'dd/MM/yyyy'));
-        } else {
-            setLabels([format(new Date(), 'dd/MM')]);
-            setStart(format(new Date(), 'dd/MM/yyyy'));
+        } else if (event.target.value === 30) {
+            const labelsInit = generateLabels(30);
+            setLabels(labelsInit);
+            setStart(format(subDays(new Date(), 30), 'dd/MM/yyyy'));
             setEnd(format(new Date(), 'dd/MM/yyyy'));
-        }
+        } 
+        // else {
+        //     setLabels([format(new Date(), 'dd/MM')]);
+        //     setStart(format(new Date(), 'dd/MM/yyyy'));
+        //     setEnd(format(new Date(), 'dd/MM/yyyy'));
+        // }
     };
 
     const fetchRevenue = () => {
@@ -307,8 +309,7 @@ function DashBoard() {
                         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                             <Select value={filter} onChange={handleChange} displayEmpty>
                                 <MenuItem value={7}>7 ngày</MenuItem>
-                                <MenuItem value={1}>Hôm qua</MenuItem>
-                                <MenuItem value={0}>Hôm nay</MenuItem>
+                                <MenuItem value={30}>1 tháng</MenuItem>
                             </Select>
                         </FormControl>
                     </div>
