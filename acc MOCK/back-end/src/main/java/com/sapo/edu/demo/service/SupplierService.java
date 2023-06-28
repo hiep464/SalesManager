@@ -81,7 +81,12 @@ public class SupplierService {
 
         return response;
     }
-
+    public SupplierDto getByName(String name) {
+        SupplierEntity supplierEntity = supplierRepository.findByName(name)
+              .orElseThrow(() -> new NotFoundException("Supplier not found with name: " + name));
+        SupplierDto dto = modelMapperSupplier.map(supplierEntity, SupplierDto.class);
+        return dto;
+    }
     public List<SupplierEntity> getAll(){
         return supplierRepository.findAll();
     }

@@ -13,17 +13,12 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import ImageIcon from '@mui/icons-material/Image';
 import { Box } from '@mui/system';
-import TextField from '@mui/material/TextField';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import Grid from '@mui/system/Unstable_Grid/Grid';
 import Card from '@mui/material/Card';
+import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Select from '@mui/material/Select';
 import { ResultCheckRequestSearch } from '../../components/ResultSearch/ResultSearch';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
@@ -71,6 +66,7 @@ const columns = [
     { field: 'staffName', headerName: 'Nhân viên tạo', width: 150 },
     { field: 'createAt', headerName: 'Ngày tạo', width: 150 },
 ];
+const filterColums = ["Đang kiểm hàng", "Đã cập nhập số lượng"]
 
 const CheckInventory = () => {
     const navigate = useNavigate();
@@ -130,6 +126,7 @@ const CheckInventory = () => {
                 <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                     <SearchIcon />
                 </IconButton>
+                
                 <InputBase
                     sx={{ ml: 1, flex: 1, border: '1px' }}
                     placeholder="Tìm kiếm theo mã hiểm hàng"
@@ -148,40 +145,22 @@ const CheckInventory = () => {
                                     headers: {
                                         // token: Cookies.get('token'),
                                         Authorization: getCookie('Authorization'),
-                                    },
-                                })
-                                .then((response) => {
-                                    setCheckRequests(response.data);
-                                });
-                        } else {
-                            setCheckRequests([]);
-                        }
-                    }, [searchCheckRequest])}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                    }}
+                                    }})
+                                    .then((response) => {
+                                        setChecking(response.data);
+                                    });
+                            
+                        }}, [searchCheckRequest])}
+                        
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
                 />
-                <div className="result_search" style={{ position: 'fixed' }}>
-                    {checkRequests.map((request, index) => {
-                        // console.log(checkInventoryBody)
-                        return (
-                            <Card sx={{ minWidth: '60ch' }}>
-                                <ResultCheckRequestSearch
-                                    key={index}
-                                    checkRequest={request}
-                                    onClick={() => {
-                                        setChecking([request]);
-                                        setSearchCheckRequest('');
-                                    }}
-                                />
-                            </Card>
-                        );
-                    })}
-                </div>
+                
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
                 <Button
                     id="demo-customized-button"
@@ -212,12 +191,28 @@ const CheckInventory = () => {
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}
+                   
                 >
-                    <Box sx={{ padding: '8px' }}>
+                    <Box sx = {{padding : '8px',width: '240px'}}>
                         <div>
                             <span>Trạng thái</span>
                             <br />
-                            <TextField size="small" variant="outlined" onChange={(e) => setFilter(e.target.value)} />
+                            <Select
+                                size="small"
+                                sx={{ width: '100%' }}
+                                value={filter}
+                                onChange={(e) => 
+                                    setFilter(e.target.value)                                       
+                                }
+                            >
+                                {filterColums?.map((item,index) => {
+                                    return (
+                                        <MenuItem key={index} value={item}>
+                                            {item}
+                                            </MenuItem>
+                                    );
+                                })}
+                            </Select>
                         </div>
 
                         <Button sx={{ marginTop: '4px' }} variant="contained" onClick={handleFilter} disableElevation>
@@ -237,48 +232,16 @@ const CheckInventory = () => {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                sx={{
-                    width: '100%',
-                    marginTop: '10px',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
-                    userSelect: 'none',
+                localeText={{
+                    MuiTablePagination: {
+                        labelDisplayedRows: ({ from, to, count }) =>
+                            `Kết quả từ ${from} đến ${to} trên tổng số ${count}`,
+                        labelRowsPerPage: 'Hiển thị',
+                    },
                 }}
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white',cursor: 'pointer', userSelect: 'none'}}
             />
-            {/* <TableContainer component={Paper} mt = {16}>
-                <Table  sx={{ minWidth: 650, margin: '0px' }}  aria-label="a dense table">
-                    <TableHead>
-                        <TableRow sx={{ backgroundColor: '#f4f6f8' }}>
-                            <TableCell>STT</TableCell>
-                        
-                            <TableCell align="center">Mã kiểm hàng</TableCell>
-                            <TableCell align="center">Kho</TableCell>
-                            <TableCell align="center">Trạng thái</TableCell>
-                            <TableCell align="center">Nhân viên tạo</TableCell>
-                            <TableCell align="center">Ngày tạo</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {checking.map((row,index) => (
-                        <TableRow
-                            key={index}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } , cursor: 'pointer'}}
-                            >
-                            <TableCell component="th" scope="row">
-                                {index + 1}
-                            </TableCell>
-                            <TableCell align="center" onClick={() =>handleOpenDetail(row.code)}>{row.code}</TableCell>
-                            <TableCell align="center">{row.inventoryName}</TableCell>
-                            <TableCell align="center">{row.status}</TableCell>
-                            <TableCell align="center">{row.staffName}</TableCell>
-                            <TableCell align="center">{row.createAt}</TableCell>
-                            
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
-                
-            </TableContainer> */}
+            
         </div>
     );
 };

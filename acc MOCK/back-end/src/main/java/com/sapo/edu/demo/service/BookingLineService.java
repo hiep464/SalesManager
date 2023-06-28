@@ -2,14 +2,9 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.dto.BookingLineDto;
 import com.sapo.edu.demo.dto.CheckLineDto;
-import com.sapo.edu.demo.entities.BookingLineEntity;
-import com.sapo.edu.demo.entities.CheckLineEntity;
-import com.sapo.edu.demo.entities.ProductAttribute;
-import com.sapo.edu.demo.entities.ProductEntity;
+import com.sapo.edu.demo.entities.*;
 import com.sapo.edu.demo.exception.NotFoundException;
-import com.sapo.edu.demo.repository.BookingLineRepository;
-import com.sapo.edu.demo.repository.ProductAttributeRepository;
-import com.sapo.edu.demo.repository.ProductRepository;
+import com.sapo.edu.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.modelmapper.ModelMapper;
@@ -27,6 +22,8 @@ public class BookingLineService {
     private final ModelMapper BookingLineMapper;
     private final ProductRepository productRepository;
     private final ProductAttributeRepository attributeRepository;
+    private final BookingRepository bookingRepository;
+    private final CategoryRepository categoryRepository;
     /**
      * Find all CheckLine by code
      * @Param code
@@ -37,6 +34,7 @@ public class BookingLineService {
 
         List<BookingLineEntity> bookingLines = new ArrayList<BookingLineEntity>();
         bookingLines = bookingLineRepository.findByBookingCode(code);
+        BookingEntity entity = bookingRepository.findById(code).get();
         if (bookingLines.isEmpty()) {
             throw new NotFoundException("booking line not found booking code: " + code);
 
@@ -46,12 +44,15 @@ public class BookingLineService {
             BookingLineDto bookingLineDto = bookingLineDtos.get(i);
             BookingLineEntity bookingLineEntity = bookingLines.get(i);
             ProductEntity productEntity = productRepository.findById(bookingLineEntity.getProductCode()).get();
+            bookingLineDto.setBrand(productEntity.getBrand());
+            CategoryEntity category = categoryRepository.findById(productEntity.getCategoryCode()).get();
+            bookingLineDto.setCategory(category.getName());
             bookingLineDto.setProductName(productEntity.getName());
             ProductAttribute attribute = attributeRepository.findById(bookingLineEntity.getAttributeId()).get();
             bookingLineDto.setImage(attribute.getImage());
             bookingLineDto.setColor(attribute.getColor());
             bookingLineDto.setSize(attribute.getSize());
-            bookingLineDto.setInventoryName(attribute.getInventoryName());
+            bookingLineDto.setInventoryName(entity.getInventoryName());
         }
 
         return bookingLineDtos;

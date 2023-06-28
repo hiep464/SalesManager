@@ -46,7 +46,16 @@ public class ProductService {
         List<ProductsWithCategory> products = productRepository.searchByCodeAndName(keyword);
         return products;
     }
-
+    public List<ProductDto> getProductsByCodeOrName(String keyword){
+        List<ProductEntity> products = productRepository.findByCodeContainingOrNameContaining(keyword,keyword);
+        List<ProductDto> productDtos = new ArrayList<ProductDto>();
+        productDtos = Arrays.asList(modelMapperProduct.map(products, ProductDto[].class));
+        for(ProductDto product : productDtos) {
+            CategoryEntity category = categoryRepository.findById(product.getCategoryCode()).get();
+            product.setCategoryName(category.getName());
+        }
+        return productDtos;
+    }
 
     public ProductEntity saveProduct(CreateProduct p) {
         ProductEntity productEntity = new ProductEntity();
@@ -58,6 +67,7 @@ public class ProductService {
         productEntity.setBrand(p.getBrand());
         productEntity.setImage(p.getImage());
         productEntity.setCategoryCode(p.getCategoryCode());
+        productEntity.setDescription(p.getDescription());
         productEntity.setCreateAt(LocalDate.now());
         return productRepository.save(productEntity);
     }

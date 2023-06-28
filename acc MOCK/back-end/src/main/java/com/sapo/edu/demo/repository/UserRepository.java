@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -17,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             +"where u.id = :id"
     )
     public Map<String, Object> getUserInfoById(Integer id);
+    User findByStaffCode(String staffCode);
+    List<User> findByRole(String role);
 }

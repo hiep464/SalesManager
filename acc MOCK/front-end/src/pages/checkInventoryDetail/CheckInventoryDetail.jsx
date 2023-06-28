@@ -47,28 +47,23 @@ const CheckInventoryDetail = () => {
             });
     }, []);
     const handleDeleteRequest = () => {
-        axios
-            .delete(`${apiBaseUrl}/inventory/check_inventory/${code}`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
+        axios.delete(`${apiBaseUrl}/inventory/check_inventory/${code}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+            .then(res => {
+                navigate(`/inventory/check_inventory`)
             })
-            .then((res) => {
-                navigate(`/inventory/check_inventory`);
-            });
-    };
+        
+    }
     const handleUpdateProductQuantity = () => {
-        axios
-            .post(`${apiBaseUrl}/inventory/check_line/${code}`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((res) => {
-                alert('Đã cập nhập số lượng trong kho');
-                window.location.reload();
+        axios.put(`${apiBaseUrl}/inventory/check_line/${code}`,"",{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+            .then(res => {
+                alert("Đã cập nhập số lượng trong kho")
+                window.location.reload()
             })
             .catch((e) => {
                 alert(e);

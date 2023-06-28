@@ -17,12 +17,15 @@ public class InventoryInputDto {
     private String status;
     @NotEmpty
     private String staffName;
+    private String supplierName;
+    private String bookingStatus;
+    private BigDecimal originalCost;
     @NotEmpty
     private BigDecimal total;
     @NotEmpty
     private String payStatus;
     private LocalDate receiptDate;
-    @NotNull
+
 
     private BigDecimal remainder; //số tiền còn lại phải trả
 

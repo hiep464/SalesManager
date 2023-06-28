@@ -7,12 +7,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {TablePagination} from'@mui/material'
 import Paper from '@mui/material/Paper';
-
-
+import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
+import PaidIcon from '@mui/icons-material/Paid';
+import Button from '@mui/material/Button';
 
-function CheckInventoryRequestDetail(props) {
+function BookingBodyDetail(props) {
     const { rows} = props;
+    console.log(rows)
      const [page, setPage] = React.useState(0);
         const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -23,13 +26,14 @@ function CheckInventoryRequestDetail(props) {
         const handleChangeRowsPerPage = (event) => {
             setRowsPerPage(parseInt(event.target.value, 10));
             setPage(0);
-    };
+        };
+        
     return (
         <div
             role="tabpanel"
 
         >   
-          
+            
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650, margin: '0px' }} size="small" aria-label="a dense table">
                 <TableHead sx = {{fontWeight : 'bold', borderRadius: '6px'}}>
@@ -38,12 +42,15 @@ function CheckInventoryRequestDetail(props) {
                         
                          
                             <TableCell align="center">Tên SP</TableCell>
+                            <TableCell align="center">loại sản phẩm</TableCell>
                             <TableCell align="center">Nhãn hàng</TableCell>
+
+                            
                             <TableCell align="center">Kích cỡ</TableCell>
                             <TableCell align="center">Màu sắc</TableCell>
-                            <TableCell align="center">Số lượng trên hệ thống</TableCell>
-                            <TableCell align="center">Số lượng thực tế</TableCell>
-                            <TableCell align="center">Lý do</TableCell>
+                            <TableCell align="center">Số lượng </TableCell>
+                            <TableCell align="center">Giá nhập</TableCell>
+                            <TableCell align="center">Thành tiền</TableCell>
                            
                         </TableRow>
                     </TableHead>
@@ -59,17 +66,18 @@ function CheckInventoryRequestDetail(props) {
                             
                         
                             <TableCell align="center">{row.productName}</TableCell>
+                            <TableCell align="center">{row.category}</TableCell>
                             <TableCell align="center">{row.brand}</TableCell>
-                            <TableCell align="center">
-                                    {row.size}
-                                </TableCell>
+                            <TableCell align="center">{row.size}</TableCell>
                             <TableCell align="center">
                                     {row.color}
                                 </TableCell>
+                            <TableCell align="center">
+                                    {row.quantity}
+                                </TableCell>
 
-                            <TableCell align="center">{row.inventoryQuantity}</TableCell>
-                            <TableCell align="center">{row.actualQuantity}</TableCell>
-                            <TableCell align="center">{row.reason}</TableCell>
+                            <TableCell align="center">{row.originalCost}</TableCell>
+                            <TableCell align="center">{row.price}</TableCell>
                             {/* <TableCell align="center"><input type='text' onChange={(e) => handleEditProduct(row.productCode,"note",e.target.value)} /></TableCell> */}
                         </TableRow>
                     ))}
@@ -93,6 +101,7 @@ function CheckInventoryRequestDetail(props) {
                     
                 }}
                 />
+               
             </TableContainer>
             
        
@@ -102,7 +111,7 @@ function CheckInventoryRequestDetail(props) {
     );
 }
 
-CheckInventoryRequestDetail.propTypes = {
+BookingBodyDetail.propTypes = {
   rows: PropTypes.array,
 
  
@@ -111,4 +120,4 @@ CheckInventoryRequestDetail.propTypes = {
  
 
 
-export default CheckInventoryRequestDetail;
+export default BookingBodyDetail;
