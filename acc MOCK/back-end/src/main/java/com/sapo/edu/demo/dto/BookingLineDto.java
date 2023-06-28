@@ -9,23 +9,26 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 @Data
 public class BookingLineDto {
-    @NotEmpty
+
     private String image;
-    @NotEmpty
+
     @Size(max = 8)
     private String bookingCode;
-    @NotEmpty
+
     private String productName;
-    @NotNull
+    private String brand;
+    private String category;
+
     private String size;
-    @NotNull
+
     private String color;
-    @NotNull
+    private BigDecimal originalCost;
+
 
     private String inventoryName;
-    @NotEmpty
-    private Long quantity;
-    @NotEmpty
+
+    private Integer quantity;
+
     private BigDecimal price;
 
 

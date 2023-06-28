@@ -9,6 +9,7 @@ public class CreateProduct {
     String name;
     String image;
     String brand;
+    String description;
 
     public String getCategoryCode() {
         return categoryCode;

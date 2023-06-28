@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from './routes/Routes';
 import { Fragment } from 'react';
-import GlobalStyles from './components/GlobalStyles/GlobalStyles';
+import GlobalStyles from './components/globalstyles/GlobalStyles';
 import { AuthContextProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';

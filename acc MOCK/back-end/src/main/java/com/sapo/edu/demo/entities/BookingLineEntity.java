@@ -22,12 +22,15 @@ public class BookingLineEntity {
     private String productCode;
     @Column
     @NotNull
-    private Long quantity;
+    private Integer quantity;
+
     @Column
     @NotNull
     @Size(max = 8)
 
     private String bookingCode;
+    @Column
+    private BigDecimal originalCost;
     @Column
     @NotNull
     private Integer attributeId;

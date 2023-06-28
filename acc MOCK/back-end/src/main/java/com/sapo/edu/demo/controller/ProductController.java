@@ -48,9 +48,9 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
-    @DeleteMapping("/products")
-    public void delete(@RequestParam("code") String code) {
-        productService.delete(code);
+    @GetMapping("/products/search-products")
+    public List<ProductDto> getProductsByCodeOrName(@RequestParam String searchString) {
+        return productService.getProductsByCodeOrName(searchString);
     }
 
     @GetMapping("/products/searchString")
