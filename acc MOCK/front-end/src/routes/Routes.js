@@ -1,7 +1,7 @@
-<<<<<<< acc MOCK/front-end/src/routes/Routes.js
+
 import DefaultLayout from '../layout/defaultLayout/DefaultLayout';
 import Booking from '../pages/booking/Booking';
-import BookingDetails from '../pages/bookingdetails/BookingDetails';
+import BookingDetails from '../pages/bookingDetail/BookingDetail';
 import CreateBooking from '../pages/createbooking/CreateBooking';
 import DashBoard from '../pages/dashboard/Dashboard';
 import ReportPage from '../pages/ReportPage/ReportPage';
