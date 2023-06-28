@@ -19,6 +19,7 @@ function FeedbackDetail(){
         "status": "",
         "feedbackDate": ""
     })
+    const [customer, setCustomer] = useState({})
 
     useEffect(()=>{
         async function fetchData(){
@@ -32,20 +33,32 @@ function FeedbackDetail(){
         fetchData()
     }, [id])
     useEffect(()=>{
+        async function fetchData(){
+            try{
+                const res = await APIapp.get(`admin/care/customers/${feedback.customerCode}`)
+                console.log(feedback)
+                console.log(res)
+                setCustomer(res.data)
+            }catch(e){
+                console.log(e)
+            }
+        }
+        fetchData()
+    }, [feedback])
+    useEffect(()=>{
         if(feedback.status ==='S2'){
             setStyle({...solveButtonStyle, display: 'none'})
         } 
     })
 
     const handleUpdate= async ()=>{
-        const res = await APIapp.post(`admin/care/feedbacks/${id.id}`, feedback)
-        console.log(res)
-    }
-
-    const handleDelete= async ()=>{
-        const res =await APIapp.delete(`admin/care/feedbacks/${id.id}`)
-        console.log(res)
-        navigate('/care/feedbacks')
+        const confirmed = window.confirm("Bạn có chắc chắn muốn xác nhận đã xử lý xong phản hồi này ?")
+        if(confirmed){
+            const res = await APIapp.post(`admin/care/feedbacks/${id.id}`, feedback)
+            console.log(res)
+            window.alert("Cập nhật thành công!")
+            window.location.reload()
+        }
     }
 
     const handleReturn= ()=>{
@@ -73,12 +86,12 @@ function FeedbackDetail(){
                 </div>
                 <div className='infor'>
                     <div className='leftname'>
-                        <p>Mã phản hồi</p>
+                        <p>Tên khách hàng</p>
                         <p>Mã khách hàng</p>
                         <p>Số điện thoại</p>
                     </div>
                     <div className='leftcontent'>
-                        <p>: {feedback.id}</p>
+                        <p>: {customer.name}</p>
                         <p>: {feedback.customerCode}</p>
                         <p>: {feedback.phone}</p>
                     </div>

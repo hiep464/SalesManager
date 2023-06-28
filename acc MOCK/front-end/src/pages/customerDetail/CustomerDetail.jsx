@@ -35,14 +35,24 @@ function CustomerDetail (){
             setCustomer(res.data)
             setLastOrder(res1.data)
             setTotalOrder(res2.data[1])
-            setTotalPaid(res2.data[0])
+            if(res2.data[0]===null){
+                setTotalPaid(0)
+            }
+            else{
+                setTotalPaid(res2.data[0])
+            }
         }
         fetchData()
     },[])
 
     const handleUpdateLastContact= async()=>{
-        const res = await APIapp.post(`/admin/care/customers/${param.id}/lastcontact`)
-        console.log(res)
+        const confirmed = window.confirm("Bạn có chắc chắn muốn cập nhật lại ngày liên hệ gần nhất ?")
+        if(confirmed){
+            const res = await APIapp.post(`/admin/care/customers/${param.id}/lastcontact`)
+            console.log(res)
+            window.alert("Cập nhật thành công!")
+            window.location.reload()
+        }
     }
 
     const lastContact= new Date(customer.lastContact)
@@ -103,7 +113,7 @@ function CustomerDetail (){
                         <p>Tổng chi tiêu</p>
                     </div>
                     <div className='rightcontent'>
-                        <p>: {totalPaid}</p>
+                        <p>: {totalPaid.toLocaleString()}</p>
                     </div>
                 </div>
             </div>

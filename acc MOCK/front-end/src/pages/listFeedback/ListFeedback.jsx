@@ -14,6 +14,7 @@ function ListFeedback(){
     })
     const [feedbacks, setFeedbacks] = useState([])
     const navigate= useNavigate()
+    const [searchText, setSearchText] = useState("")
 
     const handllePageChange =(newPage) =>{
         setPagination({...pagination, page: newPage})
@@ -23,15 +24,26 @@ function ListFeedback(){
         setPagination({...pagination, limit: Number(newLimit)})
     }
 
+
     useEffect(()=>{
-        const fetchdata = async ()=>{
-            const res =await APIapp.get(`admin/care/feedbacks?page=${pagination.page-1}&size=${pagination.limit}`)
-            setPagination({...pagination, total: res.data.totalPages})
-            setFeedbacks(res.data.content)
-            console.log(res)
+        if(searchText===""){
+            const fetchdata = async ()=>{
+                const res =await APIapp.get(`admin/care/feedbacks?page=${pagination.page-1}&size=${pagination.limit}`)
+                setPagination({...pagination, total: res.data.totalPages})
+                setFeedbacks(res.data.content)
+                console.log(res)
+            }
+            fetchdata()
         }
-        fetchdata()
-    },[pagination.page, pagination.limit])
+        if(searchText!==""){
+            const search=async ()=>{
+                const res =await APIapp.get(`admin/care/feedbacks?page=${pagination.page-1}&size=${pagination.limit}&searchText=${searchText}`)
+                setPagination({...pagination, total: res.data.totalPages})
+                setFeedbacks(res.data.content)
+            }
+            search()
+        }
+    },[pagination.page, pagination.limit,searchText])
 
     const handleCreateNew=()=>{
         navigate('/care/feedbacks/new')
@@ -45,7 +57,7 @@ function ListFeedback(){
 
             <button className='addnew' onClick={handleCreateNew}>Tạo phản hồi</button>
             <div className='searchbar'>
-                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng' />
+                <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng, số điện thoại' onChange={(e)=>setSearchText(e.target.value)}/>
             </div>
             <div className='table'>
                 <table>

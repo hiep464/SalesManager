@@ -81,7 +81,12 @@ public class CustomerService {
     }
 
     public List<Object> getLastOrderDateByCustomer(String code){
-        return customerRepository.getLastOrderDateByCustomer(code).subList(0,1);
+        List<Object> result = customerRepository.getLastOrderDateByCustomer(code);
+        if(result.size()==0){
+            return null;
+        }else {
+            return customerRepository.getLastOrderDateByCustomer(code).subList(0,1);
+        }
     }
 
     public Optional<Object> getTotalOrderByCustomer(String code) {
