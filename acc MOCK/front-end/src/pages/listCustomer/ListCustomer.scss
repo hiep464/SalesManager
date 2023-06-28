@@ -1,11 +1,12 @@
 .pagecontent{
-    margin-top: 110px;
+    
     width:calc(82vw - 44px);
     min-height: 100px;
     background-color: white;
     border-radius: 5px;
     font-size: 18px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 80px;
     .searchbar{
         position: relative;
         input{
@@ -49,15 +50,16 @@
         tr{
             height: 50px;
             th{
-                background-color: #F3F3F3;
+                //background-color: #F3F3F3;
                 border: none;
-                border-bottom: 2px solid #CAC3C3;
+                border-bottom: 1px solid #CAC3C3;
+                border-top: 1px solid #CAC3C3 ;
                 text-align: start;
                 padding-left: 30px;
             }
             td{
                 border: none;
-                border-bottom: 2px solid #CAC3C3;
+                border-bottom: 1px solid #CAC3C3;
                 text-align: start;
                 padding-left: 30px;
             }
