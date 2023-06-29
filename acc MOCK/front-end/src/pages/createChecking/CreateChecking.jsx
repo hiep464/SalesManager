@@ -43,6 +43,7 @@ const CreateChecking = () => {
     const [inventory, setInventory] = React.useState('');
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
+    const [userStaff,setUserStaff] = React.useState({})
     React.useEffect (() => {
         console.log(dateCreated)
     },[dateCreated])
@@ -50,7 +51,8 @@ const CreateChecking = () => {
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
-
+    const user = JSON.parse(localStorage.getItem('sapo') )
+    const userId = user.userId
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
             // token: Cookies.get('token'),
@@ -65,6 +67,11 @@ const CreateChecking = () => {
         }}).then((response) => {
             setStaffs(response.data);
         });
+        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+                .then((res) => setUserStaff(res.data))
     }, []);
     const theme = useTheme();
 
@@ -161,22 +168,16 @@ const CreateChecking = () => {
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Nhân viên :" />
-                            <Select
+                            <TextField
                                 size="small"
                                 sx={{ width: '50%' }}
-                                value={staff}
+                                value={userStaff.name}
                                 onChange={(e) => {
                                     setStaff(e.target.value);
                                 }}
                             >
-                                {staffs?.map((item) => {
-                                    return (
-                                        <MenuItem key={item.name} value={item?.name}>
-                                            {item?.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
+                                
+                            </TextField>
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Ngày kiểm kho:" />
