@@ -76,4 +76,14 @@ public class StatisticalController {
     public List<Object> getTop3Customer(){
         return customerService.getTop3Customer();
     }
+
+    @GetMapping("/orders/count")
+    public Long getCountOrders(){
+        return orderService.getCountOrders();
+    }
+
+    @GetMapping("/customers/count")
+    public Long getCountCustomers(){
+        return customerService.getCount();
+    }
 }

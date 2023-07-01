@@ -22,16 +22,18 @@ import Category from "../pages/caegory/Category"
 import ReportForStaff from "../pages/ReportForStaff/ReportForStaff"
 import ordersList from "../pages/ordersList/ordersList"
 import orderDetails from "../pages/orderDetails/orderDetails"
+import ReceiptInventory from "../pages/receiptInventory/ReceiptInventory"
+import ReceiptInventoryDetail from "../pages/receiptInventoryDetail/ReceiptInventoryDetail"
 
 export const publicRoutes = [
     {path: '/', element : Login},
     {path: '/saleInShop', element : SaleInShop},
     {path: '/dashboard', element : DashBoard, layout: DefaultLayout},
-    {path: '/customers', element : ListCustomer, layout: DefaultLayout},
-    {path: '/feedbacks', element : ListFeedback, layout: DefaultLayout},
-    {path: '/feedbacks/:id', element : FeedbackDetail, layout: ItemDetailLayout},
-    {path: '/customers/:id', element : CustomerDetail, layout: ItemDetailLayout},
-    {path: '/feedbacks/new', element : CreateFeedback, layout: ItemDetailLayout},
+    {path: '/care/customers', element : ListCustomer, layout: DefaultLayout},
+    {path: '/care/feedbacks', element : ListFeedback, layout: DefaultLayout},
+    {path: '/care/feedbacks/:id', element : FeedbackDetail, layout: ItemDetailLayout},
+    {path: '/care/customers/:id', element : CustomerDetail, layout: ItemDetailLayout},
+    {path: 'care/feedbacks/new', element : CreateFeedback, layout: ItemDetailLayout},
     {path: 'inventory/product', element: Product, layout: DefaultLayout},
     {path: 'inventory/product/category', element: Category, layout: DefaultLayout},
     {path: 'inventory/product/:code', element: ProductDetails, layout: DefaultLayout},
@@ -41,6 +43,8 @@ export const publicRoutes = [
     {path: 'inventory/check_inventory', element : CheckInventory,layout: DefaultLayout},
     {path: 'inventory/check_inventory/create', element : CreateChecking,layout: DefaultLayout},
     {path: 'inventory/check_inventory/:code', element : CheckInventoryDetail,layout: DefaultLayout},
+    {path: 'inventory/receipt_inventory', element : ReceiptInventory,layout: DefaultLayout},
+    {path: 'inventory/receipt_inventory/:code', element : ReceiptInventoryDetail,layout: DefaultLayout},
 
     { path: '/report/staff/:staffCode/:filter', element: ReportForStaff, layout: DefaultLayout },
     { path: '/orders', element: ordersList, layout: DefaultLayout },

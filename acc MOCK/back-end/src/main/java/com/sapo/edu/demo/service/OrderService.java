@@ -85,4 +85,8 @@ public class OrderService {
     public Integer getOrderCount(){
         return orderRepository.getOrderCount();
     }
+
+    public Long getCountOrders(){
+        return orderRepository.count();
+    }
 }

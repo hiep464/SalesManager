@@ -92,4 +92,8 @@ public class CustomerService {
     public Optional<Object> getTotalOrderByCustomer(String code) {
         return customerRepository.getTotalOrderByCustomer(code);
     }
+
+    public Long getCount() {
+        return customerRepository.count();
+    }
 }

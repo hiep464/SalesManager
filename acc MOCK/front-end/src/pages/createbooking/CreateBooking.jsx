@@ -442,7 +442,7 @@ function CreateBooking() {
 
                                         <TableCell align="center">
                                            
-                                            <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost != undefined  ? (row.originalCost).toLocaleString() : 0} onChange={(e) => {
+                                            <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost != undefined  ? (row.originalCost).toLocaleString() : ''} onChange={(e) => {
                                                 const valueWithoutCommas = e.target.value.replace(/,/g,''); 
                                                 setOriginalCost(valueWithoutCommas); 
                                                 handleEditProduct(row.productName, row.size, row.color, "originalCost", parseInt(valueWithoutCommas));

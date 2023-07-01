@@ -42,7 +42,7 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
         <Box
             sx={{
                 backgroundColor: 'white',
-                width: '260px',
+                width: '268px',
                 height: '158px',
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 borderRadius: '6px',
@@ -59,7 +59,7 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
                         width: '123px',
                     }}
                 >
-                    <span style={{ fontSize: '20px', color: 'black' }}>{title}</span>
+                    <span style={{ fontSize: '16px', color: 'black' }}>{title}</span>
                     <span style={{ fontSize: '18px', color: backgroundColor }}>{content}</span>
                 </div>
             </Button>
@@ -130,6 +130,8 @@ function DashBoard() {
     const [labels, setLabels] = React.useState(labelsInit);
     const [data, setData] = React.useState([0]);
     const [history, setHistory] = React.useState([]);
+    const [newOrders, setNewOrders] = React.useState(0);
+    const [newCustomers, setNewCustomers] = React.useState(0);
 
     const handleChange = (event) => {
         setFilter(event.target.value);
@@ -143,12 +145,30 @@ function DashBoard() {
             setLabels(labelsInit);
             setStart(format(subDays(new Date(), 30), 'dd/MM/yyyy'));
             setEnd(format(new Date(), 'dd/MM/yyyy'));
-        } 
+        }
         // else {
         //     setLabels([format(new Date(), 'dd/MM')]);
         //     setStart(format(new Date(), 'dd/MM/yyyy'));
         //     setEnd(format(new Date(), 'dd/MM/yyyy'));
         // }
+    };
+
+    const fetchNewOrders = () => {
+        return axios.get(`${apiBaseUrl}/statistical/orders/count`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
+    };
+
+    const fetchNewCustomers = () => {
+        return axios.get(`${apiBaseUrl}/statistical/customers/count`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
     };
 
     const fetchRevenue = () => {
@@ -206,7 +226,16 @@ function DashBoard() {
     };
 
     React.useEffect(() => {
-        Promise.all([fetchRevenue(), fetchSold(), fetchQuantity(), fetchTop3Product(), fetchTop3Customer(), fetchHistory()])
+        Promise.all([
+            fetchRevenue(),
+            fetchSold(),
+            fetchQuantity(),
+            fetchTop3Product(),
+            fetchTop3Customer(),
+            fetchHistory(),
+            fetchNewOrders(),
+            fetchNewCustomers(),
+        ])
             .then((responses) => {
                 const revenue = responses[0].data;
                 setRevenue(revenue);
@@ -219,7 +248,9 @@ function DashBoard() {
                 const top3Customer = responses[4].data;
                 setTopCustomer(top3Customer);
                 console.log(revenue, sold, quantity, top3Product, top3Customer);
-                setHistory(responses[5].data)
+                setHistory(responses[5].data);
+                setNewOrders(responses[6].data);
+                setNewCustomers(responses[7].data);
             })
             .catch((error) => {
                 console.error(error);
@@ -261,8 +292,8 @@ function DashBoard() {
                         }
                     />
                     <BoxItem
-                        title={'Đã bán'}
-                        content={sold}
+                        title={'Đơn hàng mới'}
+                        content={newOrders}
                         backgroundColor={'#0FD186'}
                         icon={
                             <ShoppingBasketIcon
@@ -277,8 +308,8 @@ function DashBoard() {
                         }
                     />
                     <BoxItem
-                        title={'Tồn kho'}
-                        content={quantity}
+                        title={'Khách hàng mới'}
+                        content={newCustomers}
                         backgroundColor={'#FFB92A'}
                         icon={
                             <WarehouseIcon
@@ -401,7 +432,7 @@ function DashBoard() {
                                     <TimelineDot sx={{ backgroundColor: 'primary.main' }} />
                                     {key === 4 ? '' : <TimelineConnector sx={{ backgroundColor: 'primary.main' }} />}
                                 </TimelineSeparator>
-                                <TimelineContent>{item?.staffName + " vừa " + item?.operation}</TimelineContent>
+                                <TimelineContent>{item?.staffName + ' vừa ' + item?.operation}</TimelineContent>
                             </TimelineItem>
                         );
                     })}

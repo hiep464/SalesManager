@@ -17,12 +17,15 @@ import { useLogout } from '../../api/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useLocation, Link } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import axios from 'axios';
+import { apiBaseUrl } from '../../constant/constant';
 
 const cx = classNames.bind(styles);
 
 function AccountMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [title, setTitle] = React.useState(false);
+    const [userInfo, setUserInfo] = React.useState();
     const [details, setDetails] = React.useState(false);
     const open = Boolean(anchorEl);
 
@@ -40,6 +43,13 @@ function AccountMenu() {
             setDetails(false);
         }
     }, [location]);
+
+    React.useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('sapo'));
+        axios.get(`${apiBaseUrl}/auth/user/info?id=${user?.userId}`).then((response) => {
+            setUserInfo(response.data);
+        });
+    }, []);
 
     const navigate = useNavigate();
     const handleClick = (event) => {
@@ -102,7 +112,7 @@ function AccountMenu() {
                         aria-expanded={open ? 'true' : undefined}
                     >
                         <Avatar sx={{ width: 32, height: 32 }} />
-                        <span style={{ margin: '0 8px' }}>Admin</span>
+                        <span style={{ margin: '0 8px' }}>{userInfo?.name}</span>
                     </Box>
                 </Tooltip>
             </Box>
