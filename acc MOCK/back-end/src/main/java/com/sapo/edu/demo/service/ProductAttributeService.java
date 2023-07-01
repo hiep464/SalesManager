@@ -27,12 +27,17 @@ public class ProductAttributeService {
         return productAttributeRepository.findByProductCode(code);
     }
     public ProductAttribute findAllAttributeByProductNameAndSizeAndName(String name, String size, String color, String inventoryName) {
+        String searchInventoryName = null;
+        if(inventoryName != "") {
+            searchInventoryName = inventoryName;
+        }
         ProductEntity product = productRepository.findByName(name);
-        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), size, color, inventoryName );
+        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), size, color, searchInventoryName );
 
         return attribute;
 
     }
+
 
     //bao
     public List<String> getAllSizes() {
@@ -63,10 +68,12 @@ public class ProductAttributeService {
             productAttribute.setUpdateAt(null);
             productAttribute.setColor(createProductAttribute.getColor());
             productAttribute.setSize(createProductAttribute.getSize());
-            productAttribute.setQuantity(createProductAttribute.getQuantity());
-            productAttribute.setSold(createProductAttribute.getSold());
+            productAttribute.setQuantity(0);
+            productAttribute.setSold(0);
+            productAttribute.setPrice(createProductAttribute.getPrice());
+            productAttribute.setOriginalCost(createProductAttribute.getOriginalCost());
             productAttribute.setProductCode(createProductAttribute.getProductCode());
-            System.out.println(productAttribute);
+
             productAttributeRepository.save(productAttribute);
         }
         return createProductAttributes;

@@ -42,4 +42,8 @@ public class StaffServicce {
         }
         return staffs;
     }
+    public Staff getStaffLogin(Integer id) {
+        User user = userRepository.findById(id).get();
+        return staffRepository.findById(user.getStaffCode()).get();
+    }
 }

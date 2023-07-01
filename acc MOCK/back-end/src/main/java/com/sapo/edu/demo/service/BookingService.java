@@ -231,7 +231,7 @@ public class BookingService {
                     BookingLineEntity bookingLineEntity = modelMapperbooking.map(bookingLineDto, BookingLineEntity.class);
                     ProductEntity entity = productRepository.findByName(bookingLineDto.getProductName());
                     bookingLineEntity.setProductCode(entity.getCode());
-                    ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(entity.getCode(),bookingLineDto.getSize(),bookingLineDto.getColor(),bookingDto.getInventoryName());
+                    ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColor(entity.getCode(),bookingLineDto.getSize(),bookingLineDto.getColor());
                     bookingLineEntity.setBookingCode(bookingDto.getCode());
                     if(attribute != null) {
                         bookingLineEntity.setAttributeId(attribute.getId());

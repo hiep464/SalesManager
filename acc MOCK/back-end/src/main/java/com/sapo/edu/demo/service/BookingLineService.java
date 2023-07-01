@@ -45,7 +45,7 @@ public class BookingLineService {
             BookingLineEntity bookingLineEntity = bookingLines.get(i);
             ProductEntity productEntity = productRepository.findById(bookingLineEntity.getProductCode()).get();
             bookingLineDto.setBrand(productEntity.getBrand());
-            CategoryEntity category = categoryRepository.findById(productEntity.getCategoryCode()).get();
+            CategoryEntity category = categoryRepository.findById(productEntity.getCategoryId()).get();
             bookingLineDto.setCategory(category.getName());
             bookingLineDto.setProductName(productEntity.getName());
             ProductAttribute attribute = attributeRepository.findById(bookingLineEntity.getAttributeId()).get();

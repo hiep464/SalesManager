@@ -1,6 +1,7 @@
 package com.sapo.edu.demo.repository;
 
 import com.sapo.edu.demo.entities.ProductAttribute;
+import com.sapo.edu.demo.entities.ProductEntity;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,5 +31,6 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
     List<String> findDistinctColor();
 
     List<ProductAttribute> findAllByProductCode(String code);
+    ProductAttribute findByProductCodeAndSizeAndColor(String productCode, String size, String color);
 
 }

@@ -13,9 +13,9 @@ import Menu from '@mui/material/Menu';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AddIcon from '@mui/icons-material/Add';
 import { Box } from '@mui/system';
-import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Booking.scss'
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
 const StyledMenu = styled((props) => (
@@ -56,13 +56,13 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'code', headerName: 'Mã đơn', width: 100 },
-    { field: 'bookingStatus', headerName: 'Trạng thái đặt', width: 200 },
-    { field: 'staffName', headerName: 'Nhân viên tạo', width: 200 },
-    { field: 'supplierName', headerName: 'Nhà cung cấp', width: 150 },
-    { field: 'inventoryName', headerName: 'Kho', width: 150 },
-    { field: 'total', headerName: 'Giá trị đơn', width: 200 },
-    { field: 'bookingDate', headerName: 'Ngày đặt', width: 200 },
+    { field: 'code',headerClassName: 'header-table', headerName: 'Mã đơn', width: 100 },
+    { field: 'bookingStatus',headerClassName: 'header-table', headerName: 'Trạng thái đặt', width: 200 },
+    { field: 'staffName',headerClassName: 'header-table', headerName: 'Nhân viên tạo', width: 200 },
+    { field: 'supplierName',headerClassName: 'header-table', headerName: 'Nhà cung cấp', width: 150 },
+    { field: 'inventoryName',headerClassName: 'header-table', headerName: 'Kho', width: 150 },
+    { field: 'total',headerClassName: 'header-table', headerName: 'Giá trị đơn', width: 200 },
+    { field: 'bookingDate',headerClassName: 'header-table', headerName: 'Ngày đặt', width: 200 },
 
 ];
 const bookingsStatus = ["Đã nhập", "Chưa nhập"]
@@ -82,7 +82,7 @@ function Booking() {
     const [staffs, setStaffs] = React.useState([])
     const [staffName, setStaffName] = React.useState('')
 
-    const getRowId = (row) => row.code
+
     const open = Boolean(anchorEl);
 
     const navigate = useNavigate();
@@ -93,9 +93,9 @@ function Booking() {
             Authorization: getCookie('Authorization'),
         }})
             .then((response) => {
-            // setBooking(Response.products);
-            console.log(response.data)
-            setBooking(response.data)
+                // setBooking(Response.products);
+                console.log(response.data);
+                setBooking(response.data);
             });
         axios.get(`${apiBaseUrl}/staffs/inventory`,{headers: {
             Authorization: getCookie('Authorization'),
@@ -190,7 +190,14 @@ function Booking() {
                     Bộ lọc
                 </Button>
                 <Divider sx={{ height: 28, margin: '4px 20px' }} orientation="vertical" />
-                <Button startIcon={<AddIcon />} onClick={() => {navigate('create')}} variant="contained" sx={{ marginRight: '10px' }}>
+                <Button
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                        navigate('create');
+                    }}
+                    variant="contained"
+                    sx={{ marginRight: '10px' }}
+                >
                     Tạo đơn đặt
                 </Button>
                 <StyledMenu
@@ -304,7 +311,7 @@ function Booking() {
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
             />
         </div>
-     );
+    );
 }
 
 export default Booking;

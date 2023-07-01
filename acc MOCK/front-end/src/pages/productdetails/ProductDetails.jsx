@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
-
+import AddIcon from '@mui/icons-material/Add';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -230,26 +230,26 @@ function ProductDetails() {
         });
     };
 
-    const handleChangeQuantity = (event, index) => {
+    const handleChangePrice = (event, index) => {
         const { value } = event.target;
         setAddAttribute((prevValues) => {
             const updatedValues = [...prevValues];
-            updatedValues[index].quantity = parseFloat(value.replace(/,/g, ''));
+            updatedValues[index].price = parseFloat(value.replace(/,/g, ''));
             return updatedValues;
         });
     };
 
-    const handleChangeSold = (event, index) => {
+    const handleChangeOriginalCost = (event, index) => {
         const { value } = event.target;
         setAddAttribute((prevValues) => {
             const updatedValues = [...prevValues];
-            updatedValues[index].sold = parseFloat(value.replace(/,/g, ''));
+            updatedValues[index].originalCost = parseFloat(value.replace(/,/g, ''));
             return updatedValues;
         });
     };
 
     const handleAddAttribute = () => {
-        let newAttribute = { productCode: code, quantity: 0, sold: 0, size: '', color: '' };
+        let newAttribute = { productCode: code, size: '', color: '', price: 0, originalCost: 0 };
         addElement(newAttribute);
     };
 
@@ -360,19 +360,25 @@ function ProductDetails() {
     }
 
     const handleDeleteProduct = () => {
-        axios.delete(`${apiBaseUrl}/inventory/products/delete/${code}`, {
-            headers: {
-                // token: Cookies.get('token'),
-                Authorization: getCookie('Authorization'),
-            },
-        }).then(() => {
-            setMessage('Xóa thành công');
-            handleClickSnackBar();
-            setDeleteProduct(false);
-            alert("Xóa thành công");
-            navigate('/inventory/product');
-        })
-    }
+        axios
+            .delete(`${apiBaseUrl}/inventory/products/delete/${code}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then(() => {
+                setMessage('Xóa thành công');
+                handleClickSnackBar();
+                setDeleteProduct(false);
+                alert('Xóa thành công');
+                navigate('/inventory/product');
+            });
+    };
+
+    const handleOpenFileDialog = () => {
+        inputFileRef.current.click();
+    };
 
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
@@ -393,11 +399,11 @@ function ProductDetails() {
             ) : (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>{product?.name}</h2>
-                    <Box>
+                    {/* <Box>
                         <Button variant="contained" disableElevation>
                             Đặt hàng
                         </Button>
-                    </Box>
+                    </Box> */}
                 </div>
             )}
             <Box>
@@ -513,21 +519,30 @@ function ProductDetails() {
                             <>
                                 {update ? (
                                     imageURL ? (
-                                        <div>
+                                        <div style={{ position: 'relative', marginLeft: '10px' }}>
                                             <img
-                                                style={{ width: '48px', height: '48px' }}
+                                                style={{ width: '68px', height: '68px', borderRadius: '4px' }}
                                                 src={imageURL}
                                                 alt="Uploaded"
                                             />
-                                            <button onClick={deleteImage}>Delete Image</button>
+                                            {/* <button onClick={deleteImage}>Delete Image</button> */}
+                                            <CloseIcon
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: '0',
+                                                    right: '1px',
+                                                    width: '14px',
+                                                    height: '14px',
+                                                    color: 'red',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={deleteImage}
+                                            />
                                         </div>
                                     ) : (
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            ref={inputFileRef}
-                                            onChange={handleImageUpload}
-                                        ></input>
+                                        <Button variant="text" onClick={handleOpenFileDialog} startIcon={<AddIcon />}>
+                                            Tải ảnh lên
+                                        </Button>
                                     )
                                 ) : (
                                     <>
@@ -535,6 +550,13 @@ function ProductDetails() {
                                         chưa có hình ảnh
                                     </>
                                 )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    ref={inputFileRef}
+                                    onChange={handleImageUpload}
+                                ></input>
                             </>
                         )}
                     </Box>
@@ -600,7 +622,7 @@ function ProductDetails() {
                                 </TableCell>
                                 <TableCell align="left">Giá bán</TableCell>
                                 <TableCell align="left">Giá nhập</TableCell>
-                                <TableCell align="left">Số lượng</TableCell>
+                                {update ? '' : <TableCell align="left">Số lượng</TableCell>}
                                 {!update ? <TableCell align="left">Ngày tạo</TableCell> : ''}
                                 {update ? <TableCell /> : ''}
                             </TableRow>
@@ -682,37 +704,41 @@ function ProductDetails() {
                                                     <Numeral value={row?.originalCost} format={'0,0'} />
                                                 )}
                                             </TableCell>
-                                            <TableCell align="left">
-                                                {update ? (
-                                                    <NumericFormat
-                                                        thousandSeparator={true}
-                                                        prefix={''}
-                                                        customInput={TextField}
-                                                        type="text"
-                                                        // Các thuộc tính khác của TextField
-                                                        value={row?.quantity}
-                                                        sx={{ width: '50%' }}
-                                                        size="small"
-                                                        variant="standard"
-                                                        onChange={(e) => {
-                                                            setAttributes((prevItems) =>
-                                                                prevItems.map((item) =>
-                                                                    item.id === row.id
-                                                                        ? {
-                                                                              ...item,
-                                                                              quantity: parseFloat(
-                                                                                  e.target.value.replace(/,/g, ''),
-                                                                              ),
-                                                                          }
-                                                                        : item,
-                                                                ),
-                                                            );
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    row?.quantity
-                                                )}
-                                            </TableCell>
+                                            {update ? (
+                                                ''
+                                            ) : (
+                                                <TableCell align="left">
+                                                    {update ? (
+                                                        <NumericFormat
+                                                            thousandSeparator={true}
+                                                            prefix={''}
+                                                            customInput={TextField}
+                                                            type="text"
+                                                            // Các thuộc tính khác của TextField
+                                                            value={row?.quantity}
+                                                            sx={{ width: '50%' }}
+                                                            size="small"
+                                                            variant="standard"
+                                                            onChange={(e) => {
+                                                                setAttributes((prevItems) =>
+                                                                    prevItems.map((item) =>
+                                                                        item.id === row.id
+                                                                            ? {
+                                                                                  ...item,
+                                                                                  quantity: parseFloat(
+                                                                                      e.target.value.replace(/,/g, ''),
+                                                                                  ),
+                                                                              }
+                                                                            : item,
+                                                                    ),
+                                                                );
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        row?.quantity
+                                                    )}
+                                                </TableCell>
+                                            )}
                                             {!update ? (
                                                 <TableCell sx={{ width: '15%' }} align="left">
                                                     {row.createAt}
@@ -767,11 +793,11 @@ function ProductDetails() {
                                                       customInput={TextField}
                                                       type="text"
                                                       // Các thuộc tính khác của TextField
-                                                      defaultValue={row.quantity}
+                                                      defaultValue={row?.price}
                                                       sx={{ width: '50%' }}
                                                       size="small"
                                                       variant="standard"
-                                                      onChange={(e) => handleChangeQuantity(e, index)}
+                                                      onChange={(e) => handleChangePrice(e, index)}
                                                   />
                                               </TableCell>
                                               <TableCell component="th" scope="row">
@@ -781,11 +807,11 @@ function ProductDetails() {
                                                       customInput={TextField}
                                                       type="text"
                                                       // Các thuộc tính khác của TextField
-                                                      defaultValue={row.sold}
+                                                      defaultValue={row?.originalCost}
                                                       sx={{ width: '50%' }}
                                                       size="small"
                                                       variant="standard"
-                                                      onChange={(e) => handleChangeSold(e, index)}
+                                                      onChange={(e) => handleChangeOriginalCost(e, index)}
                                                   />
                                               </TableCell>
                                               <TableCell align="center">
@@ -846,7 +872,14 @@ function ProductDetails() {
                 {update ? (
                     ''
                 ) : (
-                    <Button variant="outlined" onClick={() => {handleClickOpen(); setDeleteProduct(true)}} sx={{ margin: '10px', backgroundColor: 'white' }}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            handleClickOpen();
+                            setDeleteProduct(true);
+                        }}
+                        sx={{ margin: '10px', backgroundColor: 'white' }}
+                    >
                         Xóa
                     </Button>
                 )}
@@ -858,7 +891,7 @@ function ProductDetails() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa thuộc tính này?'}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{'Bạn có chắc chắn muốn xóa?'}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         Sau khi xóa sẽ không thể hoàn tác được

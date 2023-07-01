@@ -2,25 +2,31 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.dto.CategoryDto;
 import com.sapo.edu.demo.entities.CategoryEntity;
+import com.sapo.edu.demo.entities.ProductEntity;
 import com.sapo.edu.demo.repository.CategoryRepository;
 import com.sapo.edu.demo.repository.ProductRepository;
 import com.sapo.edu.demo.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.sapo.edu.demo.exception.DuplicateException;
+
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
 
-
-    private final ModelMapper modelMapperCategory;
+    @Autowired
+    private ModelMapper modelMapperCategory;
 
     /**
      * Save or update storage
@@ -91,5 +97,38 @@ public class CategoryService {
 
     public CategoryEntity getByCode(String code) {
         return categoryRepository.findByCode(code).get();
+    }
+
+    public CategoryEntity saveCategory (com.sapo.edu.demo.dto.category.CategoryDto categoryDto){
+        Integer maxId = categoryRepository.findMaxCategoryId();
+        Integer id = maxId + 1;
+        String code = null;
+        if(maxId < 10)
+            code = "C00" + id;
+        else if(id >= 10 && id < 100)
+            code = "C0" + id;
+        else
+            code = "C" + id;
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setCode(code);
+        categoryEntity.setName(categoryDto.getName());
+        categoryEntity.setDescription(categoryDto.getDescription());
+        categoryEntity.setCreateAt(LocalDate.now());
+        return categoryRepository.save(categoryEntity);
+    }
+
+    public CategoryEntity updateCategory(CategoryEntity categoryEntity){
+        return categoryRepository.save(categoryEntity);
+    }
+
+    public void deleteCategory(Integer id){
+        CategoryEntity categoryEntity = categoryRepository.findById(id).get();
+        List<ProductEntity> productEntities = productRepository.findAllByCategoryCode(categoryEntity.getCode());
+        for(ProductEntity productEntity : productEntities){
+            productEntity.setCategoryCode(null);
+            productRepository.save(productEntity);
+        }
+//        categoryRepository.delete(categoryEntity.getId());
+        categoryRepository.deleteById(id);
     }
 }

@@ -129,6 +129,7 @@ function DashBoard() {
     const [end, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [labels, setLabels] = React.useState(labelsInit);
     const [data, setData] = React.useState([0]);
+    const [history, setHistory] = React.useState([]);
 
     const handleChange = (event) => {
         setFilter(event.target.value);
@@ -150,6 +151,15 @@ function DashBoard() {
 
     const fetchRevenue = () => {
         return axios.get(`${apiBaseUrl}/statistical/revenue`, {
+            headers: {
+                // token: Cookies.get('token'),
+                Authorization: getCookie('Authorization'),
+            },
+        });
+    };
+
+    const fetchHistory = () => {
+        return axios.get(`${apiBaseUrl}/history`, {
             headers: {
                 // token: Cookies.get('token'),
                 Authorization: getCookie('Authorization'),
@@ -194,7 +204,7 @@ function DashBoard() {
     };
 
     React.useEffect(() => {
-        Promise.all([fetchRevenue(), fetchSold(), fetchQuantity(), fetchTop3Product(), fetchTop3Customer()])
+        Promise.all([fetchRevenue(), fetchSold(), fetchQuantity(), fetchTop3Product(), fetchTop3Customer(), fetchHistory()])
             .then((responses) => {
                 const revenue = responses[0].data;
                 setRevenue(revenue);
@@ -207,6 +217,7 @@ function DashBoard() {
                 const top3Customer = responses[4].data;
                 setTopCustomer(top3Customer);
                 console.log(revenue, sold, quantity, top3Product, top3Customer);
+                setHistory(responses[5].data)
             })
             .catch((error) => {
                 console.error(error);
@@ -381,15 +392,15 @@ function DashBoard() {
                         marginBottom: '0px',
                     }}
                 >
-                    {history?.map((key, item) => {
+                    {history?.map((item, key) => {
                         return (
                             <TimelineItem key={key}>
                                 <TimelineOppositeContent />
                                 <TimelineSeparator>
                                     <TimelineDot sx={{ backgroundColor: 'primary.main' }} />
-                                    {item === 4 ? '' : <TimelineConnector sx={{ backgroundColor: 'primary.main' }} />}
+                                    {key === 4 ? '' : <TimelineConnector sx={{ backgroundColor: 'primary.main' }} />}
                                 </TimelineSeparator>
-                                <TimelineContent>{history[item]}</TimelineContent>
+                                <TimelineContent>{item?.staffName + " vừa " + item?.operation}</TimelineContent>
                             </TimelineItem>
                         );
                     })}

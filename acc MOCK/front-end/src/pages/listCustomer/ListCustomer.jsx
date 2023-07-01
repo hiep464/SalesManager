@@ -11,7 +11,7 @@ import { getCookie } from '../../utils/api';
 function ListCustomer(){
     const [pagination,setPagination]=useState({
         page:1,
-        limit:20,
+        limit:10,
         total:1
     })
     const [customers, setCustomers] = useState([])

@@ -84,14 +84,10 @@ function CheckInventoryRequestDetail(props) {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-                    localeText={{
-                        MuiTablePagination: {
-                            labelDisplayedRows: ({ from, to, count }) =>
-                                `Kết quả từ ${from} đến ${to} trên tổng số ${count}`,
-                            labelRowsPerPage: 'Hiển thị',
-                        },
-                    
-                }}
+                    labelDisplayedRows={({ from, to, count }) =>
+                        `Kết quả từ ${from} đến ${to} trên tổng số ${count}`
+                    }
+                    labelRowsPerPage="Hiển thị"
                 />
             </TableContainer>
             
