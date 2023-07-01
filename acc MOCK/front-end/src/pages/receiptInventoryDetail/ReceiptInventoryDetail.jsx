@@ -115,7 +115,7 @@ return (
         <Box sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between', alignItems: "center", borderRadius: '10px' }}>
             <Grid container spacing={3} display="flex" alignItems="center">
 
-                <Grid >
+                 <Grid >
                     <h2>{code}</h2>
                 </Grid>
                 <Grid backgroundColor={bookingRequest.bookingStatus === "Đã nhập" ? "aqua" : "#e49c06"} borderRadius="25px" >
@@ -131,10 +131,7 @@ return (
             </Grid> */}
             {bookingRequest.bookingStatus === "Chưa nhập" ?
                 <Grid container spacing={3} display="flex" justifyItems="flex-end" alignItems="center">
-                    <Grid>
-
-                        <Button size="large" variant="contained" onClick={handleDeleteRequest}>Xóa</Button>
-                    </Grid>
+                   
                     <Grid>
 
                         <Button size="large" variant="contained" onClick={handleUpdateProductQuantity}>Nhập kho</Button>

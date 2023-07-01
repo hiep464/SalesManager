@@ -27,12 +27,17 @@ public class ProductAttributeService {
         return productAttributeRepository.findByProductCode(code);
     }
     public ProductAttribute findAllAttributeByProductNameAndSizeAndName(String name, String size, String color, String inventoryName) {
+        String searchInventoryName = null;
+        if(inventoryName != "") {
+            searchInventoryName = inventoryName;
+        }
         ProductEntity product = productRepository.findByName(name);
-        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), size, color, inventoryName );
+        ProductAttribute attribute = productAttributeRepository.findByProductCodeAndSizeAndColorAndInventoryName(product.getCode(), size, color, searchInventoryName );
 
         return attribute;
 
     }
+
 
     //bao
     public List<String> getAllSizes() {

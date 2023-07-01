@@ -4,10 +4,7 @@ import com.sapo.edu.demo.entities.Staff;
 import com.sapo.edu.demo.service.StaffServicce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +23,9 @@ public class StaffController {
     @GetMapping("/staffs/inventory")
     public List<Staff> getInventoryStaff(){
         return staffServicce.getInventoryStaff();
+    }
+    @GetMapping("/staff/{id}")
+    public Staff getStaffById(@PathVariable int id){
+        return staffServicce.getStaffLogin(id);
     }
 }
