@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
 import { useNavigate } from 'react-router-dom';
+import '../CreateReportPage/CreateReportPage.scss';
 
 const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
     return (
@@ -153,24 +154,28 @@ function ReportForStaff() {
         }
     }, []);
     const columns = [
-        { field: 'code', headerName: 'Mã đơn hàng', width: 100 },
-        { field: 'name', headerName: 'Tên khách hàng', width: 130 },
-        { field: 'staff_code', headerName: 'Mã nhân viên', width: 130 },
-        { field: 'email', headerName: 'Email khách hàng', width: 130 },
+        { field: 'code', headerClassName: 'header-table', headerName: 'Mã đơn hàng', width: 100 },
+        { field: 'name', headerClassName: 'header-table', headerName: 'Tên khách hàng', width: 130 },
+        { field: 'staff_code', headerClassName: 'header-table', headerName: 'Mã nhân viên', width: 130 },
+        { field: 'email', headerClassName: 'header-table', headerName: 'Email khách hàng', width: 130 },
         {
             field: 'phone',
+            headerClassName: 'header-table',
+            headerClassName: 'header-table',
             headerName: 'SĐT khách hàng',
             width: 130,
         },
-        { field: 'quantity', headerName: 'Số lượng SP', width: 130 },
+        { field: 'quantity', headerClassName: 'header-table', headerName: 'Số lượng SP', width: 130 },
         {
             field: 'total',
+            headerClassName: 'header-table',
             headerName: 'Tổng tiền  ',
             type: 'number',
             width: 190,
         },
         {
             field: 'order_date',
+            headerClassName: 'header-table',
             headerName: 'Ngày tạo đơn',
             width: 190,
         },
@@ -255,18 +260,14 @@ function ReportForStaff() {
                     alignItems: 'flex-start',
                     flexDirection: 'column',
                     width: 1170,
-                    height: 300,
+                    height: 'auto',
                 }}
             >
-                <div style={{ height: 300, width: '100%' }}>
+                <div style={{ height: 'auto', width: '100%' }}>
                     <DataGrid
                         rows={orders}
                         columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
+                        pagination={false}
                         getRowId={(data) => data.code}
                         onRowClick={handleRowClick}
                     />
