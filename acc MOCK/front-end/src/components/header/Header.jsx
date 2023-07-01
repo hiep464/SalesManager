@@ -29,7 +29,7 @@ function AccountMenu() {
     const location = useLocation();
 
     React.useEffect(() => {
-        if (location.pathname.includes('product/P')) {
+        if (location.pathname.includes('product/P') || location.pathname.includes('category')) {
             setDetails(true);
             setTitle('Quay lại danh sách sản phẩm');
         } else if (location.pathname.includes('product')) {
@@ -142,23 +142,7 @@ function AccountMenu() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <Avatar /> My account
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
+                    <Avatar /> Hồ sơ
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
@@ -170,7 +154,7 @@ function AccountMenu() {
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    Logout
+                    Thoát
                 </MenuItem>
             </Menu>
         </React.Fragment>

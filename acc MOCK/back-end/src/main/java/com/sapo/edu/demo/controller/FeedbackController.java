@@ -47,12 +47,9 @@ public class FeedbackController {
     @GetMapping
     public Page<Feedback> listFeedback(
             @RequestParam(value = "searchText", required = false, defaultValue = "") String searchText,
-            @RequestParam(value = "minDate", required = false, defaultValue ="2010-06-07 01:58:07")String minDate,
-            @RequestParam(value = "maxDate", required = false, defaultValue = "2024-06-07 01:58:07")String maxDate,
-            @RequestParam(value = "status", required = false, defaultValue = "S") String status,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
             ) throws ParseException {
-        return feedbackService.listFeedback(searchText, minDate, maxDate, status, page, size);
+        return feedbackService.listFeedback(searchText, page, size);
     }
 }

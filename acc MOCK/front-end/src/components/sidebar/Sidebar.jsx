@@ -14,6 +14,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import { useLocation, Link } from 'react-router-dom';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 const cx = classNames.bind(styles);
 // contained
@@ -37,18 +38,30 @@ function NavbarItem({ title, icon, subTitle, variant, location }) {
             </Button>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    {subTitle?.map((item, key) => (
-                        item?.path ? 
-                        <Link to={item.path} key={key} style={{textDecoration: 'none'}}>
-                            <ListItemButton onClick={() => {console.log(item)}} sx={{ padding: '4px 0 4px 50px' }}>
+                    {subTitle?.map((item, key) =>
+                        item?.path ? (
+                            <Link to={item.path} key={key} style={{ textDecoration: 'none' }}>
+                                <ListItemButton
+                                    onClick={() => {
+                                        console.log(item);
+                                    }}
+                                    sx={{ padding: '4px 0 4px 50px' }}
+                                >
+                                    <ListItemText sx={{ color: '#898989' }} primary={item?.title} />
+                                </ListItemButton>
+                            </Link>
+                        ) : (
+                            <ListItemButton
+                                onClick={() => {
+                                    setOpen(true);
+                                }}
+                                key={key}
+                                sx={{ padding: '4px 0 4px 50px' }}
+                            >
                                 <ListItemText sx={{ color: '#898989' }} primary={item?.title} />
                             </ListItemButton>
-                        </Link>
-                        :
-                        <ListItemButton onClick={() => {setOpen(true)}} key={key} sx={{ padding: '4px 0 4px 50px' }}>
-                            <ListItemText sx={{ color: '#898989' }} primary={item?.title} />
-                        </ListItemButton>
-                    ))}
+                        ),
+                    )}
                 </List>
             </Collapse>
         </List>
@@ -70,19 +83,37 @@ function Sidebar() {
                         variant={location.pathname.includes('dashboard') ? 'contained' : 'text'}
                     />
                 </Link>
+                <Link to={'/orders'} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    <NavbarItem
+                        location={location}
+                        title={'Đơn hàng'}
+                        icon={<ReceiptLongIcon />}
+                        // variant={location.pathname.includes('dashboard') ? 'contained' : 'text'}
+                    />
+                </Link>
                 <NavbarItem
                     location={location}
                     title={'Bán hàng'}
                     icon={<StorefrontIcon />}
                     variant={'text'}
-                    subTitle={[{title: 'Bán tại quầy', path: '/saleInShop'}, {title: 'Báo cáo', path: '/report'}]}
+                    subTitle={[
+                        { title: 'Bán tại quầy', path: '/saleInShop' },
+                        { title: 'Báo cáo', path: '/report' },
+                    ]}
                 />
                 <NavbarItem
                     location={location}
                     title={'CSKH'}
                     icon={<SupportAgentIcon />}
-                    variant={(location.pathname.includes('customers')||location.pathname.includes('feedbacks')) ? 'contained' : 'text'}
-                    subTitle={[{title: 'Khách hàng', path:'/care/customers'}, {title: 'Phản hồi', path: '/care/feedbacks'}]}
+                    variant={
+                        location.pathname.includes('customers') || location.pathname.includes('feedbacks')
+                            ? 'contained'
+                            : 'text'
+                    }
+                    subTitle={[
+                        { title: 'Khách hàng', path: '/care/customers' },
+                        { title: 'Phản hồi', path: '/care/feedbacks' },
+                    ]}
                 />
                 <NavbarItem
                     location={location}

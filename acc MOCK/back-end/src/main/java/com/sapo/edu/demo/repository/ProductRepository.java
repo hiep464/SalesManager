@@ -37,11 +37,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
 
     ProductEntity findByCode(String code);
 
-    @Query("SELECT p.code , p.name, pa.price, pa.id, pa.size, pa.color, pa.quantity, pa.sold " +
-            "FROM ProductAttribute pa " +
-            "INNER JOIN ProductEntity p ON p.code = pa.productCode " +
-            "WHERE p.code LIKE %:code%")
-    List<Object[]> searchByCodeContaining(String code);
 
     @Modifying
     @Query("SELECT p FROM ProductEntity p WHERE p.code LIKE %:code% ")
@@ -63,4 +58,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     List<ProductsWithCategory> findByCategoryIn(List<CategoryEntity> categories);
     List<ProductEntity> findByCodeContainingOrNameContaining(String code, String name);
 
+
+    List<ProductEntity> findAllByCategoryCode (String code);
 }

@@ -4,6 +4,7 @@ import com.sapo.edu.demo.authentication.CustomUserDetails;
 import com.sapo.edu.demo.authentication.JwtTokenProvider;
 import com.sapo.edu.demo.request.LoginRequest;
 import com.sapo.edu.demo.response.LoginResponse;
+import com.sapo.edu.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController("UserController")
 @RequestMapping("/admin/auth")
@@ -21,6 +24,9 @@ public class UserController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    UserService userService;
 
     @PostMapping("login")
     public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -46,5 +52,10 @@ public class UserController {
     @GetMapping("/profile")
     public Long getInfo(@RequestParam(name = "Authorization", required = true) String Authorization){
         return tokenProvider.getUserIdFromJWT(Authorization);
+    }
+
+    @GetMapping("/user/info")
+    public Map<String, Object> getUserInfo(@RequestParam(name = "id")Integer id){
+        return userService.getUserInfo(id);
     }
 }

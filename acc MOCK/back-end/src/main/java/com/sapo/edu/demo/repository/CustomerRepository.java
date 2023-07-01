@@ -12,11 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, String> {
     Customer findByCode(String code);
 
-    Page<Customer> findByCodeContainingOrPhoneContainingOrNameContainingAndLastContactLessThanEqualAndLastContactGreaterThanEqualOrderByLastContactAsc(String searchText1, String searchText2, String searchText3, Date minDate, Date maxDate, Pageable pageable);
+    Page<Customer> findByCodeContainingOrPhoneContainingOrNameContainingOrderByLastContactAsc(String searchText1, String searchText2, String searchText3, Pageable pageable);
 
     @Modifying
     @Query("SELECT c FROM Customer c WHERE c.phone LIKE %?1%")
@@ -31,5 +32,11 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     Integer getCustomerCount();
 
     List<Customer> findByCodeContaining(String code);
+
+    @Query("select o.orderDate FROM Order o  where o.customerCode = :code order by o.orderDate DESC")
+    List<Object> getLastOrderDateByCustomer(String code);
+
+    @Query("select sum(o.total) as totalPaid, count(*) as totalOrder FROM Order o  where o.customerCode = :code")
+    Optional<Object> getTotalOrderByCustomer(String code);
 
 }

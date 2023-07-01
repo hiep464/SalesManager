@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Entity
@@ -34,7 +36,8 @@ public class Staff {
     @Column(name = "address")
     private String address;
 
-
+    @Column(name = "role")
+    private String role;
 
     public Staff() {
     }
@@ -89,4 +92,18 @@ public class Staff {
     }
 
 
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> staffMap = new HashMap<>();
+        staffMap.put("code", code);
+        staffMap.put("phone", phone);
+        staffMap.put("name", name);
+        staffMap.put("email", email);
+        staffMap.put("address", address);
+        staffMap.put("role", role);
+        return staffMap;
+    }
 }

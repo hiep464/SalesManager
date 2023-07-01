@@ -33,7 +33,6 @@ function Login() {
                 <p>Đăng nhập vào cửa hàng của bạn</p>
                 <input type="text" onChange={(e) => setUsername(e.target.value)} placeholder="Tài khoản" />
                 <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Mật khẩu" />
-                <a href="/#">Quên mật khẩu?</a>
                 <button onClick={handleLogin}>Đăng nhập</button>
             </div>
         </div>

@@ -6,7 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import '../Product/Product.scss';
 
 function OrderBody(props) {
-    const { rows, value, index, onDeleteProduct,onUpdateAttribute,onDown,onUp, ...other } = props;
+    const { rows, value, index, onDeleteProduct, onChangeQuantity, onDown, onUp, ...other } = props;
 
     return (
         <div
@@ -16,14 +16,14 @@ function OrderBody(props) {
             aria-labelledby={`simple-tab-${index}`}
             {...other}
         >
-        {value === index && (
+            {value === index && (
                 <Paper>
-                    <Grid container spacing={3} sx={{ width: '100%',padding:'10px'}} className="product1">
+                    <Grid container spacing={3} sx={{ width: '100%', padding: '10px' }} className="product1">
                         <Grid xs={0.5}>STT</Grid>
                         <Grid xs={0.5}></Grid>
-                        <Grid xs={2}>Loại</Grid>
+                        <Grid xs={1}>Loại</Grid>
                         <Grid xs={1}>Mã SP</Grid>
-                        <Grid xs={3}>Tên SP</Grid>
+                        <Grid xs={2}>Tên SP</Grid>
                         <Grid xs={1.5}>Số lượng</Grid>
                         <Grid xs={1.5}>Giá</Grid>
                         <Grid xs={2}>Thành tiền</Grid>
@@ -32,7 +32,16 @@ function OrderBody(props) {
             )}
             {value === index && rows ? (
                 rows.map((row, i) => {
-                    return <Product row={row} index={i} onDeleteProduct={onDeleteProduct} onDown = {onDown} onUp = {onUp} onUpdateAttribute={onUpdateAttribute}/>;
+                    return (
+                        <Product
+                            row={row}
+                            index={i}
+                            onDeleteProduct={onDeleteProduct}
+                            onDown={onDown}
+                            onUp={onUp}
+                            onChangeQuantity={onChangeQuantity}
+                        />
+                    );
                 })
             ) : (
                 <></>

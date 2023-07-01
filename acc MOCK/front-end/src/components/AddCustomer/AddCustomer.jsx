@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import './AddCustomer.scss';
 import axios from 'axios';
+import { getCookie } from '../../utils/api';
 
 function AddCustomer(props) {
     const [name, setName] = React.useState('');
@@ -16,11 +17,20 @@ function AddCustomer(props) {
     };
 
     const createCustomer = (name, email, phone) => {
-        return axios.post('http://localhost:8080/admin/customers/customers', {
-            name: name,
-            phone: phone,
-            email: email,
-        });
+        return axios.post(
+            'http://localhost:8080/admin/care/customers/customers',
+            {
+                name: name,
+                phone: phone,
+                email: email,
+            },
+            {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            },
+        );
     };
 
     return (

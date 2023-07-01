@@ -13,7 +13,8 @@
 }
 
 .Nav {
-    background-color: #0964CF;
+    // background-color: #0964CF;
+    background-color: #1976D2;
     display: flex;
     justify-content: space-between;
     
@@ -99,4 +100,22 @@
 }
 .orders {
     display: flex;
+}
+
+.order_info {
+  p{
+    span{
+        font-weight: bold;
+    }
+  }
+  .order_info_line{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    padding-right: 60px;
+  }
+}
+
+.name {
+    margin-left: 10px;
 }

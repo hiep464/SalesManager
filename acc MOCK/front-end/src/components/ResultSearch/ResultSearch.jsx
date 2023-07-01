@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import './ResultSearch.scss';
+import DeleteIcon from '@mui/icons-material/Delete';
 export function ResultSupllierSearch(props) {
     const supllier = props.supllier;
     console.log(supllier);
@@ -39,12 +40,40 @@ export function ResultCustomerSearch(props) {
     );
 }
 
+export function Customer(props) {
+    const customer = props.customer;
+    const handleDeleteCustomer = props.handleDeleteCustomer;
+    return (
+        <div className="result-search customer" onClick={props.onClick}>
+            <div>
+                <p>{customer?.name}</p>
+                <p>{customer?.email}</p>
+                <p>{customer?.phone}</p>
+            </div>
+            <div className="delete_icon">
+                <DeleteIcon onClick={handleDeleteCustomer} />
+            </div>
+        </div>
+    );
+}
+
 export function ResultProductSearch(props) {
     const product = props.product;
     return (
         <div className="result-product-search" onClick={props.onClick}>
-            <div className='image'>
-                <img src='' alt=''/>
+            <div className="image">
+                {product.image === null ? (
+                    <img
+                        src="https://4.bp.blogspot.com/-TS4lmqV47YE/VPB9HxU2tUI/AAAAAAAAAJE/6XhGWPODrbs/s1600/hinh-nen-de-thuong-cho-may-tinh-7.jpg"
+                        alt=""
+                    />
+                ) : (
+                    <img src={product.image} alt="" />
+                )}
+                {/* <img
+                    src="https://4.bp.blogspot.com/-TS4lmqV47YE/VPB9HxU2tUI/AAAAAAAAAJE/6XhGWPODrbs/s1600/hinh-nen-de-thuong-cho-may-tinh-7.jpg"
+                    alt=""
+                /> */}
             </div>
             <div>
                 <p>{product.name}</p>
