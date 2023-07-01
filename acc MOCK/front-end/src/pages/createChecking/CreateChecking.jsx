@@ -44,6 +44,7 @@ const CreateChecking = () => {
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
     const [userStaff,setUserStaff] = React.useState({})
+   
     React.useEffect (() => {
         console.log(dateCreated)
     },[dateCreated])
@@ -90,7 +91,7 @@ const CreateChecking = () => {
     const handleSubmit = () => {
         const dataCheck = { 
                             code: code,
-                            staffName: staff,
+                            staffName: userStaff.name,
                             inventoryName: inventory,
                             createAt: dateCreated,
                             checkLines: checkInventoryBody

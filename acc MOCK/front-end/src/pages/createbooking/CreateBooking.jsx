@@ -70,11 +70,15 @@ function CreateBooking() {
     const user = JSON.parse(localStorage.getItem('sapo') )
     const userId = user.userId
     
-    React.useEffect(() => { 
-       
-             
+    React.useEffect(() => {       
             for(let order of orders) {
-                axios.get(`${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,{headers: {
+                axios.get(`${apiBaseUrl}/inventory/product/attribute`,{
+                    params : {
+                        productName: order.productName,
+                        size : order.size,
+                        color : order.color
+                    },
+                    headers: {
                     // token: Cookies.get('token'),
                     Authorization: getCookie('Authorization'),
                 }})
@@ -84,7 +88,7 @@ function CreateBooking() {
                     .then(() => console.log(order.originalCost))
                 
             }       
-    },[size,color,inventory])
+    },[size,color])
     React.useEffect(() => { 
         let count = 0
         for(let order of orders) {
