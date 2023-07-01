@@ -1,7 +1,6 @@
-<<<<<<< acc MOCK/front-end/src/routes/Routes.js
 import DefaultLayout from '../layout/defaultLayout/DefaultLayout';
 import Booking from '../pages/booking/Booking';
-import BookingDetails from '../pages/bookingdetails/BookingDetails';
+import BookingDetails from '../pages/bookingDetail/BookingDetail';
 import CreateBooking from '../pages/createbooking/CreateBooking';
 import DashBoard from '../pages/dashboard/Dashboard';
 import ReportPage from '../pages/ReportPage/ReportPage';
@@ -21,8 +20,8 @@ import CreateChecking from '../pages/createChecking/CreateChecking';
 import ReportForStaff from '../pages/ReportForStaff/ReportForStaff';
 import ordersList from '../pages/ordersList/ordersList';
 import orderDetails from '../pages/orderDetails/orderDetails';
-import ReceiptInventory from "../pages/receiptInventory/ReceiptInventory"
-import ReceiptInventoryDetail from "../pages/receiptInventoryDetail/ReceiptInventoryDetail"
+import ReceiptInventory from '../pages/receiptInventory/ReceiptInventory';
+import ReceiptInventoryDetail from '../pages/receiptInventoryDetail/ReceiptInventoryDetail';
 
 export const publicRoutes = [
     { path: '/', element: Login },
@@ -41,8 +40,8 @@ export const publicRoutes = [
     { path: 'inventory/check_inventory', element: CheckInventory, layout: DefaultLayout },
     { path: 'inventory/check_inventory/create', element: CreateChecking, layout: DefaultLayout },
     { path: 'inventory/check_inventory/:code', element: CheckInventoryDetail, layout: DefaultLayout },
-    {path: 'inventory/receipt_inventory', element : ReceiptInventory, layout: DefaultLayout},
-    {path: 'inventory/receipt_inventory/:code', element: ReceiptInventoryDetail, layout: DefaultLayout},
+    { path: 'inventory/receipt_inventory', element: ReceiptInventory, layout: DefaultLayout },
+    { path: 'inventory/receipt_inventory/:code', element: ReceiptInventoryDetail, layout: DefaultLayout },
 
     { path: '/report/staff/:staffCode/:filter', element: ReportForStaff, layout: DefaultLayout },
     { path: '/orders', element: ordersList, layout: DefaultLayout },

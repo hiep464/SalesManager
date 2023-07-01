@@ -1,26 +1,20 @@
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
-import { viVN } from '@mui/material/locale';
 import { useNavigate } from 'react-router-dom';
+import './CreateReportPage.scss';
 
 function CreateReportPage(props) {
     const rows = props.rows;
     const filter = props.filter;
     const navigate = useNavigate();
-    const myLocaleText = {
-        ...viVN,
-        pagination: {
-            rowsPerPage: 'Số hàng trên mỗi trang:',
-            ...viVN.pagination,
-        },
-    };
     const columns = [
-        { field: 'code', headerName: 'Mã nhân viên', width: 100 },
-        { field: 'name', headerName: 'Tên nhân viên', width: 130 },
-        { field: 'phone', headerName: 'SĐT nhân viên', width: 130 },
+        { field: 'code', headerClassName: 'header-table', headerName: 'Mã nhân viên', width: 100 },
+        { field: 'name', headerClassName: 'header-table', headerName: 'Tên nhân viên', width: 130 },
+        { field: 'phone', headerClassName: 'header-table', headerName: 'SĐT nhân viên', width: 130 },
         {
             field: 'revenue',
+            headerClassName: 'header-table',
             headerName: 'Doanh thu',
             type: 'number',
             width: 130,
@@ -28,18 +22,21 @@ function CreateReportPage(props) {
         },
         {
             field: 'orderCount',
+            headerClassName: 'header-table',
             headerName: 'Số đơn đã bán',
             type: 'number',
             width: 190,
         },
         {
             field: 'productSold',
+            headerClassName: 'header-table',
             headerName: 'Số SP đã bán',
             type: 'number',
             width: 190,
         },
         {
             field: 'total_profit',
+            headerClassName: 'header-table',
             headerName: 'Tiền lãi',
             type: 'number',
             width: 190,
@@ -67,12 +64,7 @@ function CreateReportPage(props) {
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        localeText={myLocaleText}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
+                        pagination={false}
                         getRowId={(data) => data.code}
                         onRowClick={handleRowClick}
                     />
