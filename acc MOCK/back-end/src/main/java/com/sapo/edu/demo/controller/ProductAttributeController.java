@@ -23,13 +23,14 @@ public class ProductAttributeController {
     //bao
     @GetMapping("/product/attribute")
     public ProductAttribute getAllAttribute(
-            @RequestParam(value = "inventoryName", required = true) String inventoryName,
-            @RequestParam(value = "size", required = true) String size,
-            @RequestParam(value = "color", required = true) String color,
-            @RequestParam(value = "productName", required = true) String productName
+            @RequestParam(value = "inventoryName", required = false) String inventoryName,
+            @RequestParam(value = "size", required = false) String size,
+            @RequestParam(value = "color", required = false) String color,
+            @RequestParam(value = "productName", required = false) String productName
     ){
         return productAttributeService.findAllAttributeByProductNameAndSizeAndName(productName,size,color,inventoryName);
     }
+
     @GetMapping("/product/size")
     public List<String> getAllSizes() {
         return productAttributeService.getAllSizes();

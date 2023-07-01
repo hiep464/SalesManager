@@ -42,36 +42,36 @@ const CreateChecking = () => {
     const [inventory, setInventory] = React.useState('');
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
-    React.useEffect(() => {
-        console.log(dateCreated);
-    }, [dateCreated]);
-
+    const [userStaff,setUserStaff] = React.useState({})
+   
+    React.useEffect (() => {
+        console.log(dateCreated)
+    },[dateCreated])
+    
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
-
+    const user = JSON.parse(localStorage.getItem('sapo') )
+    const userId = user.userId
     React.useEffect(() => {
-        axios
-            .get(`${apiBaseUrl}/inventory/inventories`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setInventories(response.data);
-            });
-
-        axios
-            .get(`${apiBaseUrl}/staff`, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
-            })
-            .then((response) => {
-                setStaffs(response.data);
-            });
+        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
+            setInventories(response.data);
+        });
+       
+        axios.get(`${apiBaseUrl}/staff`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }}).then((response) => {
+            setStaffs(response.data);
+        });
+        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+                .then((res) => setUserStaff(res.data))
     }, []);
     const theme = useTheme();
 
@@ -85,19 +85,20 @@ const CreateChecking = () => {
     //     console.log(checkInventoryBody)
     // })
     const handleSubmit = () => {
-        const dataCheck = {
-            code: code,
-            staffName: staff,
-            inventoryName: inventory,
-            createAt: dateCreated,
-            checkLines: checkInventoryBody,
-        };
-        axios
-            .post(`${apiBaseUrl}/inventory/check_inventory`, dataCheck, {
-                headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                },
+        const dataCheck = { 
+                            code: code,
+                            staffName: userStaff.name,
+                            inventoryName: inventory,
+                            createAt: dateCreated,
+                            checkLines: checkInventoryBody
+                        }
+        axios.post(`${apiBaseUrl}/inventory/check_inventory`,dataCheck,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+            .then(res => {
+                alert("Tạo phiếu kiểm hàng thành công")
+                // console.log(res)
             })
             .then((res) => {
                 alert('Tạo phiếu kiểm hàng thành công');
@@ -140,48 +141,41 @@ const CreateChecking = () => {
                         </Box>
                     </Box>
 
-                    <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'}>
-                        <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
-                        <List dense={true}>
-                            <ListItem>
-                                <ListItemText primary="Kho :" />
-                                <Select size="small" sx={{ width: '50%' }} value={inventory} onChange={handleChange}>
-                                    {inventories?.map((item) => {
-                                        return (
-                                            <MenuItem key={item.name} value={item?.name}>
-                                                {item?.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="Nhân viên :" />
-                                <Select
-                                    size="small"
-                                    sx={{ width: '50%' }}
-                                    value={staff}
-                                    onChange={(e) => {
-                                        setStaff(e.target.value);
-                                    }}
-                                >
-                                    {staffs?.map((item) => {
-                                        return (
-                                            <MenuItem key={item.name} value={item?.name}>
-                                                {item?.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="Ngày kiểm kho:" />
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' }} />
-                                </LocalizationProvider>
-                            </ListItem>
-                        </List>
-                    </Box>
+                <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} >
+                    <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
+                    <List dense={true}>
+                        <ListItem>
+                            <ListItemText primary="Kho :" />
+                            <Select size="small" sx={{ width: '50%' }} value={inventory} onChange={handleChange}>
+                                {inventories?.map((item) => {
+                                    return (
+                                        <MenuItem key={item.name} value={item?.name}>
+                                            {item?.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Nhân viên :" />
+                            <TextField
+                                size="small"
+                                sx={{ width: '50%' }}
+                                value={userStaff.name}
+                                onChange={(e) => {
+                                    setStaff(e.target.value);
+                                }}
+                            >
+                                
+                            </TextField>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText primary="Ngày kiểm kho:" />
+                            <LocalizationProvider  dateAdapter={AdapterDayjs} >
+                                <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' } } />
+                            </LocalizationProvider>
+                        </ListItem>
+                    </List>
                 </Box>
                 <Box sx={{ backgroundColor: 'white', width: 'calc(82vw - 44px)', marginTop: '10px' }}>
                     <Paper

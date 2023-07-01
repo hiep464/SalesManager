@@ -36,6 +36,7 @@ import { parse } from 'date-fns';
 
 
 
+
 function CreateBooking() {
     const [searchProduct, setSearchProduct] = React.useState('');
     const [products, setProducts] = React.useState([]);
@@ -61,15 +62,22 @@ function CreateBooking() {
     const [price, setPrice] = useState(0)
     const [dateBook, setDateBook] = useState('')
     const [bookings, setBookings] = useState([])
+    const [userStaff,setUserStaff] = useState({})
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
+    const user = JSON.parse(localStorage.getItem('sapo') )
+    const userId = user.userId
     
-    React.useEffect(() => { 
-        console.log(size,color)
-             
+    React.useEffect(() => {       
             for(let order of orders) {
-                axios.get(`${apiBaseUrl}/inventory/product/attribute?inventoryName=${inventory}&productName=${order.productName}&size=${order.size}&color=${order.color}`,{headers: {
+                axios.get(`${apiBaseUrl}/inventory/product/attribute`,{
+                    params : {
+                        productName: order.productName,
+                        size : order.size,
+                        color : order.color
+                    },
+                    headers: {
                     // token: Cookies.get('token'),
                     Authorization: getCookie('Authorization'),
                 }})
@@ -79,7 +87,7 @@ function CreateBooking() {
                     .then(() => console.log(order.originalCost))
                 
             }       
-    },[size,color,inventory])
+    },[size,color])
     React.useEffect(() => { 
         let count = 0
         for(let order of orders) {
@@ -109,7 +117,7 @@ function CreateBooking() {
         
     }, [quantity,originalCost])
     
-    
+    const currentDate = new Date();
     const handleEditProduct = (name, size, color, field, value) => {
         console.log(orders)
         const updatedProducts = orders.map((row) =>
@@ -181,6 +189,11 @@ function CreateBooking() {
         }}).then((response) => {
                     setColors(response.data);
                 });
+        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
+            // token: Cookies.get('token'),
+            Authorization: getCookie('Authorization'),
+        }})
+                .then((res) => setUserStaff(res.data))
     }, []);
 
     return (
@@ -264,22 +277,16 @@ function CreateBooking() {
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Nhân viên :" />
-                            <Select
+                            <TextField
                                 size="small"
                                 sx={{ width: '50%' }}
-                                value={staff}
+                                value={userStaff.name}
                                 onChange={(e) => {
                                     setStaff(e.target.value);
                                 }}
                             >
-                                {staffs?.map((item) => {
-                                    return (
-                                        <MenuItem key={item.name} value={item?.name}>
-                                            {item?.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
+                                
+                            </TextField>
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Ngày nhập :" />
