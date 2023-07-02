@@ -39,8 +39,7 @@ const ReceiptInventoryDetail = () => {
     const [warning, setWarning] = React.useState('')
     const [open1, setOpen1] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
-
-    console.log(bookingRequest)
+    const [refresh, setRefresh] = React.useState(false)
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/inventory/booking-line?code=${code}`, {
             headers: {
@@ -88,15 +87,16 @@ const handleConfirmUpdateProductQuantity = () => {
         }
     })
         .then(res => {
-            setOpen2(false);
-            alert('Đã nhập kho')
-            window.location.reload()
+            setOpen1(false);
+            // alert('Đã nhập kho')
+            setRefresh(true)
+            
         })
         .catch((e) => {
             alert(e.response.data.message)
         })
     
-
+        setOpen2(false);
 }
 const handleClose = () => {
     setOpen1(false);
@@ -111,17 +111,17 @@ const handleConfirmPay = () => {
         }
     } ) 
         .then (() => {
-            setOpen1(false);
-            alert('Đã thanh toán')
+            setOpen2(false);
+            // alert('Đã thanh toán')
 
-            window.location.reload()
+            setRefresh(true)
         })
         .catch((e) => {
             alert(e.response.data.message)
 
         })
     
-
+        setOpen1(false);
 }
 const handleUpdateProductQuantity = () => {
     
