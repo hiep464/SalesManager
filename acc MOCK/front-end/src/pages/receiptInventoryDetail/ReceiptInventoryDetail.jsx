@@ -6,9 +6,13 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-
+import Alert from '@mui/material/Alert';
 import CloseIcon from '@mui/icons-material/Close';
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -31,7 +35,11 @@ const ReceiptInventoryDetail = () => {
     const [supplier,setSupplier] = React.useState({})
     const [bookingLines, setBookingLines] = React.useState([])
     const [bookingRequest, setBookingRequest] = React.useState({})
-    console.log(bookingRequest)
+    const [message,setMessage] = React.useState('')
+    const [warning, setWarning] = React.useState('')
+    const [open1, setOpen1] = React.useState(false)
+    const [open2, setOpen2] = React.useState(false)
+    const [refresh, setRefresh] = React.useState(0)
     React.useEffect(() => {
         axios.get(`${apiBaseUrl}/inventory/booking-line?code=${code}`, {
             headers: {
@@ -59,23 +67,19 @@ const ReceiptInventoryDetail = () => {
                 })
                 setSupplier(response.data);
             } catch (err) {
-                alert(err)
+                <Alert severity="error">{err.response.data.message}</Alert>
+               
             }
         }
         getBookingRequest()
 
 
 
-    }, [])
+    }, [refresh])
 
 
 
-const handleDeleteRequest = () => {
-    
-
-}
-const handleUpdateProductQuantity = () => {
-    alert("Bạn có chắc chắn muốn nhập kho")
+const handleConfirmUpdateProductQuantity = () => {
     axios.put(`${apiBaseUrl}/inventory/booking/receipt/${code}`, "", {
         headers: {
             // token: Cookies.get('token'),
@@ -83,16 +87,22 @@ const handleUpdateProductQuantity = () => {
         }
     })
         .then(res => {
-            alert("Đã nhập kho")
-            window.location.reload()
+            setOpen1(false);
+            alert('Đã nhập kho')
+            setRefresh(refresh + 1)
+            
         })
         .catch((e) => {
-            alert(e.message)
+            alert(e.response.data.message)
         })
-
+    
+        setOpen2(false);
 }
-const handlePay = () => {
-    alert("Bạn có chắc chắn muốn thanh toán đơn hàng")
+const handleClose = () => {
+    setOpen1(false);
+    setOpen2(false);
+};
+const handleConfirmPay = () => {
 
     axios.put(`${apiBaseUrl}/inventory/booking/pay/${code}`, "", {
         headers: {
@@ -101,17 +111,67 @@ const handlePay = () => {
         }
     } ) 
         .then (() => {
-            alert("Đã nhập kho")
-            window.location.reload()
+            setOpen2(false);
+            alert('Đã thanh toán')
+
+            setRefresh(true)
         })
         .catch((e) => {
-            alert(e.message)
+            alert(e.response.data.message)
+
         })
+    
+        setOpen1(false);
 }
+const handleUpdateProductQuantity = () => {
+    
+    setMessage('Bạn có chắc chắn muốn nhập kho đơn hàng này?');
+    setWarning('Sau khi nhập sẽ không thể hoàn tác được');
+    setOpen1(true);
+};
+const handlePay = () => {
+    
+    setMessage('Bạn có chắc chắn muốn thanh toán đơn hàng này?');
+    setWarning('Sau khi thanh toán sẽ không thể hoàn tác được');
+    setOpen2(true);
+};
 
 return (
     <Box>
-
+        <Dialog
+            open={open1}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+                <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">{warning}</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose}>Hủy</Button>
+                <Button onClick={handleConfirmUpdateProductQuantity} autoFocus>
+                    Đồng ý
+                </Button>
+            </DialogActions>
+        </Dialog>
+        <Dialog
+            open={open2}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+                <DialogTitle id="alert-dialog-title">{message}</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">{warning}</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose}>Hủy</Button>
+                <Button onClick={handleConfirmPay} autoFocus>
+                    Đồng ý
+                </Button>
+            </DialogActions>
+        </Dialog>
         <Box sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between', alignItems: "center", borderRadius: '10px' }}>
             <Grid container spacing={3} display="flex" alignItems="center">
 

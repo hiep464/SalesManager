@@ -31,13 +31,17 @@ import Numeral from 'react-numeral';
 import { apiBaseUrl } from '../../constant/constant';
 import { color, margin } from '@mui/system';
 import { getCookie } from '../../utils/api';
+import Alert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
 import { parse } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 
 
 
 function CreateBooking() {
+    const navigate = useNavigate()
     const [searchProduct, setSearchProduct] = React.useState('');
     const [products, setProducts] = React.useState([]);
     const [search, setSearch] = useState([]);
@@ -66,28 +70,13 @@ function CreateBooking() {
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
+    const [success,setSuccess] = useState(false)
+    const [error,setError] = useState(false)
     const user = JSON.parse(localStorage.getItem('sapo') )
     const userId = user.userId
+    const currentDate = new Date()
     
-    React.useEffect(() => {       
-            for(let order of orders) {
-                axios.get(`${apiBaseUrl}/inventory/product/attribute`,{
-                    params : {
-                        productName: order.productName,
-                        size : order.size,
-                        color : order.color
-                    },
-                    headers: {
-                    // token: Cookies.get('token'),
-                    Authorization: getCookie('Authorization'),
-                }})
-                    .then((response) => {               
-                        handleEditProduct(order.productName,order.size,order.color, "originalCost" , response.data.originalCost)
-                    })    
-                    .then(() => console.log(order.originalCost))
-                
-            }       
-    },[size,color])
+    
     React.useEffect(() => { 
         let count = 0
         for(let order of orders) {
@@ -117,7 +106,6 @@ function CreateBooking() {
         
     }, [quantity,originalCost])
     
-    const currentDate = new Date();
     const handleEditProduct = (name, size, color, field, value) => {
         console.log(orders)
         const updatedProducts = orders.map((row) =>
@@ -138,19 +126,22 @@ function CreateBooking() {
             staffName: userStaff.name,
             supplierName : dataSupplier.name,
             total: total,
-            bookingDate: dateBook,
+            bookingDate: dayjs(currentDate),
             bookinglines: orders
         }
         axios.post(`${apiBaseUrl}/inventory/bookings`,dataSubmit,{headers: {
             // token: Cookies.get('token'),
             Authorization: getCookie('Authorization'),
         }})
-            .then(res => {alert("Tạo đơn đặt hàng thành công")})
-            
+            .then(res => {
+                alert("Tạo đơn đặt hàng thành công")
+                navigate(`/inventory/receipt_inventory/${code}`)
+            })
             .catch((error) => {
                 if (error.response && error.response.status === 400) {
                     const errorMessage = error.response.data.message;
-                    alert(`Lỗi: ${errorMessage}`);
+                    alert(error.response.data.message)
+                   
                 } else {
                     console.error(error);
                 }
@@ -291,7 +282,7 @@ function CreateBooking() {
                         <ListItem>
                             <ListItemText primary="Ngày nhập :" />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker onChange={(e) => setDateBook(e)} sx={{ width: '50%' }} />
+                                <DatePicker onChange={(e) => setDateBook(e)} sx={{ width: '50%' }} defaultValue={dayjs(currentDate)} />
                             </LocalizationProvider>
                         </ListItem>
                     </List>
@@ -346,7 +337,7 @@ function CreateBooking() {
                         }, [searchProduct])}
                     />
                 </Box>
-                <div className="result_search" style={{ position: 'fixed',backgroundColor : '#fff', border : "1px solid #ccc" }}>
+                {search.length !== 0 ? <div className="result_search" style={{position: "fixed" ,width : "50%", height: "400px", overflow: "scroll"}}>
                     
                     
                     {search?.map((product, key) => {
@@ -377,24 +368,23 @@ function CreateBooking() {
                             </Box>
                         );
                     })}
-                </div>
+                </div> : <></>}
             </Box>{' '}
             <Box>
                 <Box>
                     <TableContainer component={Box}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <Table sx={{ minWidth: 650, overflow: 'scroll' }} aria-label="simple table">
                             <TableHead sx={{ backgroundColor: '#f4f6f8' }}>
                                 <TableRow>
                                     <TableCell width='5%'>STT</TableCell>
-                                    <TableCell width='15%' align="center">Tên</TableCell>
+                                    <TableCell width='8%' align="center">Tên</TableCell>
                                     <TableCell width='3%' align="center"></TableCell>
-                                    <TableCell width='3%' align="center">Loại sản phẩm</TableCell>
-                                    <TableCell width='3%' align="center">Thương hiệu</TableCell>
+                                    <TableCell width='10%' align="center">Thương hiệu</TableCell>
                                     <TableCell width='12%' align="center">Kích cỡ </TableCell>
-                                    <TableCell width='12%' align="center">Màu sắc </TableCell>
-                                    <TableCell width='15%' align="center">Đơn giá</TableCell>
-                                    <TableCell width='12%' align="center">Số lượng</TableCell>
-                                    <TableCell align="center">Thành tiền</TableCell>
+                                    <TableCell width='8%' align="center">Màu sắc </TableCell>
+                                    <TableCell width='14%' align="center">Đơn giá</TableCell>
+                                    <TableCell width='10%' align="center">Số lượng</TableCell>
+                                    <TableCell width='14%' align="center">Thành tiền</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody sx={{ backgroundColor: '#fff' }}>
@@ -411,7 +401,6 @@ function CreateBooking() {
                                                 }}
                                             />
                                         </TableCell>
-                                        <TableCell align="center">{row.category}</TableCell>
                                         <TableCell align="center">{row.brand}</TableCell>
 
                                         <TableCell align="center">
@@ -423,11 +412,12 @@ function CreateBooking() {
                                                 
                                                 onChange={(event,e) => {
                                                     setSize(e)
-                                                    handleEditProduct(row.productName, row.size, row.color, "size" , e)}}
-                                                sx={{ width: "100%" }}
+                                                    handleEditProduct(row.productName, row.size, row.color, "size" , e)
+                                                }}
+                                                sx={{ width: "80%" }}
                                                 renderInput={(params) => < TextField 
-                                                    onChange={(e) => handleEditProduct(row.productName, row.size, row.color, "size" , e.target.value)}
-                                                    sx={{ width: "100%" }}
+                                                    // onChange={(e) => handleEditProduct(row.productName, row.size, row.color, "size" , e.target.value)}
+                                                    sx={{ width: "80%" }}
                                                     {...params}  />}
                                             />
                                         </TableCell>
@@ -449,7 +439,7 @@ function CreateBooking() {
 
                                         <TableCell align="center">
                                            
-                                            <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost != undefined  ? (row.originalCost).toLocaleString() : ''} onChange={(e) => {
+                                            <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.originalCost !== 0  ? (row.originalCost).toLocaleString() : ''} onChange={(e) => {
                                                 const valueWithoutCommas = e.target.value.replace(/,/g,''); 
                                                 setOriginalCost(valueWithoutCommas); 
                                                 handleEditProduct(row.productName, row.size, row.color, "originalCost", parseInt(valueWithoutCommas));
@@ -457,7 +447,7 @@ function CreateBooking() {
                                         
                                         </TableCell>
                                         <TableCell align="center">
-                                        <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.quantity != 0 ? (row.quantity).toLocaleString() : ''} onChange={(e) => {
+                                        <TextField align="center" type="text" sx={{ width: '100%' }} variant="standard" value={row.quantity !== 0 ? (row.quantity).toLocaleString() : ''} onChange={(e) => {
                                                 const valueWithoutCommas = e.target.value.replace(/,/g,''); 
                                                 setQuantity(valueWithoutCommas); 
                                                 handleEditProduct(row.productName, row.size, row.color, "quantity", parseInt(valueWithoutCommas));
@@ -467,7 +457,7 @@ function CreateBooking() {
                                         </TableCell>
                                         <TableCell align="center">
                                             <TextField align="center" type="text" sx={{ width: '100%' }} value={row.price != 0 ? (row.price).toLocaleString() : ''} onChange={(e) => {
-                                                const valueWithoutCommas = e.value.replace(/,/g,''); 
+                                                const valueWithoutCommas = e.target.value.replace(/,/g,''); 
                                                 setQuantity(valueWithoutCommas); 
                                                 handleEditProduct(row.productName,row.size,row.color, "price" , parseInt(valueWithoutCommas))
                                         }}></TextField></TableCell>

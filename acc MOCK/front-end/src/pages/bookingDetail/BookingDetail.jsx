@@ -55,7 +55,8 @@ const BookingDetail = () => {
             })
         
     }
-    // const handleUpdateProductQuantity = () => {
+    const handleUpdateProductQuantity = () => {
+        navigate(`/inventory/receipt_inventory/${code}`)
     //     axios.put(`${apiBaseUrl}/inventory/check_line/${code}`,"",{headers: {
     //         // token: Cookies.get('token'),
     //         Authorization: getCookie('Authorization'),
@@ -68,7 +69,7 @@ const BookingDetail = () => {
     //             alert(e)
     //         })
                 
-    // }
+    }
     const handleReceiptInventory = () => {
 
     }
@@ -97,10 +98,10 @@ const BookingDetail = () => {
 
                         <Button size = "large" variant="contained" onClick={handleDeleteRequest}>Xóa</Button>
                     </Grid>
-                    {/* <Grid>
+                    <Grid>
 
-                        <Button size = "large" variant="contained" onClick ={handleUpdateProductQuantity}>Tạo đơn nhập kho</Button>
-                    </Grid> */}
+                        <Button size = "large" variant="contained" onClick ={handleUpdateProductQuantity}>Nhập kho</Button>
+                    </Grid>
                     
                     
                 </Grid> : null}
