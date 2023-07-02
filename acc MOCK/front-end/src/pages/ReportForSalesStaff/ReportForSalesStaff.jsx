@@ -194,6 +194,7 @@ function ReportForUser() {
                     marginTop: '10px',
                     display: 'flex',
                     alignItems: 'center',
+                    width: '100%',
                     flexDirection: 'column',
                 }}
             >
@@ -202,7 +203,7 @@ function ReportForUser() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         margin: '20px 0',
-                        width: '1170px',
+                        width: '100%',
                         alignItems: 'center',
                     }}
                 >
