@@ -18,10 +18,15 @@ function OrderBody(props) {
         >
             {value === index && (
                 <Paper>
-                    <Grid container spacing={3} sx={{ width: '100%', padding: '10px' }} className="product1">
+                    <Grid
+                        container
+                        spacing={3}
+                        sx={{ width: '100%', padding: '10px', marginTop: '4px' }}
+                        className="product1"
+                    >
                         <Grid xs={0.5}>STT</Grid>
                         <Grid xs={0.5}></Grid>
-                        <Grid xs={1}>Loại</Grid>
+                        <Grid xs={1}>Image</Grid>
                         <Grid xs={1}>Mã SP</Grid>
                         <Grid xs={2}>Tên SP</Grid>
                         <Grid xs={1.5}>Số lượng</Grid>
@@ -30,6 +35,7 @@ function OrderBody(props) {
                     </Grid>
                 </Paper>
             )}
+
             {value === index && rows ? (
                 rows.map((row, i) => {
                     return (
@@ -40,6 +46,7 @@ function OrderBody(props) {
                             onDown={onDown}
                             onUp={onUp}
                             onChangeQuantity={onChangeQuantity}
+                            sx={{ marginTop: '10px' }}
                         />
                     );
                 })

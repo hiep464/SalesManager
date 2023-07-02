@@ -24,21 +24,27 @@ export const AuthContextProvider = ({ children }) => {
     const [isLogin, setIsLogin] = React.useState(false);
     const [token, setToken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
+    const [code, setCode] = React.useState(null);
+    const [staffname, setStaffname] = React.useState(null);
     const [remove, setRemove] = React.useState(0);
 
-    const login = React.useCallback((userId, token, username) => {
+    const login = React.useCallback((userId, token, username, code, staffname) => {
         setUserId(userId);
         setToken(token);
         setUsername(username);
+        setStaffname(staffname);
+        setCode(code);
         setIsLogin(true);
         setCookie('Authorization', `Bearer ${token}`, 1);
-        localStorage.setItem(storageKey, JSON.stringify({ userId, token, username }));
+        localStorage.setItem(storageKey, JSON.stringify({ userId, token, username, code, staffname }));
     }, []);
 
     const logout = React.useCallback(() => {
         setUserId(null);
         setToken(null);
         setUsername(null);
+        setStaffname(null);
+        setCode(null);
         setIsLogin(false);
         localStorage.removeItem(storageKey);
         document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
@@ -51,6 +57,8 @@ export const AuthContextProvider = ({ children }) => {
                     userId,
                     token,
                     username,
+                    code,
+                    staffname,
                     isLogin,
                     remove,
                 },

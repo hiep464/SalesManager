@@ -100,6 +100,7 @@
 }
 .orders {
     display: flex;
+    height: 100%;
 }
 
 .order_info {
@@ -117,4 +118,8 @@
 
 .name {
     margin-left: 10px;
+}
+
+.tabs{
+    height:100%;
 }

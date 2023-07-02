@@ -77,4 +77,44 @@ public class ProductEntity {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public LocalDate getCreateAt() {
+        return createAt;
+    }
+
+    public LocalDate getUpdateAt() {
+        return updateAt;
+    }
 }

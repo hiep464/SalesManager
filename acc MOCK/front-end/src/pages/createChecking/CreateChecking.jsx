@@ -58,24 +58,35 @@ const CreateChecking = () => {
     const userId = user.userId
     console.log(moment)
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setInventories(response.data);
-        });
-       
-        axios.get(`${apiBaseUrl}/staff`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setStaffs(response.data);
-        });
-        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-                .then((res) => setUserStaff(res.data))
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setInventories(response.data);
+            });
+
+        axios
+            .get(`${apiBaseUrl}/staff`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setStaffs(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/staff/${userId}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => setUserStaff(res.data));
     }, []);
     const theme = useTheme();
 
@@ -284,22 +295,23 @@ const CreateChecking = () => {
                 </Box>
                 
 
-                <Box sx={{ border: '1px solid #ccc', borderRadius: '6px' }}>
-                    {checkInventoryBody ? (
-                        <CheckInventoryBody
-                            rows={checkInventoryBody}
-                            // index={value}
-                            setUpdateProducts={setCheckInventoryBody}
-                            onDeleteProduct={handleDelete}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                </Box>
-                {/* </Box> */}
+                    <Box sx={{ border: '1px solid #ccc', borderRadius: '6px' }}>
+                        {checkInventoryBody ? (
+                            <CheckInventoryBody
+                                rows={checkInventoryBody}
+                                // index={value}
+                                setUpdateProducts={setCheckInventoryBody}
+                                onDeleteProduct={handleDelete}
+                            />
+                        ) : (
+                            <></>
+                        )}
+                    </Box>
+                    {/* </Box> */}
 
-                <Box backgroundColor={'white'} marginTop={'20px'}>
-                    <Box sx={{ float: 'right' }}></Box>
+                    <Box backgroundColor={'white'} marginTop={'20px'}>
+                        <Box sx={{ float: 'right' }}></Box>
+                    </Box>
                 </Box>
             </Box>
         </Box>

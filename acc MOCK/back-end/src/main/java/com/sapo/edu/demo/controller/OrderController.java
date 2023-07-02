@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +42,11 @@ public class OrderController {
         String code;
         Integer count = orderService.getOrderCount()+1;
         if(count<10){
-            code = "O00"+count;
+            code = "D00"+count;
         }else if (count < 100 && count >= 10){
-            code = "O0"+count;
+            code = "D0"+count;
         }else {
-            code = "O"+count;
+            code = "D"+count;
         }
         newOrder.getOrderTable().setCode(code);
         List<OrderLine> orderLines = newOrder.getOrderLines();
@@ -67,5 +68,13 @@ public class OrderController {
     @GetMapping("/orders/code")
     public List<Map<String , Object>> searchAllOrdersByCode(@RequestParam(name = "code") String code){
         return orderService.SearchAllOrdersByCode(code);
+    }
+
+    @GetMapping("/orders/staffCode")
+    public List<Map<String , Object>> searchAllOrderbyStaffCode(@RequestParam(name = "code") String code,@RequestParam(name = "start") String start,@RequestParam(name = "end") String end){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateS = LocalDate.parse(start,formatter);
+        LocalDate dateE = LocalDate.parse(end,formatter);
+        return orderService.searchAllOrderbyStaffCode(code,dateS,dateE);
     }
 }

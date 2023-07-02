@@ -1,46 +1,48 @@
 import React, { useEffect } from 'react';
 import Paper from '@mui/material/Paper';
+import { Bar } from 'react-chartjs-2';
 import axios from 'axios';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { subDays, format } from 'date-fns';
-import Button from '@mui/material/Button';
 import { apiBaseUrl } from '../../constant/constant';
-import CreateReportPage from '../CreateReportPage/CreateReportPage';
+
 import { getCookie } from '../../utils/api';
+import { DataGrid } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
 
-var XLSX = require('xlsx');
-function exportToExcel(data) {
-    // Tạo mảng dữ liệu đầu vào cho bảng tính
+// var XLSX = require('xlsx');
+// function exportToExcel(data) {
+//     // Tạo mảng dữ liệu đầu vào cho bảng tính
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
+//     const worksheet = XLSX.utils.json_to_sheet(data);
 
-    const rowStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'FFFF00' } }, alignment: { horizontal: 'left' } };
-    for (let i = 1; i <= data.length; i++) {
-        const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
-        worksheet[cellRef].s = rowStyle;
-    }
+//     const rowStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'FFFF00' } }, alignment: { horizontal: 'left' } };
+//     for (let i = 1; i <= data.length; i++) {
+//         const cellRef = XLSX.utils.encode_cell({ r: 0, c: i });
+//         worksheet[cellRef].s = rowStyle;
+//     }
 
-    const columnWidths = Object.keys(data[0]).map((key) => ({
-        wch: key.length + 5,
-    }));
-    worksheet['!cols'] = columnWidths;
+//     const columnWidths = Object.keys(data[0]).map((key) => ({
+//         wch: key.length + 5,
+//     }));
+//     worksheet['!cols'] = columnWidths;
 
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const dataBlob = new Blob([excelBuffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    const fileName = 'data.xlsx';
+//     const workbook = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+//     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+//     const dataBlob = new Blob([excelBuffer], {
+//         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+//     });
+//     const fileName = 'data.xlsx';
 
-    // Tạo URL cho tệp Excel và tải xuống
-    const downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(dataBlob);
-    downloadLink.download = fileName;
-    downloadLink.click();
-}
+//     // Tạo URL cho tệp Excel và tải xuống
+//     const downloadLink = document.createElement('a');
+//     downloadLink.href = URL.createObjectURL(dataBlob);
+//     downloadLink.download = fileName;
+//     downloadLink.click();
+// }
 
 const options = {
     scales: {
@@ -69,7 +71,32 @@ const options = {
         },
     },
 };
-
+const columns = [
+    { field: 'code', headerClassName: 'header-table', headerName: 'Mã đơn hàng', width: 120 },
+    { field: 'customerName', headerClassName: 'header-table', headerName: 'Tên khách hàng', width: 140 },
+    { field: 'staffName', headerClassName: 'header-table', headerName: 'Mã nhân viên', width: 140 },
+    {
+        field: 'phone',
+        headerClassName: 'header-table',
+        headerClassName: 'header-table',
+        headerName: 'SĐT khách hàng',
+        width: 140,
+    },
+    { field: 'quantity', headerClassName: 'header-table', headerName: 'Số lượng SP', width: 130 },
+    {
+        field: 'total',
+        headerClassName: 'header-table',
+        headerName: 'Tổng tiền  ',
+        type: 'number',
+        width: 200,
+    },
+    {
+        field: 'orderDate',
+        headerClassName: 'header-table',
+        headerName: 'Ngày tạo đơn',
+        width: 200,
+    },
+];
 const generateLabels = (count) => {
     const now = new Date(); // Lấy thời điểm hiện tại
     const days = []; // Mảng lưu trữ các ngày trong khoảng 7 ngày
@@ -85,14 +112,20 @@ const generateLabels = (count) => {
 
 const labelsInit = generateLabels(7);
 
-function ReportPage() {
+function ReportForUser() {
     const [startD, setStart] = React.useState(format(subDays(new Date(), 6), 'dd/MM/yyyy'));
     const [endD, setEnd] = React.useState(format(new Date(), 'dd/MM/yyyy'));
     const [labels, setLabels] = React.useState(labelsInit);
     const [filter, setFilter] = React.useState(7);
     const [data, setData] = React.useState([]);
-    const [rows, setRows] = React.useState([]);
+    const [orders, setOrders] = React.useState([]);
+    const navigate = useNavigate();
     // const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
+
+    const handleRowClick = (params) => {
+        const code = params.row.code;
+        navigate(`/orders/${code}`); // Điều hướng trang đến trang chi tiết với id của hàng
+    };
 
     const handleChange = (event) => {
         setFilter(event.target.value);
@@ -112,36 +145,40 @@ function ReportPage() {
             setEnd(format(new Date(), 'dd/MM/yyyy'));
         }
     };
+    const user = JSON.parse(localStorage.getItem('sapo'));
 
-    // React.useEffect(() => {
-    //     axios
-    //         .get(`${apiBaseUrl}/statistical/revenue_by_period?end%20date=${endD}&start%20date=${startD}`, {
-    //             headers: {
-    //                 // token: Cookies.get('token'),
-    //                 Authorization: getCookie('Authorization'),
-    //             },
-    //         })
-    //         .then((response) => {
-    //             setData(response.data);
-    //         })
-    //         .catch((error) => console.log(error));
-    // }, [filter]);
     React.useEffect(() => {
         axios
-            .get(`${apiBaseUrl}/sales/reports/staff?end%20date=${endD}&start%20date=${startD}`, {
+            .get(
+                `${apiBaseUrl}/statistical/revenue_by_staff_code?end%20date=${endD}&staff%20code=${user?.code}&start%20date=${startD}`,
+                {
+                    headers: {
+                        // token: Cookies.get('token'),
+                        Authorization: getCookie('Authorization'),
+                    },
+                },
+            )
+            .then((response) => {
+                setData(response.data);
+            })
+            .catch((error) => console.log(error));
+    }, [filter]);
+    React.useEffect(() => {
+        axios
+            .get(`${apiBaseUrl}/sales/orders/staffCode?code=${user?.code}&end=${endD}&start=${startD}`, {
                 headers: {
                     // token: Cookies.get('token'),
                     Authorization: getCookie('Authorization'),
                 },
             })
             .then((response) => {
-                setRows(response.data);
+                setOrders(response.data);
             })
             .catch((error) => console.log(error));
     }, [filter]);
     return (
         <>
-            <div sx={{ margin: '0', padding: '0', display: 'flex' }}>
+            {/* <div sx={{ margin: '0', padding: '0', display: 'flex' }}>
                 <Button
                     variant="contained"
                     onClick={() => {
@@ -151,7 +188,7 @@ function ReportPage() {
                 >
                     Xuất file excel
                 </Button>
-            </div>
+            </div> */}
             <Paper
                 sx={{
                     marginTop: '10px',
@@ -180,7 +217,7 @@ function ReportPage() {
                         </FormControl>
                     </>
                 </div>
-                {/* <div style={{ width: '80%', marginBottom: '20px' }}>
+                <div style={{ width: '80%', marginBottom: '20px' }}>
                     <Bar
                         data={{
                             labels: labels,
@@ -196,11 +233,32 @@ function ReportPage() {
                         }}
                         options={options}
                     />
-                </div> */}
+                </div>
             </Paper>
-            <CreateReportPage rows={rows} filter={filter} />
+            <Paper
+                style={{
+                    marginTop: '10px',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    flexDirection: 'column',
+                    width: 1170,
+                    height: 'auto',
+                }}
+            >
+                <div style={{ height: 'auto', width: '100%' }}>
+                    <DataGrid
+                        rows={orders}
+                        columns={columns}
+                        pageSize={orders.length} // Hiển thị tất cả dữ liệu trong một trang
+                        disableSelectionOnClick // Vô hiệu hóa chọn hàng khi nhấp vào
+                        hideFooterPagination // Ẩn phân trang ở footer
+                        getRowId={(data) => data.code}
+                        onRowClick={handleRowClick}
+                    />
+                </div>
+            </Paper>
         </>
     );
 }
 
-export default ReportPage;
+export default ReportForUser;

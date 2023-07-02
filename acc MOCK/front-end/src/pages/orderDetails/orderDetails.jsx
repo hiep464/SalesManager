@@ -17,6 +17,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
 import OrdersBodyDetail from '../../components/OrdersBodyDetail/OrdersBodyDetail';
+import '../CreateReportPage/CreateReportPage.scss';
 
 const OrderDetails = () => {
     const navigate = useNavigate();
@@ -62,6 +63,9 @@ const OrderDetails = () => {
                     <Grid>
                         <h2>{code}</h2>
                     </Grid>
+                    <Grid backgroundColor={order.status === 'sucess' ? 'aqua' : '#e49c06'} borderRadius="25px">
+                        {order.status === 'sucess' ? 'Thành công' : 'Thất bại'}
+                    </Grid>
                 </Grid>
             </Box>
             <Box sx={{ width: 'calc(82vw - 44px)', backgroundColor: 'white', borderRadius: '10px' }}>
@@ -69,13 +73,24 @@ const OrderDetails = () => {
                     <h3>Thông tin đơn hàng</h3>
                 </Box>
                 <Box>
-                    <Stack p="12px" pb="50px" direction="row" spacing={60}>
+                    <Stack p="12px" pb="50px" direction="row" spacing={25}>
                         <Stack spacing={2}>
-                            <p>Khách hàng : {order.customerName}</p>
-                            <p>Nhân viên phụ trách : {order.staffName}</p>
+                            <h1>Khách hàng</h1>
+                            <p>Họ và tên : {order.customerName}</p>
+                            <p>Số điện thoại: {order.customerPhone}</p>
+                            <p>Email: {order.customerEmail}</p>
                         </Stack>
-                        <Stack spacing={20}>
+                        <Stack spacing={2}>
+                            <h1>Nhân viên phụ trách</h1>
+                            <p>Họ và tên : {order.staffName}</p>
+                            <p>Số điện thoại: {order.staffPhone}</p>
+                            <p>Email: {order.staffEmail}</p>
+                        </Stack>
+                        <Stack spacing={2}>
+                            <h1>Đơn hàng</h1>
                             <p>Ngày tạo :{order.orderDate}</p>
+                            <p>Số lượng sản phẩm :{order.quantity}</p>
+                            <p>Tổng tiền :{order.total?.toLocaleString('en-US')}</p>
                         </Stack>
                     </Stack>
                 </Box>

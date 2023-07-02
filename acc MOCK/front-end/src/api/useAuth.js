@@ -30,8 +30,16 @@ export const useLogin = ({ onSuccess, onError }) => {
             if (userResult.status >= 400) return false;
             if (userResult.data.length === 0) return false;
 
+            const userInfo = await axios.get(`${apiBaseUrl}/auth/user/info?id=${userResult.data}`, {
+                params: {
+                    Authorization: `${accessToken}`,
+                },
+            });
+
             const user = userResult.data;
-            login(user, accessToken, username);
+            const code = userInfo.data.code;
+            const staffname = userInfo.data.name;
+            login(user, accessToken, username, code, staffname);
             return true;
         },
         onSuccess,
