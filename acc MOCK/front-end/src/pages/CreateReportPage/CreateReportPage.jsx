@@ -9,12 +9,12 @@ function CreateReportPage(props) {
     const filter = props.filter;
     const navigate = useNavigate();
     const columns = [
-        { field: 'code', headerClassName: 'header-table', headerName: 'Mã nhân viên', width: 100 },
-        { field: 'name', headerClassName: 'header-table', headerName: 'Tên nhân viên', width: 130 },
-        { field: 'phone', headerClassName: 'header-table', headerName: 'SĐT nhân viên', width: 130 },
+        { field: 'code',  headerName: 'Mã nhân viên', width: 100 },
+        { field: 'name',  headerName: 'Tên nhân viên', width: 150 },
+        { field: 'phone',  headerName: 'SĐT nhân viên', width: 150 },
         {
             field: 'revenue',
-            headerClassName: 'header-table',
+            
             headerName: 'Doanh thu',
             type: 'number',
             width: 130,
@@ -22,21 +22,21 @@ function CreateReportPage(props) {
         },
         {
             field: 'orderCount',
-            headerClassName: 'header-table',
+            
             headerName: 'Số đơn đã bán',
             type: 'number',
             width: 190,
         },
         {
             field: 'productSold',
-            headerClassName: 'header-table',
+            
             headerName: 'Số SP đã bán',
             type: 'number',
             width: 190,
         },
         {
             field: 'total_profit',
-            headerClassName: 'header-table',
+            
             headerName: 'Tiền lãi',
             type: 'number',
             width: 190,
@@ -48,7 +48,7 @@ function CreateReportPage(props) {
         navigate(`/report/staff/${code}/${filter}`); // Điều hướng trang đến trang chi tiết với id của hàng
     };
     return (
-        <div className="createReport" style={{ width: '1100px' }}>
+        <div className="createReport" style={{ width: '100%' }}>
             {/*  */}
             <Paper
                 style={{
@@ -56,7 +56,7 @@ function CreateReportPage(props) {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1170,
+                    width: '100%',
                     height: 300,
                 }}
             >

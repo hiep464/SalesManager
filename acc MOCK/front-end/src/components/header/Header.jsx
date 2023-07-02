@@ -38,6 +38,34 @@ function AccountMenu() {
         } else if (location.pathname.includes('product')) {
             setTitle('Danh sách sản phẩm');
             setDetails(false);
+        }
+        // care/customers
+        // care/feedbacks
+        // booking
+        // receipt_inventory
+        // check_inventory
+        else if (location.pathname.includes('check_inventory')) {
+            setTitle('Nhập hàng');
+            setDetails(false);
+        }
+        else if (location.pathname.includes('receipt_inventory')) {
+            setTitle('Nhập hàng');
+            setDetails(false);
+        }
+        else if (location.pathname.includes('booking')) {
+            setTitle('Đặt hàng');
+            setDetails(false);
+        }
+        else if (location.pathname.includes('care/feedbacks')) {
+            setTitle('Phản hồi');
+            setDetails(false);
+        }
+        else if (location.pathname.includes('care/customers')) {
+            setTitle('Khách hàng');
+            setDetails(false);
+        } else if (location.pathname.includes('report')) {
+            setTitle('Báo cáo');
+            setDetails(false);
         } else {
             setTitle('Tổng quan');
             setDetails(false);
