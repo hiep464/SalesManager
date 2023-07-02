@@ -64,8 +64,7 @@ const columns = [
     { field: 'inventoryName',headerClassName: 'header-table', headerName: 'Kho', width: 150 },
     { field: 'payStatus',headerClassName: 'header-table', headerName: 'Trạng thái thanh toán', width: 150 },
     { field: 'bookingStatus',headerClassName: 'header-table', headerName: 'Trạng thái nhập kho', width: 150 },
-    { field: 'total',headerClassName: 'header-table', headerName: 'Giá trị đơn', width: 200 },
-    { field: 'bookingDate',headerClassName: 'header-table', headerName: 'Ngày nhập kho', width: 200 },
+    { field: 'total',headerClassName: 'header-table', headerName: 'Giá trị đơn', width: 200 }
 ];
 
 const status = ["Hoàn thành", "Đang giao dịch"]

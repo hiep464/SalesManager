@@ -88,7 +88,7 @@ function CreateFeedback(){
             const res = await APIapp.post(`/admin/care/feedbacks`, feedback)
             console.log(res)
             window.alert("Create success!")
-            navigate('/care/feedbacks')
+            navigate(`/care/feedbacks/${res.data.feedback.id}`)
         }catch(e){
             window.alert("Yếu cầu điền đúng thông tin khách hàng tồn tại trên hệ thống")
         }
@@ -96,7 +96,7 @@ function CreateFeedback(){
     }
 
     const handleReturn=()=>{
-        navigate('/care/feedbacks')
+        navigate(`/care/feedbacks`)
     }
     return(
         <div className='createfeedback' >
