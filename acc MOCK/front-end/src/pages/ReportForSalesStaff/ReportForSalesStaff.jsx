@@ -72,27 +72,26 @@ const options = {
     },
 };
 const columns = [
-    { field: 'code', headerClassName: 'header-table', headerName: 'Mã đơn hàng', width: 120 },
-    { field: 'customerName', headerClassName: 'header-table', headerName: 'Tên khách hàng', width: 140 },
-    { field: 'staffName', headerClassName: 'header-table', headerName: 'Mã nhân viên', width: 140 },
+    { field: 'code', headerName: 'Mã đơn hàng', width: 120 },
+    { field: 'customerName', headerName: 'Tên khách hàng', width: 140 },
+    { field: 'staffName', headerName: 'Mã nhân viên', width: 140 },
     {
         field: 'phone',
-        headerClassName: 'header-table',
-        headerClassName: 'header-table',
+
         headerName: 'SĐT khách hàng',
         width: 140,
     },
-    { field: 'quantity', headerClassName: 'header-table', headerName: 'Số lượng SP', width: 130 },
+    { field: 'quantity', headerName: 'Số lượng SP', width: 130 },
     {
         field: 'total',
-        headerClassName: 'header-table',
+
         headerName: 'Tổng tiền  ',
         type: 'number',
         width: 200,
     },
     {
         field: 'orderDate',
-        headerClassName: 'header-table',
+
         headerName: 'Ngày tạo đơn',
         width: 200,
     },
@@ -194,6 +193,7 @@ function ReportForUser() {
                     marginTop: '10px',
                     display: 'flex',
                     alignItems: 'center',
+                    width: '100%',
                     flexDirection: 'column',
                 }}
             >
@@ -202,7 +202,7 @@ function ReportForUser() {
                         display: 'flex',
                         justifyContent: 'space-between',
                         margin: '20px 0',
-                        width: '1170px',
+                        width: '100%',
                         alignItems: 'center',
                     }}
                 >
@@ -241,7 +241,7 @@ function ReportForUser() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1170,
+                    width: '100%',
                     height: 'auto',
                 }}
             >

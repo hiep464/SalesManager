@@ -70,8 +70,8 @@ function AddCustomer(props) {
                             }}
                         />
                     </Grid>
-                    <Grid xs={12}>
-                        <Button variant="contained" color="error" onClick={onClickClose}>
+                    <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant="contained" color="error" onClick={onClickClose} sx={{ marginRight: '20px' }}>
                             Cancel
                         </Button>
                         <Button
