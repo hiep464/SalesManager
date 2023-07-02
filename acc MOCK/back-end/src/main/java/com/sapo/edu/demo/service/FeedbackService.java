@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,6 +43,7 @@ public class FeedbackService {
             if (!Objects.equals(customer.getPhone(), feedback.getPhone())){
                 throw new NotFoundException("Customer not found");
             }else {
+                System.out.println(feedback.getContent());
                 Feedback createFeedback = feedbackRepository.save(feedback);
                 FeedbackResponse response = new FeedbackResponse();
                 response.setFeedback(createFeedback);
@@ -80,5 +82,9 @@ public class FeedbackService {
     public Page<Feedback> listFeedback(String searchText, int page, int size) throws ParseException {
         Pageable pageable = PageRequest.of(page, size);
         return feedbackRepository.findByCustomerCodeContainingOrPhoneContainingOrderByStatusAscFeedbackDateAsc( searchText, searchText, pageable);
+    }
+
+    public List<Feedback> findByCustomerCode(String code){
+        return feedbackRepository.findByCustomerCodeOrderByFeedbackDateDesc(code);
     }
 }

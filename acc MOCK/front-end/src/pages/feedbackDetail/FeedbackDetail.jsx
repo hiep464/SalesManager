@@ -20,6 +20,7 @@ function FeedbackDetail(){
         "feedbackDate": ""
     })
     const [customer, setCustomer] = useState({})
+    const [reload, setReload] = useState(false)
 
     useEffect(()=>{
         async function fetchData(){
@@ -31,7 +32,7 @@ function FeedbackDetail(){
             }
         }
         fetchData()
-    }, [id])
+    }, [id, reload])
     useEffect(()=>{
         async function fetchData(){
             try{
@@ -49,7 +50,7 @@ function FeedbackDetail(){
         if(feedback.status ==='S2'){
             setStyle({...solveButtonStyle, display: 'none'})
         } 
-    })
+    }, [feedback])
 
     const handleUpdate= async ()=>{
         const confirmed = window.confirm("Bạn có chắc chắn muốn xác nhận đã xử lý xong phản hồi này ?")
@@ -57,7 +58,7 @@ function FeedbackDetail(){
             const res = await APIapp.post(`admin/care/feedbacks/${id.id}`, feedback)
             console.log(res)
             window.alert("Cập nhật thành công!")
-            window.location.reload()
+            setReload(!reload)
         }
     }
 

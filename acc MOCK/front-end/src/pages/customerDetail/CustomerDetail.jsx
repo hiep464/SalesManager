@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import APIapp from '../../components/APIapp/APIapp';
+import FeedbackItem from './FeedbackItem/FeedbackItem';
 
 function CustomerDetail (){
     const [update, setUpdate] = useState(false) 
@@ -12,8 +13,10 @@ function CustomerDetail (){
     const [lastOrder, setLastOrder]=useState("")
     const [totalPaid, setTotalPaid]=useState(0)
     const [totalOrder, setTotalOrder] = useState(0)
+    const [history, setHistory]= useState([])
     const navigate= useNavigate()
     const param= useParams()
+    const [reload, setReload] = useState(false)
 
     const toggleUpdate =()=>{
         setUpdate(!update)
@@ -31,10 +34,12 @@ function CustomerDetail (){
             const res= await APIapp.get(`/admin/care/customers/${param.id}`)
             const res1= await APIapp.get(`/admin/care/customers/${param.id}/last_order`)
             const res2= await APIapp.get(`/admin/care/customers/${param.id}/total_order`)
-            console.log(res2)
+            const history= await APIapp.get(`/admin/care/feedbacks/customer/${param.id}`)
+            console.log(history)
             setCustomer(res.data)
             setLastOrder(res1.data)
             setTotalOrder(res2.data[1])
+            setHistory(history.data)
             if(res2.data[0]===null){
                 setTotalPaid(0)
             }
@@ -43,7 +48,7 @@ function CustomerDetail (){
             }
         }
         fetchData()
-    },[])
+    },[reload])
 
     const handleUpdateLastContact= async()=>{
         const confirmed = window.confirm("Bạn có chắc chắn muốn cập nhật lại ngày liên hệ gần nhất ?")
@@ -51,8 +56,11 @@ function CustomerDetail (){
             const res = await APIapp.post(`/admin/care/customers/${param.id}/lastcontact`)
             console.log(res)
             window.alert("Cập nhật thành công!")
-            window.location.reload()
+            setReload(!reload)
         }
+    }
+    const handleReload=()=>{
+        setReload(!reload)
     }
 
     const lastContact= new Date(customer.lastContact)
@@ -117,7 +125,23 @@ function CustomerDetail (){
                     </div>
                 </div>
             </div>
-            {update &&<UpdateModal clickMethod={toggleUpdate} data={customer}/>}
+            <div className='feedback'>
+                <div className='title'>
+                    <span>Lịch sử phản hồi</span>
+                </div>
+                <table>
+                    <tr>
+                        <th className='column1'>Mã phản hồi</th>
+                        <th className='column2'>Ngày tạo</th>
+                        <th className='column3'>Trạng thái</th>
+                        <th className='column4'>Nội dung</th>
+                    </tr>
+                    {history.map((feedback, index)=>(
+                        <FeedbackItem id={index} data={feedback}/>
+                    ))}
+                </table>
+            </div>
+            {update &&<UpdateModal clickMethod={toggleUpdate} data={customer} reload= {handleReload}/>}
         </div>
     )
 }
