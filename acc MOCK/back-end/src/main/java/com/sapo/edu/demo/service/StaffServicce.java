@@ -21,10 +21,7 @@ public class StaffServicce {
         return staffRepository.findAll();
     }
 
-    public List<Staff> getAllbyRole() {
-        String role = "sales";
-        return staffRepository.findAllByRole(role);
-    }
+
 
     public List<Staff> getInventoryStaff() {
         List<User> users = userRepository.findByRole("INVENTORY");
