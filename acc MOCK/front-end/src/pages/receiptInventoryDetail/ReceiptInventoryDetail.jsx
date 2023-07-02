@@ -88,7 +88,7 @@ const handleConfirmUpdateProductQuantity = () => {
     })
         .then(res => {
             setOpen1(false);
-            // alert('Đã nhập kho')
+            alert('Đã nhập kho')
             setRefresh(true)
             
         })
@@ -112,7 +112,7 @@ const handleConfirmPay = () => {
     } ) 
         .then (() => {
             setOpen2(false);
-            // alert('Đã thanh toán')
+            alert('Đã thanh toán')
 
             setRefresh(true)
         })
