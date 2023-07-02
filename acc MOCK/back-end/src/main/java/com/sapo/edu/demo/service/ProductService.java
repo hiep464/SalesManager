@@ -124,7 +124,7 @@ public class ProductService {
     }
 
     public List<Object> getTop3ProductByQuantity() {
-        return productRepository.findTopProductsByQuantity().subList(0, 3);
+        return productRepository.findTopProductsByQuantity().subList(0, 5);
     }
 
     public ProductEntity updateProduct(ProductEntity productEntity){

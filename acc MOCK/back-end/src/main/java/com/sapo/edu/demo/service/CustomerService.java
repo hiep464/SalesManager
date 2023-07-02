@@ -73,7 +73,9 @@ public class CustomerService {
     }
 
     public List<Object> getTop3Customer(){
-        return customerRepository.findTopCustomers().subList(0, 3);}
+        return customerRepository.findTopCustomers().subList(0, 5);
+    }
+
     public Integer getCustomerCount(){ return customerRepository.getCustomerCount();}
 
     public Customer createCustomer(Customer customer){
