@@ -185,7 +185,7 @@ function ReportForStaff() {
         navigate(`/orders/${code}`); // Điều hướng trang đến trang chi tiết với id của hàng
     };
     return (
-        <div style={{ width: '1170px' }}>
+        <div style={{ width: '100%' }}>
             <div style={{ display: 'flex', marginTop: '10px' }}>
                 <BoxItem
                     title={'Doanh thu'}

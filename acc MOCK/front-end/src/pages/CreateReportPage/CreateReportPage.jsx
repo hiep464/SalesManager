@@ -48,7 +48,7 @@ function CreateReportPage(props) {
         navigate(`/report/staff/${code}/${filter}`); // Điều hướng trang đến trang chi tiết với id của hàng
     };
     return (
-        <div className="createReport" style={{ width: '1100px' }}>
+        <div className="createReport" style={{ width: '100%' }}>
             {/*  */}
             <Paper
                 style={{
@@ -56,7 +56,7 @@ function CreateReportPage(props) {
                     display: 'flex',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    width: 1170,
+                    width: '100%',
                     height: 300,
                 }}
             >
