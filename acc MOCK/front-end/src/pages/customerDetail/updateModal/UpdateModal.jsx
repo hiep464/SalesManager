@@ -17,7 +17,8 @@ function UpdateModal(props){
         const res= await APIapp.post(`/admin/care/customers/${data.code}`, customer)
         console.log(res)
         window.alert("Cập nhật thành công!")
-        window.location.reload()
+        props.reload()
+        props.clickMethod()
     }
 
     return(

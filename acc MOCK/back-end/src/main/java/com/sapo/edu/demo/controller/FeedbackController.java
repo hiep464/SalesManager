@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,5 +52,10 @@ public class FeedbackController {
             @RequestParam(value = "size", defaultValue = "20") int size
             ) throws ParseException {
         return feedbackService.listFeedback(searchText, page, size);
+    }
+
+    @GetMapping("/customer/{code}")
+    public List<Feedback> findByCustomerCode(@PathVariable String code){
+        return feedbackService.findByCustomerCode(code);
     }
 }
