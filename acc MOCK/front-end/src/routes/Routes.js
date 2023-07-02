@@ -22,6 +22,7 @@ import ordersList from '../pages/ordersList/ordersList';
 import orderDetails from '../pages/orderDetails/orderDetails';
 import ReceiptInventory from '../pages/receiptInventory/ReceiptInventory';
 import ReceiptInventoryDetail from '../pages/receiptInventoryDetail/ReceiptInventoryDetail';
+import ReportForSalesStaff from '../pages/ReportForSalesStaff/ReportForSalesStaff';
 
 export const publicRoutes = [
     { path: '/', element: Login },
@@ -47,4 +48,5 @@ export const publicRoutes = [
     { path: '/orders', element: ordersList, layout: DefaultLayout },
     { path: '/orders/:code', element: orderDetails, layout: DefaultLayout },
     { path: '/report', element: ReportPage, layout: DefaultLayout },
+    { path: '/report/staff', element: ReportForSalesStaff, layout: DefaultLayout },
 ];

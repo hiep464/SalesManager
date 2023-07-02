@@ -24,7 +24,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = "SELECT sum(total) FROM Order")
     BigDecimal total();
 
-    @Query("SELECT o.orderDate as orderDate , c.name as customerName, s.name as staffName "
+    @Query("SELECT o.total as total , o.quantity as quantity , o.status as status ,o.orderDate as orderDate , c.name as customerName, s.name as staffName ,s.phone as staffPhone , s.email as staffEmail, c.phone as customerPhone , c.email as customerEmail "
             +"from Order o join Customer c on o.customerCode = c.code "
             +"join Staff s on o.staffCode = s.code "
             +"WHERE o.code = :code")
@@ -64,4 +64,10 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             +"INNER JOIN Staff s ON o.staffCode = s.code "
             +"WHERE o.code LIKE %:code%")
     List<Map<String , Object>> searchAllOrderbyCode(@Param("code") String code);
+
+    @Query("SELECT o.code as code, c.name as customerName, s.name as staffName, o.quantity as quantity, o.total as total, o.orderDate as orderDate, o.status as status "
+            +"FROM Order o INNER JOIN Customer c ON o.customerCode = c.code "
+            +"INNER JOIN Staff s ON o.staffCode = s.code "
+            +"WHERE o.staffCode LIKE %:code% AND o.orderDate >= :start AND o.orderDate <= :end")
+    List<Map<String , Object>> searchAllOrderbyStaffCode(@Param("code") String code, @Param("start") LocalDate start , @Param("end") LocalDate end);
 }

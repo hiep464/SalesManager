@@ -60,11 +60,13 @@ function CreateReportPage(props) {
                     height: 300,
                 }}
             >
-                <div style={{ height: 300, width: '100%' }}>
+                <div style={{ minHeight: 300, width: '100%' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        pagination={false}
+                        pageSize={rows.length} // Hiển thị tất cả dữ liệu trong một trang
+                        disableSelectionOnClick // Vô hiệu hóa chọn hàng khi nhấp vào
+                        hideFooterPagination // Ẩn phân trang ở footer
                         getRowId={(data) => data.code}
                         onRowClick={handleRowClick}
                     />

@@ -59,5 +59,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     List<ProductEntity> findByCodeContainingOrNameContaining(String code, String name);
 
 
-    List<ProductEntity> findAllByCategoryCode (String code);
+    List<ProductEntity> findAllByCategoryId (Integer id);
 }

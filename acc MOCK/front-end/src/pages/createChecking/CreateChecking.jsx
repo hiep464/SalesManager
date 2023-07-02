@@ -42,36 +42,47 @@ const CreateChecking = () => {
     const [inventory, setInventory] = React.useState('');
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
-    const [userStaff,setUserStaff] = React.useState({})
-   
-    React.useEffect (() => {
-        console.log(dateCreated)
-    },[dateCreated])
-    
+    const [userStaff, setUserStaff] = React.useState({});
+
+    React.useEffect(() => {
+        console.log(dateCreated);
+    }, [dateCreated]);
+
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
-    const user = JSON.parse(localStorage.getItem('sapo') )
-    const userId = user.userId
+    const user = JSON.parse(localStorage.getItem('sapo'));
+    const userId = user.userId;
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setInventories(response.data);
-        });
-       
-        axios.get(`${apiBaseUrl}/staff`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setStaffs(response.data);
-        });
-        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-                .then((res) => setUserStaff(res.data))
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setInventories(response.data);
+            });
+
+        axios
+            .get(`${apiBaseUrl}/staff`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setStaffs(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/staff/${userId}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => setUserStaff(res.data));
     }, []);
     const theme = useTheme();
 
@@ -85,19 +96,22 @@ const CreateChecking = () => {
     //     console.log(checkInventoryBody)
     // })
     const handleSubmit = () => {
-        const dataCheck = { 
-                            code: code,
-                            staffName: userStaff.name,
-                            inventoryName: inventory,
-                            createAt: dateCreated,
-                            checkLines: checkInventoryBody
-                        }
-        axios.post(`${apiBaseUrl}/inventory/check_inventory`,dataCheck,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-            .then(res => {
-                alert("Tạo phiếu kiểm hàng thành công")
+        const dataCheck = {
+            code: code,
+            staffName: userStaff.name,
+            inventoryName: inventory,
+            createAt: dateCreated,
+            checkLines: checkInventoryBody,
+        };
+        axios
+            .post(`${apiBaseUrl}/inventory/check_inventory`, dataCheck, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => {
+                alert('Tạo phiếu kiểm hàng thành công');
                 // console.log(res)
             })
             .then((res) => {
@@ -141,151 +155,150 @@ const CreateChecking = () => {
                         </Box>
                     </Box>
 
-                <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} >
-                    <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
-                    <List dense={true}>
-                        <ListItem>
-                            <ListItemText primary="Kho :" />
-                            <Select size="small" sx={{ width: '50%' }} value={inventory} onChange={handleChange}>
-                                {inventories?.map((item) => {
-                                    return (
-                                        <MenuItem key={item.name} value={item?.name}>
-                                            {item?.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="Nhân viên :" />
-                            <TextField
-                                size="small"
-                                sx={{ width: '50%' }}
-                                value={userStaff.name}
-                                onChange={(e) => {
-                                    setStaff(e.target.value);
-                                }}
-                            >
-                                
-                            </TextField>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="Ngày kiểm kho:" />
-                            <LocalizationProvider  dateAdapter={AdapterDayjs} >
-                                <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' } } />
-                            </LocalizationProvider>
-                        </ListItem>
-                    </List>
-                </Box>
-                <Box sx={{ backgroundColor: 'white', width: 'calc(82vw - 44px)', marginTop: '10px' }}>
-                    <Paper
-                        component="form"
-                        sx={{
-                            p: '2px 0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '100%',
-                            backgroundColor: 'white',
-                        }}
-                    >
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                            <SearchIcon />
-                        </IconButton>
-                        <InputBase
-                            sx={{ ml: 1, flex: 1, border: '1px' }}
-                            placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
-                            inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
-                            onChange={(event) => {
-                                setSearchProduct(event.target.value);
-                            }}
-                            onMouseEnter={React.useEffect(() => {
-                                if (searchProduct !== '') {
-                                    axios
-                                        .get(
-                                            `${apiBaseUrl}/inventory/product/search?searchString=${searchProduct}&inventoryName=${inventory}`,
-                                            {
-                                                headers: {
-                                                    // token: Cookies.get('token'),
-                                                    Authorization: getCookie('Authorization'),
-                                                },
-                                            },
-                                        )
-                                        .then((response) => {
-                                            setProducts(response.data);
-                                        });
-                                } else {
-                                    setProducts([]);
-                                }
-                            }, [searchProduct])}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </Paper>
-                </Box>
-                <div className="result_search" style={{ position: 'fixed' }}>
-                    {products.map((product, index) => {
-                        // console.log(checkInventoryBody)
-                        return (
-                            <Card sx={{ minWidth: '60ch' }}>
-                                <ResultProductSearch
-                                    key={index}
-                                    product={product}
-                                    onClick={() => {
-                                        const product1 = {
-                                            productCode: product.code,
-                                            productName: product.name,
-                                            brand: product.brand,
-                                            size: product.size,
-                                            color: product.color,
-                                            inventoryQuantity: product.quantity,
-                                            actualQuantity: 0,
-
-                                            reason: '',
-                                        };
-                                        var duplicate = false;
-                                        let count = 0;
-                                        console.log(count);
-                                        for (var i = 0; i < checkInventoryBody.length; i++) {
-                                            if (checkInventoryBody[i].productCode === product1.productCode) {
-                                                alert('This products was exits!');
-                                                duplicate = true;
-                                            }
-                                        }
-                                        if (duplicate === false) {
-                                            checkInventoryBody.push(product1);
-                                        }
-                                        if (duplicate === false) {
-                                            checkInventoryBody.push(product1);
-                                        }
-                                        setSearchProduct('');
+                    <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'}>
+                        <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
+                        <List dense={true}>
+                            <ListItem>
+                                <ListItemText primary="Kho :" />
+                                <Select size="small" sx={{ width: '50%' }} value={inventory} onChange={handleChange}>
+                                    {inventories?.map((item) => {
+                                        return (
+                                            <MenuItem key={item.name} value={item?.name}>
+                                                {item?.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="Nhân viên :" />
+                                <TextField
+                                    size="small"
+                                    sx={{ width: '50%' }}
+                                    value={userStaff.name}
+                                    onChange={(e) => {
+                                        setStaff(e.target.value);
                                     }}
-                                />
-                            </Card>
-                        );
-                    })}
-                </div>
+                                ></TextField>
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="Ngày kiểm kho:" />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' }} />
+                                </LocalizationProvider>
+                            </ListItem>
+                        </List>
+                    </Box>
+                    <Box sx={{ backgroundColor: 'white', width: 'calc(82vw - 44px)', marginTop: '10px' }}>
+                        <Paper
+                            component="form"
+                            sx={{
+                                p: '2px 0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%',
+                                backgroundColor: 'white',
+                            }}
+                        >
+                            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                            <InputBase
+                                sx={{ ml: 1, flex: 1, border: '1px' }}
+                                placeholder="Tìm kiếm theo tên hoặc mã sản phẩm"
+                                inputProps={{ 'aria-label': 'Tìm kiếm theo tên hoặc mã sản phẩm' }}
+                                onChange={(event) => {
+                                    setSearchProduct(event.target.value);
+                                }}
+                                // onMouseEnter={React.useEffect(() => {
+                                //     if (searchProduct !== '') {
+                                //         axios
+                                //             .get(
+                                //                 `${apiBaseUrl}/inventory/product/search?searchString=${searchProduct}&inventoryName=${inventory}`,
+                                //                 {
+                                //                     headers: {
+                                //                         // token: Cookies.get('token'),
+                                //                         Authorization: getCookie('Authorization'),
+                                //                     },
+                                //                 },
+                                //             )
+                                //             .then((response) => {
+                                //                 setProducts(response.data);
+                                //             });
+                                //     } else {
+                                //         setProducts([]);
+                                //     }
+                                // }, [searchProduct])}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </Paper>
+                    </Box>
+                    <div className="result_search" style={{ position: 'fixed' }}>
+                        {products.map((product, index) => {
+                            // console.log(checkInventoryBody)
+                            return (
+                                <Card sx={{ minWidth: '60ch' }}>
+                                    <ResultProductSearch
+                                        key={index}
+                                        product={product}
+                                        onClick={() => {
+                                            const product1 = {
+                                                productCode: product.code,
+                                                productName: product.name,
+                                                brand: product.brand,
+                                                size: product.size,
+                                                color: product.color,
+                                                inventoryQuantity: product.quantity,
+                                                actualQuantity: 0,
 
-                <Box sx={{ border: '1px solid #ccc', borderRadius: '6px' }}>
-                    {checkInventoryBody ? (
-                        <CheckInventoryBody
-                            rows={checkInventoryBody}
-                            // index={value}
-                            setUpdateProducts={setCheckInventoryBody}
-                            onDeleteProduct={handleDelete}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                </Box>
-                {/* </Box> */}
+                                                reason: '',
+                                            };
+                                            var duplicate = false;
+                                            let count = 0;
+                                            console.log(count);
+                                            for (var i = 0; i < checkInventoryBody.length; i++) {
+                                                if (checkInventoryBody[i].productCode === product1.productCode) {
+                                                    alert('This products was exits!');
+                                                    duplicate = true;
+                                                }
+                                            }
+                                            if (duplicate === false) {
+                                                checkInventoryBody.push(product1);
+                                            }
+                                            if (duplicate === false) {
+                                                checkInventoryBody.push(product1);
+                                            }
+                                            setSearchProduct('');
+                                        }}
+                                    />
+                                </Card>
+                            );
+                        })}
+                    </div>
 
-                <Box backgroundColor={'white'} marginTop={'20px'}>
-                    <Box sx={{ float: 'right' }}></Box>
+                    <Box sx={{ border: '1px solid #ccc', borderRadius: '6px' }}>
+                        {checkInventoryBody ? (
+                            <CheckInventoryBody
+                                rows={checkInventoryBody}
+                                // index={value}
+                                setUpdateProducts={setCheckInventoryBody}
+                                onDeleteProduct={handleDelete}
+                            />
+                        ) : (
+                            <></>
+                        )}
+                    </Box>
+                    {/* </Box> */}
+
+                    <Box backgroundColor={'white'} marginTop={'20px'}>
+                        <Box sx={{ float: 'right' }}></Box>
+                    </Box>
                 </Box>
             </Box>
         );
