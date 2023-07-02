@@ -123,9 +123,9 @@ public class CategoryService {
 
     public void deleteCategory(Integer id){
         CategoryEntity categoryEntity = categoryRepository.findById(id).get();
-        List<ProductEntity> productEntities = productRepository.findAllByCategoryCode(categoryEntity.getCode());
+        List<ProductEntity> productEntities = productRepository.findAllByCategoryId(categoryEntity.getId());
         for(ProductEntity productEntity : productEntities){
-            productEntity.setCategoryCode(null);
+            productEntity.setCategoryId(null);
             productRepository.save(productEntity);
         }
 //        categoryRepository.delete(categoryEntity.getId());

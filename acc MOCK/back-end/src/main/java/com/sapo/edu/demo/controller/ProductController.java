@@ -70,10 +70,16 @@ public class ProductController {
 //
     @GetMapping("/product/search")
     public List<ProductDto> searchProductByStringSearchAndInventoryName(
-            @RequestParam String searchString,
-            @RequestParam String inventoryName
+            @RequestParam(name = "searchString", required = false) String searchString,
+            @RequestParam(name = "inventoryName", required = false) String inventoryName
     ){
         return productService.searchProductBySearchStringAndInventoryName(searchString, inventoryName);
+    }
+    @GetMapping("/product/inventory")
+    public List<ProductDto> getProductsByInventoryName(
+            @RequestParam(name = "inventoryName", required = false) String inventoryName
+    ){
+        return productService.getAllProductByInventory(inventoryName);
     }
 
     @PutMapping("product/update")

@@ -36,8 +36,7 @@ public class Staff {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "role")
-    private String role;
+
 
     public Staff() {
     }
@@ -92,9 +91,6 @@ public class Staff {
     }
 
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> staffMap = new HashMap<>();
@@ -103,7 +99,6 @@ public class Staff {
         staffMap.put("name", name);
         staffMap.put("email", email);
         staffMap.put("address", address);
-        staffMap.put("role", role);
         return staffMap;
     }
 }

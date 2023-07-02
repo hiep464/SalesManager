@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { apiBaseUrl } from '../../constant/constant';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { getCookie } from '../../utils/api';
+import { TextField } from '@mui/material';
 
 function CheckInventoryBody(props) {
     const { rows,inventoryName,  onDeleteProduct,setUpdateProducts ,...other } = props;
@@ -102,7 +103,7 @@ function CheckInventoryBody(props) {
                                 </TableCell>
 
                             <TableCell align="center">{row.inventoryQuantity}</TableCell>
-                            <TableCell align="center"><input type='number' onChange={(e) => {
+                            <TableCell align="center"><TextField type='number' onChange={(e) => {
                                 if(e.target.value > row.inventoryQuantity) {
                                 
                                     alert("Số sản phẩm sau kiểm không được lớn hơn sản phẩm trên hệ thống")
@@ -110,7 +111,7 @@ function CheckInventoryBody(props) {
                                 }
                                 handleEditProduct(row.productCode,"actualQuantity",parseInt(e.target.value))
                             } } /></TableCell>
-                            <TableCell align="center"><input type='text' onChange={(e) => handleEditProduct(row.productCode,"reason",e.target.value)} /></TableCell>
+                            <TableCell align="center"><TextField type='text' onChange={(e) => handleEditProduct(row.productCode,"reason",e.target.value)} /></TableCell>
                             {/* <TableCell align="center"><input type='text' onChange={(e) => handleEditProduct(row.productCode,"note",e.target.value)} /></TableCell> */}
                         </TableRow>
                     ))}

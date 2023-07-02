@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductAttributeRepository extends JpaRepository<ProductAttribute, Integer> {
@@ -32,5 +33,6 @@ public interface ProductAttributeRepository extends JpaRepository<ProductAttribu
 
     List<ProductAttribute> findAllByProductCode(String code);
     ProductAttribute findByProductCodeAndSizeAndColor(String productCode, String size, String color);
+    List<ProductAttribute> findByInventoryName(String inventoryName);
 
 }

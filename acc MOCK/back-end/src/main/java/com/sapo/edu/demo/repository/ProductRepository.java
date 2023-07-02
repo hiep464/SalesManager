@@ -23,9 +23,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, String> {
-    Optional<ProductEntity> findByCodeIgnoreCase(String code);
-    Optional<ProductEntity> findProductCodeByCode(String code);
-    Optional<ProductEntity> findByBrandContainingIgnoreCase(String code);
+
     ProductEntity findByName(String name);
 
     Optional<ProductEntity> deleteByCode(String code);
@@ -59,5 +57,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, String> 
     List<ProductEntity> findByCodeContainingOrNameContaining(String code, String name);
 
 
-    List<ProductEntity> findAllByCategoryCode (String code);
+    List<ProductEntity> findAllByCategoryId (Integer id);
 }
