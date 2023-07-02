@@ -13,6 +13,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
+import '../CreateReportPage/CreateReportPage.scss';
+
 const StyledMenu = styled((props) => (
     <Menu
         elevation={0}
@@ -51,18 +53,19 @@ const StyledMenu = styled((props) => (
 }));
 
 const columns = [
-    { field: 'code', headerName: 'Mã đơn', width: 100 },
-    { field: 'customerName', headerName: 'Khách hàng', width: 200 },
-    { field: 'staffName', headerName: 'Nhân viên', width: 200 },
+    { field: 'code', headerClassName: 'header-table', headerName: 'Mã đơn', width: 100 },
+    { field: 'customerName', headerClassName: 'header-table', headerName: 'Khách hàng', width: 200 },
+    { field: 'staffName', headerClassName: 'header-table', headerName: 'Nhân viên', width: 200 },
     {
         field: 'total',
+        headerClassName: 'header-table',
         headerName: 'Giá trị đơn',
         width: 150,
         valueFormatter: (params) => params.value.toLocaleString('en-US'),
     },
-    { field: 'quantity', headerName: 'Số lượng hàng', width: 150 },
-    { field: 'status', headerName: 'Trạng thái đơn', width: 200 },
-    { field: 'orderDate', headerName: 'Ngày đặt', width: 200 },
+    { field: 'quantity', headerClassName: 'header-table', headerName: 'Số lượng hàng', width: 150 },
+    { field: 'status', headerClassName: 'header-table', headerName: 'Trạng thái đơn', width: 200 },
+    { field: 'orderDate', headerClassName: 'header-table', headerName: 'Ngày đặt', width: 200 },
 ];
 
 function OrdersList() {

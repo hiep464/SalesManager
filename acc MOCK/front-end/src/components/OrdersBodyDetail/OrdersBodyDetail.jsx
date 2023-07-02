@@ -60,8 +60,9 @@ function OrdersBodyDetail(props) {
                         labelRowsPerPage: 'Hiển thị',
                     },
                 }}
-                // getRowId={(row) => row.index}
+                getRowId={(row) => row.index}
                 sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
+                pagination={false}
             />
         </div>
     );

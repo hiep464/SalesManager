@@ -159,7 +159,7 @@
             }
         }
     }
-    .history{
+    .feedback{
         margin-top: 30px;
         width:calc(82vw - 44px);
         min-height: 300px;
@@ -167,6 +167,7 @@
         border-radius: 5px;
         font-size: 18px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding-bottom: 20px;
         .title{
             height: 50px;
             display: flex;
@@ -181,22 +182,24 @@
         table{
             width: 100%;
             border-collapse: collapse;
-            padding-bottom: 20px;
             tr{
                 height: 50px;
                 th{
-                    background-color: #F3F3F3;
                     border: none;
-                    border-bottom: 2px solid #CAC3C3;
-                    text-align: start;
-                    padding-left: 80px;
+                    border-bottom: 1px solid #CAC3C3;
+                    text-align: center;
                 }
                 td{
                     border: none;
-                    border-bottom: 2px solid #CAC3C3;
-                    text-align: start;
-                    padding-left: 80px;
+                    border-bottom: 1px solid #CAC3C3;
+                    text-align: center;
                 }
+                .column1{
+                    width: 15%;
+                }
+                .column2{width: 15%;}
+                .column3{width: 15%;}
+                .column4{width: 55%;}
             }
         }
     }
