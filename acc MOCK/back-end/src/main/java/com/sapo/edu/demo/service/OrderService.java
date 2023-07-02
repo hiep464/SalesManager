@@ -2,6 +2,7 @@ package com.sapo.edu.demo.service;
 
 import com.sapo.edu.demo.entities.Order;
 import com.sapo.edu.demo.repository.OrderRepository;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.json.simple.JSONObject;
 
@@ -72,6 +73,10 @@ public class OrderService {
     }
     public List<Map<String , Object>> SearchAllOrdersByCode(String code){
         return orderRepository.searchAllOrderbyCode(code);
+    }
+
+    public List<Map<String , Object>> searchAllOrderbyStaffCode(String code, LocalDate start , LocalDate end){
+        return orderRepository.searchAllOrderbyStaffCode(code,start,end);
     }
 
     public Map<String , Object> getOrderByCode(String code){

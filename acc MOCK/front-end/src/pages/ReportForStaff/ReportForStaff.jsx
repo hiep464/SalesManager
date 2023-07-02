@@ -267,7 +267,9 @@ function ReportForStaff() {
                     <DataGrid
                         rows={orders}
                         columns={columns}
-                        pagination={false}
+                        pageSize={orders.length} // Hiển thị tất cả dữ liệu trong một trang
+                        disableSelectionOnClick // Vô hiệu hóa chọn hàng khi nhấp vào
+                        hideFooterPagination // Ẩn phân trang ở footer
                         getRowId={(data) => data.code}
                         onRowClick={handleRowClick}
                     />

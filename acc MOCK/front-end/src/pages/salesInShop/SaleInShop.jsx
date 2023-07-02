@@ -23,6 +23,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Slide from '@mui/material/Slide';
 
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -65,6 +68,9 @@ function SalesInShop() {
     const [products, setProducts] = React.useState([]);
     const [inventory, setInventory] = React.useState([]);
     const [inventoryData, setInventoryData] = React.useState('chi nhánh 1');
+    const [openSnackBar, setOpenSnackBar] = React.useState(false);
+    const [openSnackBarWarning, setOpenSnackBarWarning] = React.useState(false);
+    const [SnackbarMessage, setSnackbarMessage] = React.useState('');
     const [orders, setOrders] = React.useState(orders1);
     const [money, setMoney] = React.useState(0);
     const [open, setOpen] = React.useState(false);
@@ -72,6 +78,34 @@ function SalesInShop() {
     const [warning, setWarning] = React.useState('');
     const [deleteId, setDeleteId] = React.useState();
     const [userInfo, setUserInfo] = React.useState();
+
+    function TransitionDown(props) {
+        return <Slide {...props} direction="down" />;
+    }
+
+    const handleClickSnackBar = () => {
+        setOpenSnackBar(true);
+    };
+
+    const handleClickSnackBarWarning = () => {
+        setOpenSnackBarWarning(true);
+    };
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackBar(false);
+    };
+    const handleCloseSnackBarWarning = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackBarWarning(false);
+    };
+
     useEffect(() => {
         if (search !== '') {
             axios
@@ -101,7 +135,8 @@ function SalesInShop() {
                 setInventory(Response.data);
             })
             .catch((err) => {
-                alert(err.message);
+                setSnackbarMessage(err.message);
+                handleClickSnackBarWarning();
             });
     }, []);
 
@@ -125,7 +160,8 @@ function SalesInShop() {
         );
         let orderLines = orders[value].products;
         if (orders[value].customer == null) {
-            alert('Xin hãy thêm khách hàng!');
+            setSnackbarMessage('Xin hãy thêm khách hàng!');
+            handleClickSnackBarWarning();
         } else {
             axios
                 .post(
@@ -147,8 +183,7 @@ function SalesInShop() {
                         },
                     },
                 )
-                .then((response) => {
-                    console.log(response);
+                .then(() => {
                     handleDeleteOrderAfterCreate(value);
                 });
         }
@@ -194,7 +229,10 @@ function SalesInShop() {
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
                     if (product.quantity + 1 > product.inventory_quantity) {
-                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        setSnackbarMessage(
+                            'Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name,
+                        );
+                        handleClickSnackBarWarning();
                         return product;
                     } else {
                         return { ...product, quantity: product.quantity + 1 };
@@ -247,7 +285,10 @@ function SalesInShop() {
             const updatedProducts = updatedOrderItems.products.map((product) => {
                 if (product.attributeID === productId) {
                     if (quantity > product.inventory_quantity) {
-                        alert('Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name);
+                        setSnackbarMessage(
+                            'Xin lỗi ! kho chỉ còn lại ' + product.inventory_quantity + ' ' + product.name,
+                        );
+                        handleClickSnackBarWarning();
                         return { ...product, quantity: product.inventory_quantity };
                     } else if (quantity <= 0) {
                         return null;
@@ -305,13 +346,22 @@ function SalesInShop() {
 
         setValue((prevValue) => {
             if (deleteId <= prevValue) {
-                setMoney(
-                    orders[prevValue - 1]?.products.reduce(
-                        (total, current) => (total += current.quantity * current.price),
-                        0,
-                    ),
-                );
-                return prevValue - 1;
+                prevValue > 0
+                    ? setMoney(
+                          updatedOrders[prevValue - 1]?.products.reduce(
+                              (total, current) => (total += current.quantity * current.price),
+                              0,
+                          ),
+                      )
+                    : setMoney(
+                          updatedOrders[prevValue]?.products.reduce(
+                              (total, current) => (total += current.quantity * current.price),
+                              0,
+                          ),
+                      );
+                const nextTabValue = prevValue > 0 ? prevValue - 1 : prevValue;
+
+                return nextTabValue;
             }
             return prevValue;
         });
@@ -321,13 +371,20 @@ function SalesInShop() {
         // }
 
         setOpen(false);
+        if (message === 'Bạn có chắc chắn muốn tạo đơn hàng này?') {
+            setSnackbarMessage('Tạo đơn hàng thành công!');
+            handleClickSnackBar();
+        } else if (message === 'Bạn có chắc chắn muốn xóa đơn hàng này?') {
+            setSnackbarMessage('Xóa đơn hàng thành công!');
+            handleClickSnackBar();
+        }
     };
 
     const handleClose = () => {
         setOpen(false);
     };
     return (
-        <div className="body1">
+        <div className="body1" sx={{ height: '100vh' }}>
             {addCustomer && (
                 <div className="All">
                     <AddCustomer handleCloseAddCustomer={handleCloseAddCustomer} />
@@ -351,8 +408,8 @@ function SalesInShop() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Box sx={{ width: '100%' }}>
-                <Grid container spacing={2}>
+            <Box sx={{ width: '100%', height: '97.5vh' }}>
+                <Grid container>
                     <Grid xs={12}>
                         <div className="logo">
                             <div className="image">
@@ -414,13 +471,15 @@ function SalesInShop() {
                                                     product={product}
                                                     onClick={() => {
                                                         if (product.quantity === 0) {
-                                                            alert('SP đã hết hàng');
+                                                            setSnackbarMessage('SP đã hết hàng');
+                                                            handleClickSnackBarWarning();
                                                         } else {
                                                             const product1 = {
                                                                 productCode: product.code,
                                                                 name: product.name,
                                                                 inventory_quantity: product.quantity,
                                                                 quantity: 1,
+                                                                img: product.image,
                                                                 price: product.price,
                                                                 attributeID: product.id,
                                                                 size: product.size,
@@ -467,6 +526,7 @@ function SalesInShop() {
                                             scrollButtons="auto"
                                             textColor="white"
                                             indicatorColor="red"
+                                            sx={{ height: '100%' }}
                                         >
                                             {orders ? (
                                                 orders.map((order, index) => {
@@ -486,6 +546,7 @@ function SalesInShop() {
                                                                             marginLeft: '4px',
                                                                             opacity: 0,
                                                                             color: 'white',
+                                                                            height: '100%',
                                                                             transition:
                                                                                 'visibility 0s linear 0.2s, opacity 0.2s linear',
                                                                             '&:hover': {
@@ -496,7 +557,10 @@ function SalesInShop() {
                                                                             },
                                                                         }}
                                                                     >
-                                                                        <DeleteIcon fontSize="small" />
+                                                                        <DeleteIcon
+                                                                            fontSize="small"
+                                                                            sx={{ height: '100%' }}
+                                                                        />
                                                                     </IconButton>
                                                                 </div>
                                                             }
@@ -585,7 +649,18 @@ function SalesInShop() {
                             </div>
                         </div>
                     </Grid>
-                    <Grid xs={8}>
+                    <Grid
+                        xs={8}
+                        sx={{
+                            backgroundColor: 'white',
+                            height: '85.5vh',
+                            border: '5px solid #F3F3F3',
+                            borderTop: 'none',
+                            borderLeft: 'none',
+                            borderBottom: 'none',
+                            paddingRight: '5px',
+                        }}
+                    >
                         {orders ? (
                             orders.map((order, index) => {
                                 return (
@@ -604,7 +679,7 @@ function SalesInShop() {
                             <></>
                         )}
                     </Grid>
-                    <Grid xs={4}>
+                    <Grid xs={4} sx={{ backgroundColor: 'white', height: '85.5vh', paddingLeft: '3px' }}>
                         {orders[value]?.customer === null ? (
                             <div className="addCustomer">
                                 <TextField
@@ -663,6 +738,15 @@ function SalesInShop() {
                                     .toLocaleString('en-US')}
                             </p>
                             <p className="order_info_line">
+                                <span>VAT(0%):</span>0
+                            </p>
+                            <p className="order_info_line">
+                                <span>Số tiền khách phải trả:</span>
+                                {orders[value]?.products
+                                    .reduce((total, current) => (total += current.quantity * current.price), 0)
+                                    .toLocaleString('en-US')}
+                            </p>
+                            <p className="order_info_line">
                                 <span>Số tiền khách đưa:</span>
                                 <NumericFormat
                                     thousandSeparator={true}
@@ -705,6 +789,38 @@ function SalesInShop() {
                     </Grid>
                 </Grid>
             </Box>
+            <div>
+                {/* <Button onClick={handleClickSnackBar}>Open simple snackbar</Button> */}
+                <Snackbar
+                    open={openSnackBar}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    autoHideDuration={3000}
+                    onClose={handleCloseSnackBar}
+                    TransitionComponent={TransitionDown}
+                    // message="Tạo sản phẩm thành công"
+                    // action={action}
+                >
+                    <Alert sx={{ padding: '8px' }} severity="success" color="info">
+                        {SnackbarMessage}
+                    </Alert>
+                </Snackbar>
+            </div>
+            <div>
+                {/* <Button onClick={handleClickSnackBar}>Open simple snackbar</Button> */}
+                <Snackbar
+                    open={openSnackBarWarning}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    autoHideDuration={3000}
+                    onClose={handleCloseSnackBarWarning}
+                    TransitionComponent={TransitionDown}
+                    // message="Tạo sản phẩm thành công"
+                    // action={action}
+                >
+                    <Alert sx={{ padding: '8px' }} severity="error">
+                        {SnackbarMessage}
+                    </Alert>
+                </Snackbar>
+            </div>
         </div>
     );
 }

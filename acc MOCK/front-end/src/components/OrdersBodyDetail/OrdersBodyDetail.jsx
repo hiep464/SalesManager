@@ -47,22 +47,11 @@ function OrdersBodyDetail(props) {
             <DataGrid
                 rows={processedRows}
                 columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
-                    },
-                }}
-                pageSizeOptions={[5, 10]}
-                localeText={{
-                    MuiTablePagination: {
-                        labelDisplayedRows: ({ from, to, count }) =>
-                            `Kết quả từ ${from} đến ${to} trên tổng số ${count}`,
-                        labelRowsPerPage: 'Hiển thị',
-                    },
-                }}
-                getRowId={(row) => row.index}
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
-                pagination={false}
+                getRowId={(row) => row.id}
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white', minHeight: 300 }}
+                pageSize={rows.length} // Hiển thị tất cả dữ liệu trong một trang
+                disableSelectionOnClick // Vô hiệu hóa chọn hàng khi nhấp vào
+                hideFooterPagination // Ẩn phân trang ở footer
             />
         </div>
     );

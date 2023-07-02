@@ -1,29 +1,30 @@
-import DefaultLayout from "../layout/defaultLayout/DefaultLayout"
-import Booking from "../pages/booking/Booking"
-import BookingDetail from "../pages/bookingDetail/BookingDetail"
-import CreateBooking from "../pages/createbooking/CreateBooking"
-import DashBoard from "../pages/dashboard/Dashboard"
-import ReportPage from "../pages/ReportPage/ReportPage"
-import Login from "../pages/login/Login"
-import ListCustomer from "../pages/listCustomer/ListCustomer"
-import ListFeedback from "../pages/listFeedback/ListFeedback"
-import FeedbackDetail from "../pages/feedbackDetail/FeedbackDetail"
-import ItemDetailLayout from "../layout/ItemDetailLayout/ItemDetailLayout"
-import CustomerDetail from "../pages/customerDetail/CustomerDetail"
-import CreateFeedback from "../pages/createFeedback/CreateFeedback"
-import Product from "../pages/product/Product"
-import ProductDetails from "../pages/productdetails/ProductDetails"
-import SaleInShop from "../pages/salesInShop/SaleInShop"
-import CheckInventoryDetail from "../pages/checkInventoryDetail/CheckInventoryDetail"
-import CheckInventory from "../pages/checkInventory/CheckInventory"
-import CreateChecking from "../pages/createChecking/CreateChecking"
-import CreateReportPage from "../pages/CreateReportPage/CreateReportPage"
-import Category from "../pages/caegory/Category"
-import ReportForStaff from "../pages/ReportForStaff/ReportForStaff"
-import ordersList from "../pages/ordersList/ordersList"
-import orderDetails from "../pages/orderDetails/orderDetails"
-import ReceiptInventory from "../pages/receiptInventory/ReceiptInventory"
-import ReceiptInventoryDetail from "../pages/receiptInventoryDetail/ReceiptInventoryDetail"
+import DefaultLayout from '../layout/defaultLayout/DefaultLayout';
+import Booking from '../pages/booking/Booking';
+import BookingDetails from '../pages/bookingDetail/BookingDetail';
+import CreateBooking from '../pages/createbooking/CreateBooking';
+import DashBoard from '../pages/dashboard/Dashboard';
+import ReportPage from '../pages/ReportPage/ReportPage';
+import Login from '../pages/login/Login';
+import ListCustomer from '../pages/listCustomer/ListCustomer';
+import ListFeedback from '../pages/listFeedback/ListFeedback';
+import FeedbackDetail from '../pages/feedbackDetail/FeedbackDetail';
+import ItemDetailLayout from '../layout/ItemDetailLayout/ItemDetailLayout';
+import CustomerDetail from '../pages/customerDetail/CustomerDetail';
+import CreateFeedback from '../pages/createFeedback/CreateFeedback';
+import Product from '../pages/product/Product';
+import ProductDetails from '../pages/productdetails/ProductDetails';
+import SaleInShop from '../pages/salesInShop/SaleInShop';
+import CheckInventoryDetail from '../pages/checkInventoryDetail/CheckInventoryDetail';
+import CheckInventory from '../pages/checkInventory/CheckInventory';
+import CreateChecking from '../pages/createChecking/CreateChecking';
+import ReportForStaff from '../pages/ReportForStaff/ReportForStaff';
+import ordersList from '../pages/ordersList/ordersList';
+import orderDetails from '../pages/orderDetails/orderDetails';
+import ReceiptInventory from '../pages/receiptInventory/ReceiptInventory';
+import ReceiptInventoryDetail from '../pages/receiptInventoryDetail/ReceiptInventoryDetail';
+import ReportForSalesStaff from '../pages/ReportForSalesStaff/ReportForSalesStaff';
+import Category from '../pages/caegory/Category';
+import BookingDetail from '../pages/bookingDetail/BookingDetail';
 
 export const publicRoutes = [
     {path: '/', element : Login},
@@ -50,4 +51,5 @@ export const publicRoutes = [
     { path: '/orders', element: ordersList, layout: DefaultLayout },
     { path: '/orders/:code', element: orderDetails, layout: DefaultLayout },
     { path: '/report', element: ReportPage, layout: DefaultLayout },
+    { path: '/report/staff', element: ReportForSalesStaff, layout: DefaultLayout },
 ];

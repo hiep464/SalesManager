@@ -52,7 +52,7 @@ function ListCustomer(){
     console.log(customers)
 
     return(
-        <div className='pagecontent' >
+        <div className='pagecontent1' >
             <div className='searchbar'>
                 <input type="text" id='searchtext' placeholder='Tìm kiếm theo mã khách hàng, số điện thoại, tên khách hàng' onChange={(e)=>setSearchText(e.target.value)}/>
             </div>
