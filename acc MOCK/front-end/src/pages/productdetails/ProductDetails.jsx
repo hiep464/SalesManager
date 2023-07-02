@@ -492,7 +492,7 @@ function ProductDetails() {
                     >
                         {product?.image ? (
                             <div style={{ position: 'relative' }}>
-                                <img src={product.image} alt="image" style={{ width: '68px', height: '68px' }} />
+                                <img src={product.image} alt="image" style={{ width: '100px', height: '100px' }} />
                                 {update ? (
                                     <CloseIcon
                                         sx={{
@@ -521,7 +521,7 @@ function ProductDetails() {
                                     imageURL ? (
                                         <div style={{ position: 'relative', marginLeft: '10px' }}>
                                             <img
-                                                style={{ width: '68px', height: '68px', borderRadius: '4px' }}
+                                                style={{ width: '100px', height: '100px', borderRadius: '4px' }}
                                                 src={imageURL}
                                                 alt="Uploaded"
                                             />

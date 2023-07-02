@@ -95,9 +95,9 @@ const columns = [
         width: 150,
         renderCell: (data) =>
             data.row.image ? (
-                <img src={data.row.image} style={{ width: '24px', height: '24px' }} alt="image" />
+                <img src={data.row.image} style={{ width: '34px', height: '34px' }} alt="image" />
             ) : (
-                <ImageIcon />
+                <ImageIcon sx={{ width: '28px', height: '28px' }}/>
             ),
     },
     { field: 'code', headerName: 'Mã SP', width: 200 },
@@ -292,7 +292,7 @@ export default function Product() {
     return (
         <div style={{ width: 'calc(82vw - 44px)' }}>
             <Box marginBottom={'14px'}>
-                <Button onClick={() => {navigate("category")}} sx={{textTransform: 'none'}} variant="text" size='small'>Loại sản phẩm</Button>
+                <Button onClick={() => {navigate("category")}} sx={{textTransform: 'none', fontWeight: '600'}} variant="text" size='small'>Loại sản phẩm</Button>
             </Box>
             <Box
                 zIndex={1000}
@@ -377,7 +377,7 @@ export default function Product() {
                         {imageURL ? (
                             <div style={{ position: 'relative', marginLeft: '10px' }}>
                                 <img
-                                    style={{ width: '68px', height: '68px', borderRadius: '4px' }}
+                                    style={{ width: '74px', height: '74px', borderRadius: '4px' }}
                                     src={imageURL}
                                     alt="Uploaded"
                                 />
@@ -597,7 +597,7 @@ export default function Product() {
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
                 getRowId={(row) => row.code}
-                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white' }}
+                sx={{ width: '100%', marginTop: '10px', backgroundColor: 'white', marginBottom: '23px' }}
                 onRowClick={handleClickRow}
                 localeText={{
                     MuiTablePagination: {

@@ -135,7 +135,7 @@ function CreateBooking() {
         const dataSubmit = {
             code: code,
             inventoryName: inventory,
-            staffName: staff,
+            staffName: userStaff.name,
             supplierName : dataSupplier.name,
             total: total,
             bookingDate: dateBook,

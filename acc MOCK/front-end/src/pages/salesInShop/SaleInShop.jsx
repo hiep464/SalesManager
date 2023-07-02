@@ -151,7 +151,6 @@ function SalesInShop() {
                     console.log(response);
                     handleDeleteOrderAfterCreate(value);
                 });
-            setMoney(0);
         }
     };
 
@@ -304,9 +303,22 @@ function SalesInShop() {
         setOrders(updatedOrders);
         setMoney(0);
 
-        if (deleteId <= value) {
-            setValue((prevValue) => prevValue - 1);
-        }
+        setValue((prevValue) => {
+            if (deleteId <= prevValue) {
+                setMoney(
+                    orders[prevValue - 1]?.products.reduce(
+                        (total, current) => (total += current.quantity * current.price),
+                        0,
+                    ),
+                );
+                return prevValue - 1;
+            }
+            return prevValue;
+        });
+
+        // if (deleteId <= value) {
+        //     setValue((prevValue) => prevValue - 1);
+        // }
 
         setOpen(false);
     };
@@ -382,7 +394,7 @@ function SalesInShop() {
                                         } else {
                                             setProducts([]);
                                         }
-                                    }, [searchProduct])}
+                                    }, [searchProduct, inventoryData])}
                                     sx={{ m: 1, width: '60ch' }}
                                     InputProps={{
                                         style: { color: 'white' },
@@ -401,35 +413,41 @@ function SalesInShop() {
                                                     key={product.id}
                                                     product={product}
                                                     onClick={() => {
-                                                        const product1 = {
-                                                            productCode: product.code,
-                                                            name: product.name,
-                                                            inventory_quantity: product.quantity,
-                                                            quantity: 1,
-                                                            price: product.price,
-                                                            attributeID: product.id,
-                                                            size: product.size,
-                                                            color: product.color,
-                                                        };
-                                                        var duplicate = false;
+                                                        if (product.quantity === 0) {
+                                                            alert('SP đã hết hàng');
+                                                        } else {
+                                                            const product1 = {
+                                                                productCode: product.code,
+                                                                name: product.name,
+                                                                inventory_quantity: product.quantity,
+                                                                quantity: 1,
+                                                                price: product.price,
+                                                                attributeID: product.id,
+                                                                size: product.size,
+                                                                color: product.color,
+                                                            };
+                                                            var duplicate = false;
 
-                                                        for (var i = 0; i < orders[value].products.length; i++) {
-                                                            if (orders[value].products[i].attributeID === product.id) {
-                                                                orders[value].products[i].quantity += 1;
-                                                                duplicate = true;
+                                                            for (var i = 0; i < orders[value].products.length; i++) {
+                                                                if (
+                                                                    orders[value].products[i].attributeID === product.id
+                                                                ) {
+                                                                    orders[value].products[i].quantity += 1;
+                                                                    duplicate = true;
+                                                                }
                                                             }
-                                                        }
 
-                                                        if (duplicate === false) {
-                                                            orders[value].products.push(product1);
+                                                            if (duplicate === false) {
+                                                                orders[value].products.push(product1);
+                                                            }
+                                                            setMoney(
+                                                                orders[value]?.products.reduce(
+                                                                    (total, current) =>
+                                                                        (total += current.quantity * current.price),
+                                                                    0,
+                                                                ),
+                                                            );
                                                         }
-                                                        setMoney(
-                                                            orders[value]?.products.reduce(
-                                                                (total, current) =>
-                                                                    (total += current.quantity * current.price),
-                                                                0,
-                                                            ),
-                                                        );
                                                         setSearchProduct('');
                                                     }}
                                                 />

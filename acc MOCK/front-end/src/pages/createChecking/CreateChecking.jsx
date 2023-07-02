@@ -42,36 +42,47 @@ const CreateChecking = () => {
     const [inventory, setInventory] = React.useState('');
     const [staffs, setStaffs] = React.useState([]);
     const [staff, setStaff] = React.useState('');
-    const [userStaff,setUserStaff] = React.useState({})
-   
-    React.useEffect (() => {
-        console.log(dateCreated)
-    },[dateCreated])
-    
+    const [userStaff, setUserStaff] = React.useState({});
+
+    React.useEffect(() => {
+        console.log(dateCreated);
+    }, [dateCreated]);
+
     const handleChange = (event) => {
         setInventory(event.target.value);
     };
-    const user = JSON.parse(localStorage.getItem('sapo') )
-    const userId = user.userId
+    const user = JSON.parse(localStorage.getItem('sapo'));
+    const userId = user.userId;
     React.useEffect(() => {
-        axios.get(`${apiBaseUrl}/inventory/inventories`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setInventories(response.data);
-        });
-       
-        axios.get(`${apiBaseUrl}/staff`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }}).then((response) => {
-            setStaffs(response.data);
-        });
-        axios.get(`${apiBaseUrl}/staff/${userId}`,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-                .then((res) => setUserStaff(res.data))
+        axios
+            .get(`${apiBaseUrl}/inventory/inventories`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setInventories(response.data);
+            });
+
+        axios
+            .get(`${apiBaseUrl}/staff`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((response) => {
+                setStaffs(response.data);
+            });
+        axios
+            .get(`${apiBaseUrl}/staff/${userId}`, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => setUserStaff(res.data));
     }, []);
     const theme = useTheme();
 
@@ -85,19 +96,22 @@ const CreateChecking = () => {
     //     console.log(checkInventoryBody)
     // })
     const handleSubmit = () => {
-        const dataCheck = { 
-                            code: code,
-                            staffName: userStaff.name,
-                            inventoryName: inventory,
-                            createAt: dateCreated,
-                            checkLines: checkInventoryBody
-                        }
-        axios.post(`${apiBaseUrl}/inventory/check_inventory`,dataCheck,{headers: {
-            // token: Cookies.get('token'),
-            Authorization: getCookie('Authorization'),
-        }})
-            .then(res => {
-                alert("Tạo phiếu kiểm hàng thành công")
+        const dataCheck = {
+            code: code,
+            staffName: userStaff.name,
+            inventoryName: inventory,
+            createAt: dateCreated,
+            checkLines: checkInventoryBody,
+        };
+        axios
+            .post(`${apiBaseUrl}/inventory/check_inventory`, dataCheck, {
+                headers: {
+                    // token: Cookies.get('token'),
+                    Authorization: getCookie('Authorization'),
+                },
+            })
+            .then((res) => {
+                alert('Tạo phiếu kiểm hàng thành công');
                 // console.log(res)
             })
             .then((res) => {
@@ -110,38 +124,38 @@ const CreateChecking = () => {
             .catch((err) => {
                 alert(err);
             });
-
-        // console.log(checkRequest)
-        return (
-            <Box>
-                <Box sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'flex-end' }}>
-                    <Box sx={{ float: 'left' }}>
-                        <Button onClick={handleSubmit} size="large" variant="contained">
-                            Tạo phiếu kiểm
-                        </Button>
+    };
+    // console.log(checkRequest)
+    return (
+        <Box>
+            <Box sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'flex-end' }}>
+                <Box sx={{ float: 'left' }}>
+                    <Button onClick={handleSubmit} size="large" variant="contained">
+                        Tạo phiếu kiểm
+                    </Button>
+                </Box>
+            </Box>
+            <Box mt={4} sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between' }}>
+                <Box borderRadius={4} width={'60%'} backgroundColor={'white'}>
+                    <Box ml={4}>
+                        <h3>Nhập mã kiểm kho</h3>
+                        <TextField
+                            label="Mã kiểm kho"
+                            // size="small"
+                            // variant="outlined"
+                            id="outlined-start-adornment"
+                            onChange={(event) => {
+                                setCode(event.target.value);
+                            }}
+                            sx={{ m: 1, width: '40ch' }}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start"></InputAdornment>,
+                            }}
+                        />
                     </Box>
                 </Box>
-                <Box mt={4} sx={{ width: 'calc(82vw - 44px)', display: 'flex', justifyContent: 'space-between' }}>
-                    <Box borderRadius={4} width={'60%'} backgroundColor={'white'}>
-                        <Box ml={4}>
-                            <h3>Nhập mã kiểm kho</h3>
-                            <TextField
-                                label="Mã kiểm kho"
-                                // size="small"
-                                // variant="outlined"
-                                id="outlined-start-adornment"
-                                onChange={(event) => {
-                                    setCode(event.target.value);
-                                }}
-                                sx={{ m: 1, width: '40ch' }}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start"></InputAdornment>,
-                                }}
-                            />
-                        </Box>
-                    </Box>
 
-                <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'} >
+                <Box borderRadius={4} width={'38%'} backgroundColor={'white'} paddingBottom={'8px'}>
                     <h3 style={{ marginLeft: '10px' }}>Thông tin đơn kiểm hàng</h3>
                     <List dense={true}>
                         <ListItem>
@@ -165,14 +179,12 @@ const CreateChecking = () => {
                                 onChange={(e) => {
                                     setStaff(e.target.value);
                                 }}
-                            >
-                                
-                            </TextField>
+                            ></TextField>
                         </ListItem>
                         <ListItem>
                             <ListItemText primary="Ngày kiểm kho:" />
-                            <LocalizationProvider  dateAdapter={AdapterDayjs} >
-                                <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' } } />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker onChange={(e) => setDateCreated(e)} sx={{ width: '50%' }} />
                             </LocalizationProvider>
                         </ListItem>
                     </List>
@@ -288,8 +300,8 @@ const CreateChecking = () => {
                     <Box sx={{ float: 'right' }}></Box>
                 </Box>
             </Box>
-        );
-    };
+        </Box>
+    );
 };
 
 export default CreateChecking;

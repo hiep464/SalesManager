@@ -32,6 +32,8 @@ import axios from 'axios';
 import { subDays, format } from 'date-fns';
 import { apiBaseUrl } from '../../constant/constant';
 import { getCookie } from '../../utils/api';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import Person3Icon from '@mui/icons-material/Person3';
 
 Chart.register(CategoryScale);
 
@@ -42,7 +44,7 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
         <Box
             sx={{
                 backgroundColor: 'white',
-                width: '268px',
+                width: '281px',
                 height: '158px',
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 borderRadius: '6px',
@@ -56,7 +58,7 @@ const BoxItem = function ({ title, content, backgroundColor, icon, noMargin }) {
                         flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        width: '123px',
+                        width: '150px',
                     }}
                 >
                     <span style={{ fontSize: '16px', color: 'black' }}>{title}</span>
@@ -272,7 +274,7 @@ function DashBoard() {
             .catch((error) => console.log(error));
     }, [filter]);
     return (
-        <div style={{ paddingTop: '25px', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ paddingTop: '2px', display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', flexDirection: 'column', width: '900px' }}>
                 <div style={{ display: 'flex' }}>
                     <BoxItem
@@ -312,7 +314,7 @@ function DashBoard() {
                         content={newCustomers}
                         backgroundColor={'#FFB92A'}
                         icon={
-                            <WarehouseIcon
+                            <Person3Icon
                                 sx={{
                                     width: '72px',
                                     height: '72px',
@@ -326,10 +328,18 @@ function DashBoard() {
                     />
                 </div>
                 {/* column chart */}
-                <Paper sx={{ marginTop: '40px', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                <Paper
+                    sx={{
+                        marginTop: '31px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                    }}
+                >
                     <div
                         style={{
-                            width: '80%',
+                            width: '88%',
                             display: 'flex',
                             justifyContent: 'space-between',
                             margin: '20px 0',
@@ -344,7 +354,7 @@ function DashBoard() {
                             </Select>
                         </FormControl>
                     </div>
-                    <div style={{ width: '80%', marginBottom: '20px' }}>
+                    <div style={{ width: '88%', marginBottom: '16px' }}>
                         <Bar
                             data={{
                                 labels: labels,
@@ -361,52 +371,119 @@ function DashBoard() {
                             options={options}
                         />
                     </div>
-                    <h5 style={{ textAlign: 'center' }}>
+                    <h4 style={{ textAlign: 'center' }}>
                         Tổng doanh thu:
                         <Numeral
                             value={data?.reduce((accumulator, currentValue) => accumulator + currentValue) || '0'}
                             // value={0}
                             format={'0,0'}
                         />
-                    </h5>
+                    </h4>
                 </Paper>
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        marginTop: '20px',
+                        marginTop: '30px',
                         textAlign: 'center',
                         marginBottom: '23px',
                     }}
                 >
-                    <Paper sx={{ width: '45%' }}>
-                        <h4>Top Khách hàng</h4>
+                    <Paper sx={{ width: 'calc((100% - 30px) / 2)' }}>
+                        <h3>Top Khách hàng</h3>
                         <List dense={true} sx={{ paddingBottom: '10px' }}>
                             {topCustomer?.map((item, key) => {
+                                let color = 'black';
+                                switch (key) {
+                                    case 0:
+                                        color = '#FF0000';
+                                        break;
+                                    case 1:
+                                        color = '#FFA500';
+                                        break;
+                                    case 2:
+                                        color = '#FFD700';
+                                        break;
+                                    case 3:
+                                        color = '#00FF00';
+                                        break;
+                                    case 4:
+                                        color = '#0000FF';
+                                        break;
+                                }
                                 return (
                                     <ListItem
                                         key={key}
-                                        secondaryAction={<span>{<Numeral value={item[1]} format={'0,0'} />}</span>}
+                                        secondaryAction={
+                                            <span style={{ fontSize: '18px' }}>
+                                                {<Numeral value={item[1]} format={'0,0'} />}
+                                            </span>
+                                        }
+                                        sx={{ fontSize: '18px' }}
                                     >
                                         <ListItemAvatar>
-                                            <Avatar>{key + 1}</Avatar>
+                                            <Avatar
+                                                sx={{
+                                                    color: color,
+                                                    backgroundColor: 'white',
+                                                    border: '1px solid',
+                                                    borderColor: color,
+                                                }}
+                                            >
+                                                {key + 1}
+                                            </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={item[0]} />
+                                        <ListItemText primary={<span style={{ fontSize: '18px' }}>{item[0]}</span>} />
                                     </ListItem>
                                 );
                             })}
                         </List>
                     </Paper>
-                    <Paper sx={{ width: '45%' }}>
-                        <h4>Top sản phẩm</h4>
+                    <Paper sx={{ width: 'calc((100% - 30px) / 2)' }}>
+                        <h3>Top sản phẩm</h3>
                         <List dense={true} sx={{ paddingBottom: '10px' }}>
                             {topProduct?.map((item, key) => {
+                                let color = 'black';
+                                switch (key) {
+                                    case 0:
+                                        color = '#FF0000';
+                                        break;
+                                    case 1:
+                                        color = '#FFA500';
+                                        break;
+                                    case 2:
+                                        color = '#FFD700';
+                                        break;
+                                    case 3:
+                                        color = '#00FF00';
+                                        break;
+                                    case 4:
+                                        color = '#0000FF';
+                                        break;
+                                }
                                 return (
-                                    <ListItem key={key} secondaryAction={<span>{item[1]}</span>}>
+                                    <ListItem
+                                        key={key}
+                                        secondaryAction={
+                                            <span style={{ fontSize: '18px' }}>
+                                                {<Numeral value={item[1]} format={'0,0'} />}
+                                            </span>
+                                        }
+                                        sx={{ fontSize: '18px' }}
+                                    >
                                         <ListItemAvatar>
-                                            <Avatar>{key + 1}</Avatar>
+                                            <Avatar
+                                                sx={{
+                                                    color: color,
+                                                    backgroundColor: 'white',
+                                                    border: '1px solid',
+                                                    borderColor: color,
+                                                }}
+                                            >
+                                                {key + 1}
+                                            </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={item[0]} />
+                                        <ListItemText primary={<span style={{ fontSize: '18px' }}>{item[0]}</span>} />
                                     </ListItem>
                                 );
                             })}
@@ -414,7 +491,7 @@ function DashBoard() {
                     </Paper>
                 </div>
             </div>
-            <Paper sx={{ width: '260px', height: '460px', marginLeft: 'auto', marginLeft: '58px' }}>
+            <Paper sx={{ width: '288px', height: '460px', marginLeft: 'auto', marginLeft: '30px' }}>
                 <h3 style={{ textAlign: 'center' }}>Hoạt động gần đây</h3>
                 <Timeline
                     sx={{
