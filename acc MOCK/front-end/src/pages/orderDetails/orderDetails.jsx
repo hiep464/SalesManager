@@ -64,7 +64,7 @@ const OrderDetails = () => {
                         <h2>{code}</h2>
                     </Grid>
                     <Grid backgroundColor={order.status === 'sucess' ? 'aqua' : '#e49c06'} borderRadius="25px">
-                        {order.status}
+                        {order.status === 'sucess' ? 'Thành công' : 'Thất bại'}
                     </Grid>
                 </Grid>
             </Box>
